@@ -28,7 +28,7 @@ PAPERSIZE=a4
 LATEXBIB=$(PDFLATEX)
 
 ## READER
-PDFREADER := AcroRd32.exe
+PDFREADER := okular
 
 all: latexmk read
 
