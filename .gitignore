@@ -24,4 +24,5 @@
 *.bcf
 *.run.xml
 _minted-*/
-
+*.fdb_latexmk
+*.fls
