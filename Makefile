@@ -1,22 +1,33 @@
 #
-# Makefile for LaTeX
+# Makefile for feupteses/feupthesis
 #
-# Version: Wed Oct  4 09:48:32 2017
+# Version:   Sat May 17 22:36:50 2008
 # Written by JCL
 #
-
-## Basename for result
-#TARGET=tese
-TARGET=tese
 
 ## programs
 LATEX=latex
 PDFLATEX=pdflatex
-PDFNUP=pdfnup
 BIBTEX=bibtex
+DVIDVI=dvidvi -m '2:0(3mm,-14mm),1(193mm,-14mm)'
+DVIPS=dvips -Ppdf
+DVI2PS=dvips -t landscape -x 707
+PS2PDF=ps2pdf -dEmbedAllFonts#true
+MKIDX=makeindex
+
+## Basename for result in PT
+#TARGET:=mieec
+## Basename for result in EN
+#TARGET:=mieec-en
+
+# Basename for result in PT: PDI
+#TARGET:=pdi
+
+# Basename for result in EN: PDI
+TARGET:=pdi-en
 
 ## .tex files
-TEXFILES=$(wildcard *.tex)
+TEXFILES=$(wildcard *.tex **/*.tex)
 
 ## BibTeX files
 BIB=$(wildcard *.bib)
@@ -24,32 +35,71 @@ BIB=$(wildcard *.bib)
 ## paper
 PAPERSIZE=a4
 
-## prefer pdflatex for bibtex
+#we prefer pdflatex for bibtex
 LATEXBIB=$(PDFLATEX)
 
-## READER
-PDFREADER := okular
+main:	$(TARGET).pdf
 
-all: latexmk read
+index:
+	$(MKIDX) $(TARGET)
 
-## make
-latexmk: 
-	pdflatex --shell-escape $(TARGET)
-	biber $(TARGET)
-	pdflatex --shell-escape $(TARGET)
-	
-read: 
-	@$(PDFREADER) $(TARGET).pdf || echo "$(PDFREADER) closed"
+biblio:
+	$(BIBTEX) $(TARGET)
+
+.tex.pdf:
+	rm -f $(TARGET).pdf
+	$(PDFLATEX) $< $@ || { rm -f $*.aux $*.idx && false ; }
+	if grep 'There were undefined references' $*.log ; then \
+	  $(BIBTEX) $(TARGET); $(PDFLATEX) $< $@; fi
+	while grep 'Rerun to get cross-references right.' $*.log ; do \
+	  $(PDFLATEX) $< $@ || { rm -f $*.aux $*.idx && false ; } ; done
+
+.tex.dvi:
+	rm -f $*.ps $*.pdf
+	$(LATEX) $< || { rm -f $*.dvi $*.aux $*.idx && false ; }
+	if grep 'There were undefined references' $*.log ; then \
+	  $(BIBTEX) $(TARGET); $(LATEX) $< $@; fi
+	while grep 'Rerun to get cross-references right.' $*.log ; do \
+	  $(LATEX) $< || { rm -f $*.dvi $*.aux $*.idx && false ; } ; done
+
+.dvi.ps:
+	$(DVIPS) -t $(PAPERSIZE) $< -o $@
+
+.dvi.dvi2:
+	$(DVIDVI) $< $@
+
+.dvi2.ps2:
+	$(DVI2PS) $< -o $@
+
+.ps.pdf:
+	$(PS2PDF) $< $@
+
+.bib.bbl:
+# in case we don't already have a .aux file listing citations
+	$(LATEXBIB) $(TARGET).tex
+# get the citations out of the bibliography
+	$(BIBTEX) $(TARGET)
+# do it again in case there are out-of-order cross-references
+	$(LATEXBIB) $(TARGET).tex
+	$(BIBTEX) $(TARGET)
+
+$(TARGET).pdf:	  $(TEXFILES)
+$(TARGET).dvi:	  $(TEXFILES)
+$(TARGET).ps:	  $(TARGET).dvi
+$(TARGET).ps2:	  $(TARGET).dvi2
+$(TARGET).dvi2:	  $(TARGET).dvi
 
 ## Extensions
-EXTS=aux toc idx ind ilg log out lof lot lol bbl blg brf tdo fls nav snm fdb_latexmk vrb
+EXTS=aux toc idx ind ilg log out lof lot lol bbl blg
 
-## clean
+##clean
 clean:
 	for EXT in ${EXTS}; do \
 	  find `pwd` -name \*\.$${EXT} -exec rm -v \{\} \; ; done
 
+##show PDF
+display: $(TARGET).pdf
+	okular $(TARGET).pdf &
 
-
-## misc
-.SUFFIXES: .tex .aux .toc .lof .lot .log .dvi .pdf .bib .bbl
+### misc
+.SUFFIXES: .tex .aux .toc .lof .lot .log .dvi .dvi2 .ps .ps2 .pdf .bib .bbl

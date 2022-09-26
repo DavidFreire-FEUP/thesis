@@ -1013,29 +1013,29 @@ FUNCTION {unpublished}
 FUNCTION {default.type} { misc }
 
 
-MACRO {jan} {"janeiro"}
+MACRO {jan} {"Janeiro"}
 
-MACRO {feb} {"fevereiro"}
+MACRO {feb} {"Fevereiro"}
 
-MACRO {mar} {"mar\c{c}o"}
+MACRO {mar} {"Mar\c{c}o"}
 
-MACRO {apr} {"abril"}
+MACRO {apr} {"Abril"}
 
-MACRO {may} {"maio"}
+MACRO {may} {"Maio"}
 
-MACRO {jun} {"junho"}
+MACRO {jun} {"Junho"}
 
-MACRO {jul} {"julho"}
+MACRO {jul} {"Julho"}
 
-MACRO {aug} {"agosto"}
+MACRO {aug} {"Agosto"}
 
-MACRO {sep} {"setembro"}
+MACRO {sep} {"Setembro"}
 
-MACRO {oct} {"outubro"}
+MACRO {oct} {"Outubro"}
 
-MACRO {nov} {"novembro"}
+MACRO {nov} {"Novembro"}
 
-MACRO {dec} {"dezembro"}
+MACRO {dec} {"Dezembro"}
 
 
 

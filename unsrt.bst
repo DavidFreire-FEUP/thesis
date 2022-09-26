@@ -1,10 +1,11 @@
-%%% Modification of BibTeX style file unsrt-pt.bst.OLD
+%%% Modification of BibTeX style file /usr/share/texmf-texlive/bibtex/bst/base/unsrt.bst
 %%% ... by urlbst, version 0.7 (marked with "% urlbst")
 %%% See <http://purl.org/nxg/dist/urlbst>
 %%% Added webpage entry type, and url and lastchecked fields.
 %%% Added eprint support.
 %%% Added DOI support.
 %%% Added PUBMED support.
+%%% Added hyperref support.
 %%% Original headers follow...
 
 % BibTeX standard bibliography style `unsrt'
@@ -67,13 +68,13 @@ FUNCTION {init.urlbst.variables}
   #1 'addeprints :=         % 0=no eprints; 1=include eprints
   #1 'adddoiresolver :=     % 0=no DOI resolver; 1=include it
   #1 'addpubmedresolver :=     % 0=no PUBMED resolver; 1=include it
-  #0 'hrefform :=           % 0=no crossrefs; 1=hypertex xrefs; 2=hyperref refs
+  #2 'hrefform :=           % 0=no crossrefs; 1=hypertex xrefs; 2=hyperref refs
   #0 'inlinelinks :=        % 0=URLs explicit; 1=URLs attached to titles
 
   % String constants, which you _might_ want to tweak.
   "URL: " 'urlintro := % prefix before URL; typically "Available from:" or "URL":
   "online" 'onlinestring := % indication that resource is online; typically "online"
-  "\'{u}ltimo acesso em " 'citedstring := % indicator of citation date; typically "cited "
+  "last accessed " 'citedstring := % indicator of citation date; typically "cited "
   "[link]" 'linktextstring := % dummy link text; typically "[link]"
   "http://arxiv.org/abs/" 'eprinturl := % prefix to make URL from eprint ref
   "arXiv:" 'eprintprefix := % text prefix printed before eprint ref; typically "arXiv:"
@@ -364,7 +365,7 @@ FUNCTION {format.names}
 	      if$
 	      t "others" =
 		{ " et~al." * }
-		{ " e " * t * }
+		{ " and " * t * }
 	      if$
 	    }
 	  if$
@@ -389,7 +390,7 @@ FUNCTION {format.editors}
     { "" }
     { editor format.names
       editor num.names$ #1 >
-	{ ", editores" * }
+	{ ", editors" * }
 	{ ", editor" * }
       if$
     }
@@ -470,7 +471,7 @@ FUNCTION {format.bvolume}
     { "volume" volume tie.or.space.connect
       series empty$
 	'skip$
-	{ " de " * series emphasize * }
+	{ " of " * series emphasize * }
       if$
       "volume and number" number either.or.check
     }
@@ -482,13 +483,13 @@ FUNCTION {format.number.series}
     { number empty$
 	{ series field.or.null }
 	{ output.state mid.sentence =
-	    { "n\'{u}mero" }
-	    { "N\'{u}mero" }
+	    { "number" }
+	    { "Number" }
 	  if$
 	  number tie.or.space.connect
 	  series empty$
 	    { "there's a number but no series in " cite$ * warning$ }
-	    { " em " * series * }
+	    { " in " * series * }
 	  if$
 	}
       if$
@@ -501,8 +502,8 @@ FUNCTION {format.edition}
 { edition empty$
     { "" }
     { output.state mid.sentence =
-	{ edition "l" change.case$ " edi\c{c}\~{a}o" * }
-	{ edition "t" change.case$ " edi\c{c}\~{a}o" * }
+	{ edition "l" change.case$ " edition" * }
+	{ edition "t" change.case$ " edition" * }
       if$
     }
   if$
@@ -534,8 +535,8 @@ FUNCTION {format.pages}
 { pages empty$
     { "" }
     { pages multi.page.check
-	{ "p\'{a}ginas" pages n.dashify tie.or.space.connect }
-	{ "p\'{a}gina" pages tie.or.space.connect }
+	{ "pages" pages n.dashify tie.or.space.connect }
+	{ "page" pages tie.or.space.connect }
       if$
     }
   if$
@@ -582,8 +583,8 @@ FUNCTION {format.in.ed.booktitle}
 { booktitle empty$
     { "" }
     { editor empty$
-	{ "Em " booktitle emphasize * }
-	{ "Em " format.editors * ", " * booktitle emphasize * }
+	{ "In " booktitle emphasize * }
+	{ "In " format.editors * ", " * booktitle emphasize * }
       if$
     }
   if$
@@ -609,7 +610,7 @@ FUNCTION {format.thesis.type}
 
 FUNCTION {format.tr.number}
 { type empty$
-    { "Relat\'{o}rio t\'{e}cnico" }
+    { "Technical Report" }
     'type
   if$
   number empty$
@@ -625,10 +626,10 @@ FUNCTION {format.article.crossref}
 	  warning$
 	  ""
 	}
-	{ "Em {\em " journal * "\/}" * }
+	{ "In {\em " journal * "\/}" * }
       if$
     }
-    { "Em " key * }
+    { "In " key * }
   if$
   " \cite{" * crossref * "}" *
 }
@@ -653,10 +654,10 @@ FUNCTION {format.crossref.editor}
 FUNCTION {format.book.crossref}
 { volume empty$
     { "empty volume in " cite$ * "'s crossref of " * crossref * warning$
-      "Em "
+      "In "
     }
     { "Volume" volume tie.or.space.connect
-      " de " *
+      " of " *
     }
   if$
   editor empty$
@@ -689,13 +690,13 @@ FUNCTION {format.incoll.inproc.crossref}
 	      crossref * warning$
 	      ""
 	    }
-	    { "Em {\em " booktitle * "\/}" * }
+	    { "In {\em " booktitle * "\/}" * }
 	  if$
 	}
-	{ "Em " key * }
+	{ "In " key * }
       if$
     }
-    { "Em " format.crossref.editor * }
+    { "In " format.crossref.editor * }
   if$
   " \cite{" * crossref * "}" *
 }
@@ -1085,7 +1086,7 @@ FUNCTION {mastersthesis}
   title empty$ 'skip$ 'possibly.setup.inlinelink if$ % urlbst
   format.title "title" output.check
   new.block
-  "Tese de mestrado" format.thesis.type output.nonnull
+  "Master's thesis" format.thesis.type output.nonnull
   school "school" output.check
   address output
   format.date "year" output.check
@@ -1116,7 +1117,7 @@ FUNCTION {phdthesis}
   title empty$ 'skip$ 'possibly.setup.inlinelink if$ % urlbst
   format.btitle "title" output.check
   new.block
-  "Tese de doutoramento" format.thesis.type output.nonnull
+  "PhD thesis" format.thesis.type output.nonnull
   school "school" output.check
   address output
   format.date "year" output.check
@@ -1191,29 +1192,29 @@ FUNCTION {unpublished}
 
 FUNCTION {default.type} { misc }
 
-MACRO {jan} {"Janeiro"}
+MACRO {jan} {"January"}
 
-MACRO {feb} {"Fevereiro"}
+MACRO {feb} {"February"}
 
-MACRO {mar} {"Mar\c{c}o"}
+MACRO {mar} {"March"}
 
-MACRO {apr} {"Abril"}
+MACRO {apr} {"April"}
 
-MACRO {may} {"Maio"}
+MACRO {may} {"May"}
 
-MACRO {jun} {"Junho"}
+MACRO {jun} {"June"}
 
-MACRO {jul} {"Julho"}
+MACRO {jul} {"July"}
 
-MACRO {aug} {"Agosto"}
+MACRO {aug} {"August"}
 
-MACRO {sep} {"Setembro"}
+MACRO {sep} {"September"}
 
-MACRO {oct} {"Outubro"}
+MACRO {oct} {"October"}
 
-MACRO {nov} {"Novembro"}
+MACRO {nov} {"November"}
 
-MACRO {dec} {"Dezembro"}
+MACRO {dec} {"December"}
 
 MACRO {acmcs} {"ACM Computing Surveys"}
 

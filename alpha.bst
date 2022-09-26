@@ -1,13 +1,14 @@
-%%% Modification of BibTeX style file unsrt-pt.bst.OLD
+%%% Modification of BibTeX style file /usr/share/texmf-texlive/bibtex/bst/base/alpha.bst
 %%% ... by urlbst, version 0.7 (marked with "% urlbst")
 %%% See <http://purl.org/nxg/dist/urlbst>
 %%% Added webpage entry type, and url and lastchecked fields.
 %%% Added eprint support.
 %%% Added DOI support.
 %%% Added PUBMED support.
+%%% Added hyperref support.
 %%% Original headers follow...
 
-% BibTeX standard bibliography style `unsrt'
+% BibTeX standard bibliography style `alpha'
 	% version 0.99a for BibTeX versions 0.99a or later, LaTeX version 2.09.
 	% Copyright (C) 1985, all rights reserved.
 	% Copying of this file is authorized only if either
@@ -47,7 +48,7 @@ ENTRY
     lastchecked % urlbst
   }
   {}
-  { label }
+  { label extra.label sort.label }
 
 INTEGERS { output.state before.all mid.sentence after.sentence after.block }
 
@@ -67,13 +68,13 @@ FUNCTION {init.urlbst.variables}
   #1 'addeprints :=         % 0=no eprints; 1=include eprints
   #1 'adddoiresolver :=     % 0=no DOI resolver; 1=include it
   #1 'addpubmedresolver :=     % 0=no PUBMED resolver; 1=include it
-  #0 'hrefform :=           % 0=no crossrefs; 1=hypertex xrefs; 2=hyperref refs
+  #2 'hrefform :=           % 0=no crossrefs; 1=hypertex xrefs; 2=hyperref refs
   #0 'inlinelinks :=        % 0=URLs explicit; 1=URLs attached to titles
 
   % String constants, which you _might_ want to tweak.
   "URL: " 'urlintro := % prefix before URL; typically "Available from:" or "URL":
   "online" 'onlinestring := % indication that resource is online; typically "online"
-  "\'{u}ltimo acesso em " 'citedstring := % indicator of citation date; typically "cited "
+  "last accessed " 'citedstring := % indicator of citation date; typically "cited "
   "[link]" 'linktextstring := % dummy link text; typically "[link]"
   "http://arxiv.org/abs/" 'eprinturl := % prefix to make URL from eprint ref
   "arXiv:" 'eprintprefix := % text prefix printed before eprint ref; typically "arXiv:"
@@ -250,7 +251,9 @@ FUNCTION {output.check}
 
 FUNCTION {output.bibitem.original} % urlbst (renamed from output.bibitem, so it can be wrapped below)
 { newline$
-  "\bibitem{" write$
+  "\bibitem[" write$
+  label write$
+  "]{" write$
   cite$ write$
   "}" write$
   newline$
@@ -364,7 +367,7 @@ FUNCTION {format.names}
 	      if$
 	      t "others" =
 		{ " et~al." * }
-		{ " e " * t * }
+		{ " and " * t * }
 	      if$
 	    }
 	  if$
@@ -389,7 +392,7 @@ FUNCTION {format.editors}
     { "" }
     { editor format.names
       editor num.names$ #1 >
-	{ ", editores" * }
+	{ ", editors" * }
 	{ ", editor" * }
       if$
     }
@@ -470,7 +473,7 @@ FUNCTION {format.bvolume}
     { "volume" volume tie.or.space.connect
       series empty$
 	'skip$
-	{ " de " * series emphasize * }
+	{ " of " * series emphasize * }
       if$
       "volume and number" number either.or.check
     }
@@ -482,13 +485,13 @@ FUNCTION {format.number.series}
     { number empty$
 	{ series field.or.null }
 	{ output.state mid.sentence =
-	    { "n\'{u}mero" }
-	    { "N\'{u}mero" }
+	    { "number" }
+	    { "Number" }
 	  if$
 	  number tie.or.space.connect
 	  series empty$
 	    { "there's a number but no series in " cite$ * warning$ }
-	    { " em " * series * }
+	    { " in " * series * }
 	  if$
 	}
       if$
@@ -501,8 +504,8 @@ FUNCTION {format.edition}
 { edition empty$
     { "" }
     { output.state mid.sentence =
-	{ edition "l" change.case$ " edi\c{c}\~{a}o" * }
-	{ edition "t" change.case$ " edi\c{c}\~{a}o" * }
+	{ edition "l" change.case$ " edition" * }
+	{ edition "t" change.case$ " edition" * }
       if$
     }
   if$
@@ -534,8 +537,8 @@ FUNCTION {format.pages}
 { pages empty$
     { "" }
     { pages multi.page.check
-	{ "p\'{a}ginas" pages n.dashify tie.or.space.connect }
-	{ "p\'{a}gina" pages tie.or.space.connect }
+	{ "pages" pages n.dashify tie.or.space.connect }
+	{ "page" pages tie.or.space.connect }
       if$
     }
   if$
@@ -582,8 +585,8 @@ FUNCTION {format.in.ed.booktitle}
 { booktitle empty$
     { "" }
     { editor empty$
-	{ "Em " booktitle emphasize * }
-	{ "Em " format.editors * ", " * booktitle emphasize * }
+	{ "In " booktitle emphasize * }
+	{ "In " format.editors * ", " * booktitle emphasize * }
       if$
     }
   if$
@@ -593,6 +596,7 @@ FUNCTION {empty.misc.check}
 { author empty$ title empty$ howpublished empty$
   month empty$ year empty$ note empty$
   and and and and and
+  key empty$ not and
     { "all relevant fields are empty in " cite$ * warning$ }
     'skip$
   if$
@@ -609,7 +613,7 @@ FUNCTION {format.thesis.type}
 
 FUNCTION {format.tr.number}
 { type empty$
-    { "Relat\'{o}rio t\'{e}cnico" }
+    { "Technical Report" }
     'type
   if$
   number empty$
@@ -625,10 +629,10 @@ FUNCTION {format.article.crossref}
 	  warning$
 	  ""
 	}
-	{ "Em {\em " journal * "\/}" * }
+	{ "In {\em " journal * "\/}" * }
       if$
     }
-    { "Em " key * }
+    { "In " key * }
   if$
   " \cite{" * crossref * "}" *
 }
@@ -653,10 +657,10 @@ FUNCTION {format.crossref.editor}
 FUNCTION {format.book.crossref}
 { volume empty$
     { "empty volume in " cite$ * "'s crossref of " * crossref * warning$
-      "Em "
+      "In "
     }
     { "Volume" volume tie.or.space.connect
-      " de " *
+      " of " *
     }
   if$
   editor empty$
@@ -689,13 +693,13 @@ FUNCTION {format.incoll.inproc.crossref}
 	      crossref * warning$
 	      ""
 	    }
-	    { "Em {\em " booktitle * "\/}" * }
+	    { "In {\em " booktitle * "\/}" * }
 	  if$
 	}
-	{ "Em " key * }
+	{ "In " key * }
       if$
     }
-    { "Em " format.crossref.editor * }
+    { "In " format.crossref.editor * }
   if$
   " \cite{" * crossref * "}" *
 }
@@ -1085,7 +1089,7 @@ FUNCTION {mastersthesis}
   title empty$ 'skip$ 'possibly.setup.inlinelink if$ % urlbst
   format.title "title" output.check
   new.block
-  "Tese de mestrado" format.thesis.type output.nonnull
+  "Master's thesis" format.thesis.type output.nonnull
   school "school" output.check
   address output
   format.date "year" output.check
@@ -1116,7 +1120,7 @@ FUNCTION {phdthesis}
   title empty$ 'skip$ 'possibly.setup.inlinelink if$ % urlbst
   format.btitle "title" output.check
   new.block
-  "Tese de doutoramento" format.thesis.type output.nonnull
+  "PhD thesis" format.thesis.type output.nonnull
   school "school" output.check
   address output
   format.date "year" output.check
@@ -1191,29 +1195,29 @@ FUNCTION {unpublished}
 
 FUNCTION {default.type} { misc }
 
-MACRO {jan} {"Janeiro"}
+MACRO {jan} {"January"}
 
-MACRO {feb} {"Fevereiro"}
+MACRO {feb} {"February"}
 
-MACRO {mar} {"Mar\c{c}o"}
+MACRO {mar} {"March"}
 
-MACRO {apr} {"Abril"}
+MACRO {apr} {"April"}
 
-MACRO {may} {"Maio"}
+MACRO {may} {"May"}
 
-MACRO {jun} {"Junho"}
+MACRO {jun} {"June"}
 
-MACRO {jul} {"Julho"}
+MACRO {jul} {"July"}
 
-MACRO {aug} {"Agosto"}
+MACRO {aug} {"August"}
 
-MACRO {sep} {"Setembro"}
+MACRO {sep} {"September"}
 
-MACRO {oct} {"Outubro"}
+MACRO {oct} {"October"}
 
-MACRO {nov} {"Novembro"}
+MACRO {nov} {"November"}
 
-MACRO {dec} {"Dezembro"}
+MACRO {dec} {"December"}
 
 MACRO {acmcs} {"ACM Computing Surveys"}
 
@@ -1258,33 +1262,336 @@ MACRO {tcs} {"Theoretical Computer Science"}
 
 READ
 
-STRINGS { longest.label }
+FUNCTION {sortify}
+{ purify$
+  "l" change.case$
+}
 
-INTEGERS { number.label longest.label.width }
+INTEGERS { len }
+
+FUNCTION {chop.word}
+{ 's :=
+  'len :=
+  s #1 len substring$ =
+    { s len #1 + global.max$ substring$ }
+    's
+  if$
+}
+
+INTEGERS { et.al.char.used }
+
+FUNCTION {initialize.et.al.char.used}
+{ #0 'et.al.char.used :=
+}
+
+EXECUTE {initialize.et.al.char.used}
+
+FUNCTION {format.lab.names}
+{ 's :=
+  s num.names$ 'numnames :=
+  numnames #1 >
+    { numnames #4 >
+	{ #3 'namesleft := }
+	{ numnames 'namesleft := }
+      if$
+      #1 'nameptr :=
+      ""
+	{ namesleft #0 > }
+	{ nameptr numnames =
+	    { s nameptr "{ff }{vv }{ll}{ jj}" format.name$ "others" =
+		{ "{\etalchar{+}}" *
+		  #1 'et.al.char.used :=
+		}
+		{ s nameptr "{v{}}{l{}}" format.name$ * }
+	      if$
+	    }
+	    { s nameptr "{v{}}{l{}}" format.name$ * }
+	  if$
+	  nameptr #1 + 'nameptr :=
+	  namesleft #1 - 'namesleft :=
+	}
+      while$
+      numnames #4 >
+	{ "{\etalchar{+}}" *
+	  #1 'et.al.char.used :=
+	}
+	'skip$
+      if$
+    }
+    { s #1 "{v{}}{l{}}" format.name$
+      duplicate$ text.length$ #2 <
+	{ pop$ s #1 "{ll}" format.name$ #3 text.prefix$ }
+	'skip$
+      if$
+    }
+  if$
+}
+
+FUNCTION {author.key.label}
+{ author empty$
+    { key empty$
+	{ cite$ #1 #3 substring$ }
+	{ key #3 text.prefix$ }
+      if$
+    }
+    { author format.lab.names }
+  if$
+}
+
+FUNCTION {author.editor.key.label}
+{ author empty$
+    { editor empty$
+	{ key empty$
+	    { cite$ #1 #3 substring$ }
+	    { key #3 text.prefix$ }
+	  if$
+	}
+	{ editor format.lab.names }
+      if$
+    }
+    { author format.lab.names }
+  if$
+}
+
+FUNCTION {author.key.organization.label}
+{ author empty$
+    { key empty$
+	{ organization empty$
+	    { cite$ #1 #3 substring$ }
+	    { "The " #4 organization chop.word #3 text.prefix$ }
+	  if$
+	}
+	{ key #3 text.prefix$ }
+      if$
+    }
+    { author format.lab.names }
+  if$
+}
+
+FUNCTION {editor.key.organization.label}
+{ editor empty$
+    { key empty$
+	{ organization empty$
+	    { cite$ #1 #3 substring$ }
+	    { "The " #4 organization chop.word #3 text.prefix$ }
+	  if$
+	}
+	{ key #3 text.prefix$ }
+      if$
+    }
+    { editor format.lab.names }
+  if$
+}
+
+FUNCTION {calc.label}
+{ type$ "book" =
+  type$ "inbook" =
+  or
+    'author.editor.key.label
+    { type$ "proceedings" =
+	'editor.key.organization.label
+	{ type$ "manual" =
+	    'author.key.organization.label
+	    'author.key.label
+	  if$
+	}
+      if$
+    }
+  if$
+  duplicate$
+  year field.or.null purify$ #-1 #2 substring$
+  *
+  'label :=
+  year field.or.null purify$ #-1 #4 substring$
+  *
+  sortify 'sort.label :=
+}
+
+FUNCTION {sort.format.names}
+{ 's :=
+  #1 'nameptr :=
+  ""
+  s num.names$ 'numnames :=
+  numnames 'namesleft :=
+    { namesleft #0 > }
+    { nameptr #1 >
+	{ "   " * }
+	'skip$
+      if$
+      s nameptr "{vv{ } }{ll{ }}{  ff{ }}{  jj{ }}" format.name$ 't :=
+      nameptr numnames = t "others" = and
+	{ "et al" * }
+	{ t sortify * }
+      if$
+      nameptr #1 + 'nameptr :=
+      namesleft #1 - 'namesleft :=
+    }
+  while$
+}
+
+FUNCTION {sort.format.title}
+{ 't :=
+  "A " #2
+    "An " #3
+      "The " #4 t chop.word
+    chop.word
+  chop.word
+  sortify
+  #1 global.max$ substring$
+}
+
+FUNCTION {author.sort}
+{ author empty$
+    { key empty$
+	{ "to sort, need author or key in " cite$ * warning$
+	  ""
+	}
+	{ key sortify }
+      if$
+    }
+    { author sort.format.names }
+  if$
+}
+
+FUNCTION {author.editor.sort}
+{ author empty$
+    { editor empty$
+	{ key empty$
+	    { "to sort, need author, editor, or key in " cite$ * warning$
+	      ""
+	    }
+	    { key sortify }
+	  if$
+	}
+	{ editor sort.format.names }
+      if$
+    }
+    { author sort.format.names }
+  if$
+}
+
+FUNCTION {author.organization.sort}
+{ author empty$
+    { organization empty$
+	{ key empty$
+	    { "to sort, need author, organization, or key in " cite$ * warning$
+	      ""
+	    }
+	    { key sortify }
+	  if$
+	}
+	{ "The " #4 organization chop.word sortify }
+      if$
+    }
+    { author sort.format.names }
+  if$
+}
+
+FUNCTION {editor.organization.sort}
+{ editor empty$
+    { organization empty$
+	{ key empty$
+	    { "to sort, need editor, organization, or key in " cite$ * warning$
+	      ""
+	    }
+	    { key sortify }
+	  if$
+	}
+	{ "The " #4 organization chop.word sortify }
+      if$
+    }
+    { editor sort.format.names }
+  if$
+}
+
+FUNCTION {presort}
+{ calc.label
+  sort.label
+  "    "
+  *
+  type$ "book" =
+  type$ "inbook" =
+  or
+    'author.editor.sort
+    { type$ "proceedings" =
+	'editor.organization.sort
+	{ type$ "manual" =
+	    'author.organization.sort
+	    'author.sort
+	  if$
+	}
+      if$
+    }
+  if$
+  *
+  "    "
+  *
+  year field.or.null sortify
+  *
+  "    "
+  *
+  title field.or.null
+  sort.format.title
+  *
+  #1 entry.max$ substring$
+  'sort.key$ :=
+}
+
+ITERATE {presort}
+
+SORT
+
+STRINGS { longest.label last.sort.label next.extra }
+
+INTEGERS { longest.label.width last.extra.num }
 
 FUNCTION {initialize.longest.label}
 { "" 'longest.label :=
-  #1 'number.label :=
+  #0 int.to.chr$ 'last.sort.label :=
+  "" 'next.extra :=
   #0 'longest.label.width :=
+  #0 'last.extra.num :=
 }
 
-FUNCTION {longest.label.pass}
-{ number.label int.to.str$ 'label :=
-  number.label #1 + 'number.label :=
+FUNCTION {forward.pass}
+{ last.sort.label sort.label =
+    { last.extra.num #1 + 'last.extra.num :=
+      last.extra.num int.to.chr$ 'extra.label :=
+    }
+    { "a" chr.to.int$ 'last.extra.num :=
+      "" 'extra.label :=
+      sort.label 'last.sort.label :=
+    }
+  if$
+}
+
+FUNCTION {reverse.pass}
+{ next.extra "b" =
+    { "a" 'extra.label := }
+    'skip$
+  if$
+  label extra.label * 'label :=
   label width$ longest.label.width >
     { label 'longest.label :=
       label width$ 'longest.label.width :=
     }
     'skip$
   if$
+  extra.label 'next.extra :=
 }
 
 EXECUTE {initialize.longest.label}
 
-ITERATE {longest.label.pass}
+ITERATE {forward.pass}
+
+REVERSE {reverse.pass}
 
 FUNCTION {begin.bib}
-{ preamble$ empty$
+{ et.al.char.used
+    { "\newcommand{\etalchar}[1]{$^{#1}$}" write$ newline$ }
+    'skip$
+  if$
+  preamble$ empty$
     'skip$
     { preamble$ write$ newline$ }
   if$

@@ -1,13 +1,13 @@
 %% FEUP THESIS STYLE for LaTeX2e
-%% FEUP, JCL & JCF,  Mon Oct  2 16:35:08 2017
+%% FEUP, JCL & JCF, Fri Jan 24 15:42:41 2014
 %%
 %% PLEASE send improvements to jlopes at fe.up.pt and to jcf at fe.up.pt
 %%
-
+  
 \NeedsTeXFormat{LaTeX2e}
 \def \filename {feupteses.sty}
-\def \filedate {2017/10/02}
-\def \fileversion {1.1.2}
+\def \filedate {2014/01/24}
+\def \fileversion {1.1.1}
 \ProvidesPackage {feupteses}[\filedate\space\fileversion\space]
 \typeout {Document Style `FEUP Teses' \fileversion\space <\filedate>}
 
@@ -18,7 +18,7 @@
 
 %% Option mieec
 \newif\if@mieec
-%\@mieecfalse
+\@mieecfalse
 \DeclareOption{mieec}{\@mieectrue}
 
 %% Option mieic
@@ -30,11 +30,6 @@
 \newif\if@miem
 \@miemfalse
 \DeclareOption{miem}{\@miemtrue}
-
-%% Option mesw
-\newif\if@mesw
-\@meswfalse
-\DeclareOption{mesw}{\@meswtrue}
 
 %% Option juri
 \newif\if@juri
@@ -105,10 +100,6 @@
     \@watermarktrue
     \@uselinenotrue
   \fi
-  \if@mesw
-    \@watermarktrue
-    \@uselinenotrue
-  \fi
 \fi
 
 \if@mieec
@@ -118,9 +109,9 @@
 \fi
 
 \if@mieic
-%  \@headerscenteredtrue
-  \@numericrefstrue
-  \@alpharefsfalse
+  \@headerscenteredtrue
+  \@numericrefsfalse
+  \@alpharefstrue
 \fi
 
 \if@mieec
@@ -129,11 +120,6 @@
 \fi
 
 \if@miem
-  \@numericrefstrue
-  \@alpharefsfalse
-\fi
-
-\if@mesw
   \@numericrefstrue
   \@alpharefsfalse
 \fi
@@ -289,13 +275,6 @@ with the `report' document style}{}}{}
        \additionalfronttext{Working version}
     \fi
  \fi
- \if@mesw
-    \if@portugues
-       \additionalfronttext{Vers\~{a}o de trabalho}
-    \else
-       \additionalfronttext{Working version}
-    \fi
- \fi
 \fi
 
 %% For Jury Evaluation
@@ -332,7 +311,12 @@ with the `report' document style}{}}{}
 \begin{titlepage}
 {\vspace{-15mm}\Large\bf \textsc{\@school}}
 
-\vspace*{20mm}%
+\vspace*{35mm}%
+\hbox to \textwidth{%
+  \setbox\@crestbox=\vbox{\includegraphics[width=72mm]{\@logo}}%
+\box\@crestbox%
+}
+\vspace*{30mm}%
 {\def\baselinestretch{1.2}\Huge\bf \@title \par}
 \vskip 10mm%
 {\Large\bf \@author}%
@@ -342,11 +326,6 @@ with the `report' document style}{}}{}
 \vskip 10mm%
 {\Large\textsc \@provisionaltext}
 \fi
-\vfill\vfill
-\hbox to \textwidth{%
-  \setbox\@crestbox=\vbox{\includegraphics[width=72mm]{\@logo}}%
-\box\@crestbox%
-}
 \vfill%
 {\large \@degree}%
 \vskip 2mm
@@ -436,14 +415,14 @@ with the `report' document style}{}}{}
 \renewcommand{\footrulewidth}{0pt}
 \addtolength{\headheight}{0.5pt}
 
-% \if@headerscenteredtrue
-%   \renewcommand{\chaptermark}[1]{\markboth{#1}{}}
-%   \fancyhead{} % clear all header fields
-%   \fancyhead[C]{\leftmark}
-%   \fancyfoot{} % clear all footer fields
-%   \fancyfoot[C]{\thepage}
-%   \fancyfoot[RO,LE]{}
-% \fi
+\if@mieic
+  \renewcommand{\chaptermark}[1]{\markboth{#1}{}}
+  \fancyhead{} % clear all header fields
+  \fancyhead[C]{\leftmark}
+  \fancyfoot{} % clear all footer fields
+  \fancyfoot[C]{\thepage}
+  \fancyfoot[RO,LE]{}
+\fi
 
 %% changes to report.sty
 \lineskip 1pt
@@ -466,29 +445,29 @@ with the `report' document style}{}}{}
 \RequirePackage[pdftex,pdfpagelabels,bookmarks,hyperindex,hyperfigures]{hyperref}
 
 \if@backrefs
-  \RequirePackage[hyperpageref]{backref}
-  \renewcommand*{\backref}[1]{}
-  \if@portugues
-    \renewcommand*{\backrefalt}[4]{%
-      \ifcase #1 %
-      \or
-      {\footnotesize Citado na p\'{a}gina #2.}%
-      \else
-      {\footnotesize Citado nas p\'{a}ginas #2.}%
-      \fi
-    }
-    \renewcommand*{\backreftwosep}{ e~}
-    \renewcommand*{\backreflastsep}{ e~}
+\RequirePackage[hyperpageref]{backref}
+\renewcommand*{\backref}[1]{}
+\if@portugues
+\renewcommand*{\backrefalt}[4]{%
+  \ifcase #1 %
+  \or
+  {\footnotesize Citado na p\'{a}gina #2.}%
   \else
-    \renewcommand*{\backrefalt}[4]{%
-      \ifcase #1 %
-      \or
-      {\footnotesize Cited on page #2.}%
-      \else
-      {\footnotesize Cited on pages #2.}%
-      \fi
-    }
+  {\footnotesize Citado nas p\'{a}ginas #2.}%
   \fi
+}
+\renewcommand*{\backreftwosep}{ e~}
+\renewcommand*{\backreflastsep}{ e~}
+\else
+\renewcommand*{\backrefalt}[4]{%
+  \ifcase #1 %
+  \or
+  {\footnotesize Cited on page #2.}%
+  \else
+  {\footnotesize Cited on pages #2.}%
+  \fi
+}
+ \fi
 \fi
 
 \if@onpaper 
@@ -540,10 +519,6 @@ with the `report' document style}{}}{}
   \degree{Mestrado Integrado em Engenharia Mec\^{a}nica}
 \fi
 
-\if@mesw
-  \degree{Mestrado em Engenharia de Software}
-\fi
-
 %% Some language-dependent definitions
 \if@portugues
   \RequirePackage{indentfirst}
@@ -557,7 +532,7 @@ with the `report' document style}{}}{}
   \newcommand{\PrintBib}[1]{%
     \renewcommand{\bibname}{Refer\^{e}ncias}%
     \if@numericrefs%
-      \bibliographystyle{plain-pt}%
+      \bibliographystyle{unsrt-pt}%
     \else%
       \if@alpharefs%
         \bibliographystyle{alpha-pt}%
@@ -587,7 +562,7 @@ with the `report' document style}{}}{}
   \newcommand{\PrintBib}[1]{%
     \renewcommand{\bibname}{References}%
     \if@numericrefs%
-      \bibliographystyle{plain}%
+      \bibliographystyle{unsrt}%
     \else%
       \if@alpharefs%
         \bibliographystyle{alpha}%

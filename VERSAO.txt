@@ -1,31 +1,26 @@
-Distribution: FEUP-TESES
-Current version: v2017
-feupteses.sty: 1.1.2
-
-Changes for v2017:
-1. added mesw option for MESW
-2. master thesis use numeric referencing (sorted)
+Distribution: MIEEC
+Current version: v2014
+feupteses.sty: 1.1.1
 
 Changes for v2014:
-1. use indentfirst for portuguese
-2. added miem option (Daniel Moura) for MIEM
+1. use feuptheses.sty 1.1.1
 
-Changes for v2012b:
-1. references before the numbered appendixes
+Changes for v2013:
+1. Change place of logo in cover page
 
 Changes for v2012:
-1. new logo (UPorto FEUP)
-2. new Portuguese spelling rules 
-3. uses feupteses.sty 1.1
-4. new option (backrefs) for reversed references from bibliography to citation page
-5. new command to define additional text for the front page (\additionalfronttext)
+1. use feupsteses.sty 1.1
+2. example for PDI
 
 Changes for v2011b:
-1. support for url and lastcheckd fields in bibliographies (conversion
-done with urlbst: http://ctan.mackichan.com/biblio/bibtex/contrib/urlbst/urlbst.htm)
+1. support for url and lastcheckd fields in bibliographys
+   (conversion done with urlbst:
+    http://ctan.mackichan.com/biblio/bibtex/contrib/urlbst/urlbst.htm)
 
 Changes for v2011a:
-1. correct indication of technical report in unsrt-pt.bst (thanks to Marcelo Almeida)
+
+1. correct indication of technical report in unsrt-pt.bst
+	(thanks to Marcelo Almeida)
 
 Changes for v2011:
 1. new option scheme
