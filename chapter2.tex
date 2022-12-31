@@ -1,7 +1,7 @@
-\chapter{Fault detection in Utility Scale PV Plants}
+\chapter{Fault detection in Utility Scale Photovoltaic Plants}
 
 
-\section{PV Plant's architecture and components}
+\section{Utility-Scale Photovoltaic System's Architecture}
 
 Utility-scale photovoltaic (PV) power plants are large-scale PV systems that are connected to the electrical grid and have installed capacities ranging from kilowatts peak (kWp) to megawatts peak (MWp). These systems typically consist of many PV panels interconnected through power electronics to aggregate and inject active power into the grid. The number and type of components in a PV power plant depend on the plant's scale and topology, with different configurations possible for large-scale applications, including central inverters, string inverters, and multi-string inverters \cite{lspv}. Understanding the architecture and components of PV power plants is vital for designing, operating, and maintaining these systems, as it helps optimize their performance and reliability.
 
@@ -64,7 +64,7 @@ Physical and empirical models broadly categorize the several state-of-the-art me
 
 Suppose the need arises to model PV modules in this work. In that case, it is critical to select a simple methodology so that the module's datasheet characteristics are sufficient to model the PV arrays accurately. In the case of utility-scale PV systems, detailed knowledge of the module's electrical and optical properties of empirical data may be limited, and building a model is only possible by using datasheet data. A complex model that requires more detailed information may not be feasible in such cases, and a simpler model that relies on fewer input parameters is more appropriate. The single-diode model seems appropriate for this use case, given the excellent trade-off between complexity and accuracy.
 
-\subsection{Five-parameter model}
+\subsection{The five-parameter model}
 
 The single-diode model representation of the photovoltaic module is presented in figure \ref{}. The I-V curve can be obtained by numerically solving the following equation:
 
@@ -76,11 +76,11 @@ where $I_{L}$ is the light-generated current, $I_{0}$ is the reverse saturation 
 
 % insert image here
 
-\section{Anomaly detection}
+\section{Literature on Fault detection for Photovoltaic Systems}
 
 The parent field of fault detection is anomaly detection (also known as outlier detection), a highly studied subject in the scope of statistics \cite{Prasad2009}, applied in many scientific areas. The tools dedicated to fault detection and state estimation mostly come from mathematical/statistical methodologies, machine learning, and deep learning applications \cite{AIPV}. Parting from the three general problem-solving principles mentioned before, machine learning and deep learning are the most popular and successful ones for recent applications that ought to solve a plethora of complex problems. Such potential has led to an interest in their implementation for fault detection algorithms.
 
-\subsection{Statistical and Signal Processing PV Fault Detection Algorithms}
+\subsection{Statistical and Signal Processing Algorithms}
 
 Statistical methodologies look into historical data to find the characteristics of how samples relate to the population (interpolation). These methodologies yield good results in case studies of PV farms that have been logging data for a considerable time, suffering in the cases that do not. Therefore, they are limited in that it is required to have curated data sets of historical significance for relevant features of the studied systems.
 
@@ -90,11 +90,11 @@ For the field of fault detection in PV systems, the literature on statistical an
 
 % should graph signal processing be here too?
 
-\subsection{Machine PV Fault Detection Algorithms}
+\subsection{Machine Learning Algorithms}
 
 Machine learning came to solve some of the complications referred to in the two past subjects, as neural networks (or other learning structures) are easily capable of modeling complex, non-trivial, and nonlinear relations between data. Still, they are as good as the training data, with many structures requiring many representative learning examples to achieve good results. Their output can also be very obfuscated, meaning that many methods do not allow a direct interpretation of the relationship between inputs and outputs. This "black-box" characteristic, specifically of neural networks, is considered a disadvantage. Besides, extrapolating data remains a challenge when classically using these structures. Still, they have immense applications for PV systems, from MPP (Max Power Point) estimation to power forecasting, soiling, and fault prediction.
 
-\subsection{Deep Learning PV Fault Detection Algorithms}
+\subsection{Deep Learning Algorithms}
 
 The field of deep learning branches off from machine learning, with the term "deep" referring to amplified machine learning structures that ought to understand data patterns. A simple example would be the design of an artificial neural network with multiple hidden layers, with the intuition that each of these "extra" layers achieves feature/pattern recognition in a cascade. They have been explored alongside machine learning techniques for PV systems, although the known disadvantage is a usually high computational cost and relatively tricky implementation.
 
