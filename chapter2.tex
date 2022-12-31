@@ -1,121 +1,103 @@
-\chapter{Revisão Bibliográfica} \label{chap:sota}
+\chapter{Fault detection in Utility Scale PV Plants}
 
-Neste capítulo é ilustrada a introdução de entradas no índice
-remissivo e são feitas diversas referências bibliográficas.
 
-Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec a
-eros. Phasellus non nulla non massa venenatis convallis. In
-porta. Mauris quis magna. 
+\section{PV Plant's architecture and components}
 
-\section{Introdução}
+Utility-scale photovoltaic (PV) power plants are large-scale PV systems that are connected to the electrical grid and have installed capacities ranging from kilowatts peak (kWp) to megawatts peak (MWp). These systems typically consist of many PV panels interconnected through power electronics to aggregate and inject active power into the grid. The number and type of components in a PV power plant depend on the plant's scale and topology, with different configurations possible for large-scale applications, including central inverters, string inverters, and multi-string inverters \cite{lspv}. Understanding the architecture and components of PV power plants is vital for designing, operating, and maintaining these systems, as it helps optimize their performance and reliability.
 
-Neste capítulo usa-se texto de um artigo apresentado na Conferência
-XATA2006~\citep{kn:MVL06-xata}.
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=12cm]{figures/topologies.png}
+    \caption{PV inverter topologies:  (a) Central, (b) String, (c) Multi-string,
+    (d) Module integrated \cite{lspv}.}
+    \label{topologies}
+\end{figure}
 
-Nos últimos tempos têm surgido diversas soluções, apresentadas por
-empresas do sector Auto\-ma\-ção de Sistemas para a disponibilização de
-sistemas \scadadms{} na \textit{Web}.
+In figure \ref{topologies}, the fourth configuration presented (d) will not be considered for utility-scale plants due to its expensive nature. After DC/AC conversion, another voltage conversion step usually establishes the grid connection: an AC/AC transformer.
 
-Fusce risus mi, tristique eu, consectetuer id, auctor sed, elit. Donec
-laoreet. Duis consectetuer interdum libero. Etiam eu orci. In eu
-arcu. Fusce luctus diam eget lectus. Duis interdum lacus sed
-ligula. Proin vestibulum felis eget lacus. Vivamus vestibulum, tellus
-ut congue viverra, mauris lacus tempor turpis, eu congue nisi magna at
-dolor. Ut molestie vehicula libero. Praesent in neque sed risus tempus
-ornare. Donec hendrerit, erat eu semper aliquam, pede nulla dapibus
-risus, ut pretium orci pede et neque.
-Etiam eget tortor a metus convallis viverra. Quisque eget nisi sed
-orci facilisis interdum. Aliquam non felis. 
+For completeness, the physical installation of PV modules can include solar tracking apparatuses, such as single and dual-axis trackers, which add to system complexity and change production behavior. Nonetheless, and turning the focus back toward the electrical components, the main ones are the following:
 
-\section{Secção Exemplo}\label{sec:dialecto}
+\begin{itemize}
+    \item Solar photovoltaic panels.
+    \item Electric cabling.
+    \item Inverter(s) (mostly with Max Power Point Trackers).
+    \item AC Transformer(s).
+    \item Protection components (circuit breakers, fuses, surge protectors,
+    etc.)
+\end{itemize}
 
-\emph{Scalable Vector Graphics}\index{SVG}\index{XML!SVG} é uma
-linguagem em formato XML que descreve gráficos de duas dimensões. 
-Este formato padronizado pela W3C (\emph{World Wide Web Consortium})
-é livre de patentes ou direitos de autor e está totalmente
-documentado, à semelhança de outros W3C
-standards~\citep{kn:svgdoc}.
+Most of these components have intrinsic variables, such as voltage and current values, that can help determine their operation states. Given that the utility grids (and the associated electricity market) integrate large-scale PV assets, some of the before-mentioned components require constant monitoring and control, achieved with adequate embedded systems and sensor infrastructure \cite{AIPV}. Thanks to the continuous advancements in communication technologies, namely in IoT (Internet Of Things), data acquisition is becoming faster, more reliable, and more precise. Not only is this fundamental for real-time asset assessment, but it also allows better training of prediction algorithms. However, on the industrial scale (in the order of MWp production), having sensors embedded in every PV module comes with a high economical cost, and inverters are the components that usually possess monitoring capabilities. Since monitoring utility-scale PV assets rely on the investment and technologies employed for this purpose,  engineers must consider data availability when developing data-driven algorithms, such as forecasting and fault detection.
 
-Sendo uma linguagem XML, o \svg{} herda uma série de vantagens: a
-possibilidade de transformar \svg{} usando técnicas como
-XSLT\index{XML!XSLT}, de embeber \svg{} em qualquer documento
-XML\index{XML} usando \textit{namespaces} ou até de  
-estilizar \svg{} recorrendo a CSS\index{CSS} (\emph{Cascade Style Sheets}). 
-De uma forma geral, pode dizer-se que \svg{}s interagem bem com as
-actuais tecnologias ligadas ao XML e à Web, tal como referido
-em~\citep{kn:svgibm,kn:svgw3c}.
+\section{Types of faults}
 
-Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec a
-eros. Phasellus non nulla non massa venenatis convallis. In
-porta. Mauris quis magna. Proin mauris eros, aliquet id, eleifend
-vitae, semper quis, erat. Aliquam id lectus non odio dignissim
-blandit. Vestibulum porttitor arcu ut ligula. Nunc quis
-erat. Curabitur ipsum tortor, ornare vitae, dapibus pretium, hendrerit
-sed, urna. Vestibulum ante ipsum primis in faucibus orci luctus et
-ultrices posuere cubilia Curae; Phasellus bibendum, nulla eget varius
-aliquam, tortor nulla sollicitudin quam, vel vestibulum nisl magna at
-sem. Aliquam velit sapien, ultrices viverra, tempus quis, ultrices at,
-dui. Aliquam sit amet justo. Quisque tristique, metus eu iaculis
-sagittis, urna leo bibendum diam, a ultricies sem diam a augue. Mauris
-consectetuer, libero vel euismod tincidunt, nisi metus viverra ante,
-quis pretium sapien odio nec risus. Nunc semper auctor
-nulla\footnote{Exemplo de nota de rodapé.}. 
+Several types of faults can occur in utility-scale photovoltaic (PV) power plants, which can negatively impact the performance and reliability of the system, possibly causing safety hazards \cite{Alam2015}. Some are challenging to detect and protect the electrical installation against, thus requiring sophisticated detection algorithms \cite{Pillai2018}. According to \cite{Pillai2018}, these faults can fit into three categories: electrical, mechanical, and environmental. Electrical faults include short circuits, open circuits, and inverter failure, affecting the PV panels' power output and the system's overall efficiency. Mechanical faults include broken panels, damaged cables, and defective inverters, which can lead to system downtime and reduced performance. Environmental faults include extreme weather events, such as hail or strong winds, which can damage the PV panels and other components \cite{faults}. Figure \ref{fig: faults} illustrates a more extensive summary of fault types.
 
-\subsection{Sub-secção Exemplo} \label{batik} 
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\linewidth, trim={1cm 0cm 5cm 1cm},
+    clip}{figures/chapter2/types\_of\_faults.pdf} \caption{Classification of
+    faults in PV Systems, from \ref{Pillai2018}.}
+    \label{fig:faults}
+\end{figure}
 
-Batik é um conjunto de bibliotecas baseadas em \textit{Java} que
-permitem o uso de imagens \svg{} (visualização, geração ou
-manipulação) em aplicações ou \textit{applets}~\citep{kn:batik}.  
-O projecto Batik\index{Batik} destina-se a fornecer ao programador
-alguns módulos que permitem desenvolver soluções especificas usando
-\svg~\citep{kn:svgdoc}. 
+Throughout the literature \cite{Braun2011}, some of the most studied faults in the context of fault detection are:
 
-Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Nunc eu
-nulla. Pellentesque vitae nibh ultrices quam iaculis
-convallis. Aliquam purus eros, varius eget, volutpat sodales,
-imperdiet nec, lacus. Curabitur in elit sed sem rutrum posuere. Class
-aptent taciti sociosqu ad litora torquent per conubia nostra, per
-inceptos himenaeos. Duis sem. Praesent ultricies odio vel
-sapien. Integer faucibus malesuada libero. Cras semper, dolor id
-ullamcorper varius, magna risus volutpat felis, id pellentesque nulla
-ante at erat. Integer sodales. 
+\begin{itemize}
+    \item Shading: partial coverage, temporary or not, of a PV array or module.
+    Might result in Hot Spot fault.
+    \item Soiling: dirt accumulation, blocking sunlight from reaching PV Cells.
+    Might also result in Hot Spot fault.
+    \item Short circuit: either line-line or line-ground.
+    \item Open circuit: connection breakage between modules.
+    \item DC arc fault: eletricity plasma arc formed on broken connections.
+\end{itemize}
 
-Quisque sit amet odio. In at risus sit amet turpis interdum
-posuere. Maecenas iaculis vehicula sem. Ut leo arcu, malesuada vel,
-imperdiet id, dignissim a, purus. Duis eleifend, lectus non venenatis
-dignissim, risus libero imperdiet mi, nec gravida massa libero sed
-mauris. Nullam lobortis libero non sapien. Integer convallis iaculis
-erat. Morbi dictum. Ut ultrices pellentesque velit. Cras ac
-ante. Etiam in neque tincidunt lacus gravida vehicula. Proin et nisi. 
+Due to the difficulty of classifying some of these faults, given their similarity on the consequent effect in the system, it will be seen in further sections that most fault detection algorithms only endeavor to classify between two to five types of faults.
 
-Vivamus non nunc nec risus tempor varius. Quisque bibendum mi at
-dolor. Aliquam consectetuer condimentum risus. Aliquam luctus pulvinar
-sem. Duis aliquam, urna et vulputate tristique, dui elit aliquet nibh,
-vel dignissim magna turpis id sapien. Duis commodo sem id
-quam. Phasellus dolor. Class aptent taciti sociosqu ad litora torquent
-per conubia nostra, per inceptos himenaeos. 
+\section{Modeling photovoltaic's physical/electrical behavior}
 
-\subsection{Sub-secção Exemplo}
+Photovoltaic cells are the fundamental components of photovoltaic panels. They are made from semiconductor materials, such as silicon,  and absorb photons that generate an electric current. Their electrical behavior is characterizable using the current-voltage (I-V) equation. This equation, which represents a fundamental relationship governing the operation of PV cells, can be used to predict their performance under various operating conditions such as solar irradiance and temperature.
 
-Loren ipsum dolor sit amet, consectetuer adipiscing elit. 
-Praesent sit amet sem. Maecenas eleifend facilisis leo. Vestibulum et
-mi. Aliquam posuere, ante non tristique consectetuer, dui elit
-scelerisque augue, eu vehicula nibh nisi ac est. Suspendisse elementum
-sodales felis. Nullam laoreet fermentum urna. 
+For state estimation, it is crucial to accurately model PV modules' performance from the DC side of power converters. This information is vital for designing and optimizing PV power systems, as it enables predicting PV module performance under different conditions, as mentioned before. Accurate PV module models are also essential for state estimation and fault detection, as they provide critical information about the health and performance of PV modules, allowing for early identification of potential issues. In addition, they can be used to optimize the control and operation of PV power systems, which can improve the overall efficiency and reliability of the system \cite{Braun2011}.
 
-Duis eget diam. In est justo, tristique in, lacinia vel, feugiat eget,
-quam. Pellentesque habitant morbi tristique senectus et netus et
-malesuada fames ac turpis egestas. Fusce feugiat, elit ac placerat
-fermentum, augue nisl ultricies eros, id fringilla enim sapien eu
-felis. Vestibulum ante ipsum primis in faucibus orci luctus et
-ultrices posuere cubilia Curae; Sed dolor mi, porttitor quis,
-condimentum sed, luctus in. 
+Physical and empirical models broadly categorize the several state-of-the-art methods for modeling photovoltaic modules \cite{Braun2011}. Physical models lie on the fundamental physical principles governing PV modules' operation. They typically require detailed knowledge of the PV module's electrical and optical properties, such as its current-voltage (I-V) characteristics, spectral response, and temperature dependence. These models can accurately predict the PV module's performance under a wide range of operating conditions, but they may be complex and computationally intensive to implement \cite{Kumar2019}. On the other hand, empirical models are based on experimental data and are typically more straightforward to implement. However, they may not be as accurate as physical models, especially under conditions that differ significantly from those used to generate the experimental data (usually STC) \cite{Braun2011}. Some examples of state-of-the-art physical models for PV modules include the single-diode model (also known as the five-parameter model), and the two-diode model \cite{Godina2017}. In contrast, one of the most used state-of-the-art empirical models is the Sandia model \cite{Braun2011}. The choice of modeling method will depend on the specific application and the required level of accuracy and complexity; in some cases, there can be a combination of physical and empirical models.
 
-\section{Resumo ou Conclusões}
+Suppose the need arises to model PV modules in this work. In that case, it is critical to select a simple methodology so that the module's datasheet characteristics are sufficient to model the PV arrays accurately. In the case of utility-scale PV systems, detailed knowledge of the module's electrical and optical properties of empirical data may be limited, and building a model is only possible by using datasheet data. A complex model that requires more detailed information may not be feasible in such cases, and a simpler model that relies on fewer input parameters is more appropriate. The single-diode model seems appropriate for this use case, given the excellent trade-off between complexity and accuracy.
 
-Aliquam erat volutpat. Nunc pede ipsum, porttitor eu, bibendum non,
-bibendum nec, nisl. Maecenas eget mauris. Nullam pulvinar. Curabitur
-rutrum commodo est. Nam sapien pede, interdum eu, accumsan ultrices,
-venenatis sit amet, tellus. Praesent ac ante bibendum enim varius
-suscipit. Donec enim. Proin nisi. Quisque libero turpis, varius ut,
-elementum vel, pulvinar sed, nunc. 
+\subsection{Five-parameter model}
+
+The single-diode model representation of the photovoltaic module is presented in figure \ref{}. The I-V curve can be obtained by numerically solving the following equation:
+
+\begin{equation}
+I = I_{L} - I_{0} \times (e^{\frac{V + I \times R_{s}}{n \times V_T}} - 1)
+\end{equation}
+
+where $I_{L}$ is the light-generated current, $I_{0}$ is the reverse saturation current, $R_{s}$ is the series resistance, $n$ is the ideality factor, and $V_{T}$ is the thermal voltage. These parameters are determined by fitting the model to experimental data or using data from the PV module's datasheet. The single-diode model can predict the PV module's performance under a wide range of operating conditions while maintaining reasonable accuracy. However, remembering that the single-diode model is a simplified representation of the PV module, it will have poor accuracy under certain conditions compared to the more complete two-diode model \cite{Godina2017}.
+
+% insert image here
+
+\section{Anomaly detection}
+
+The parent field of fault detection is anomaly detection (also known as outlier detection), a highly studied subject in the scope of statistics \cite{Prasad2009}, applied in many scientific areas. The tools dedicated to fault detection and state estimation mostly come from mathematical/statistical methodologies, machine learning, and deep learning applications \cite{AIPV}. Parting from the three general problem-solving principles mentioned before, machine learning and deep learning are the most popular and successful ones for recent applications that ought to solve a plethora of complex problems. Such potential has led to an interest in their implementation for fault detection algorithms.
+
+\subsection{Statistical and Signal Processing PV Fault Detection Algorithms}
+
+Statistical methodologies look into historical data to find the characteristics of how samples relate to the population (interpolation). These methodologies yield good results in case studies of PV farms that have been logging data for a considerable time, suffering in the cases that do not. Therefore, they are limited in that it is required to have curated data sets of historical significance for relevant features of the studied systems.
+
+% write about signal processing
+
+For the field of fault detection in PV systems, the literature on statistical and signal processing algorithms is mostly quite dated (\cite{Buddha2012}, \cite{Zhao2014}, \cite{Vergura2008}), given that more recent machine learning methods became increasingly interesting for this matter. Nonetheless, anomaly (or outlier) detection statistical algorithms can be used for fault detection in PV systems by identifying unusual patterns or deviations from normal behavior in the data collected from the PV system. For this, we might employ distance-based methods, such as Euclidean, Mahalanobis, and MCD-based distances \cite{Braun2011}. Although simple, distance-based methods only might work for detecting outliers in the context of PV systems if they are scale-invariant (due to the different magnitude in the system's state variables) and resilient to outlier contamination (only with MCD-based distance). In  \cite{Vergura2008}, the authors applied Analysis of Variance (ANOVA) and Kruskal-Wallis test for inverter failure detection, with the downside of only being able to identify outliers in a sub-array resolution, i.e., not for specific string or module failures.
+
+% should graph signal processing be here too?
+
+\subsection{Machine PV Fault Detection Algorithms}
+
+Machine learning came to solve some of the complications referred to in the two past subjects, as neural networks (or other learning structures) are easily capable of modeling complex, non-trivial, and nonlinear relations between data. Still, they are as good as the training data, with many structures requiring many representative learning examples to achieve good results. Their output can also be very obfuscated, meaning that many methods do not allow a direct interpretation of the relationship between inputs and outputs. This "black-box" characteristic, specifically of neural networks, is considered a disadvantage. Besides, extrapolating data remains a challenge when classically using these structures. Still, they have immense applications for PV systems, from MPP (Max Power Point) estimation to power forecasting, soiling, and fault prediction.
+
+\subsection{Deep Learning PV Fault Detection Algorithms}
+
+The field of deep learning branches off from machine learning, with the term "deep" referring to amplified machine learning structures that ought to understand data patterns. A simple example would be the design of an artificial neural network with multiple hidden layers, with the intuition that each of these "extra" layers achieves feature/pattern recognition in a cascade. They have been explored alongside machine learning techniques for PV systems, although the known disadvantage is a usually high computational cost and relatively tricky implementation.
+
+
+While classical fault detection lies in the synchronous and direct evaluation of state estimation variables, fault prediction requires the input of time-series features. Although relatively simple, some classical time-series forecasting and analysis tools can be of great support to help design a fault prediction algorithm, such as Box-Jenkins methods and the Partial Auto-correlation function. Still, the majority of modern prediction tools comprise neural networks and variations. With this in mind, recent developments in the intelligent composition of learner structures spark some interest in the application to this field, such as the new deep learning technique named Cell Complex Neural Networks \cite{Hajij2020}. Further investigation of such modern practices will unroll throughout the development of this work.
+

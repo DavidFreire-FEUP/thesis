@@ -1,89 +1,111 @@
-\chapter{Introdução} \label{chap:intro}
+\chapter{Introduction}
 
-Este documento ilustra o formato a usar em dissertações na \Feup.
-São dados exemplos de margens, cabeçalhos, títulos, paginação, estilos
-de índices, etc. 
-São ainda dados exemplos de formatação de citações, figuras e tabelas,
-equações, referências cruzadas, lista de referências e índices.
-Este documento não pretende exemplificar conteúdos a usar.
+% Contextualization (goal: 1/2 page)
 
-Uma recolha sobre as normas existentes pode ser encontrada em~\citet{kn:Mat93}.
+The XIX century marked a significant shift in the world's perception of energy
+resources as the desire to invest in renewable energy sources to power modern
+societies grew. This transition was driven by the need to reduce dependency on
+fossil fuels, mitigate the effects of global warming, and slow climate change.
+Solar photovoltaic energy is a desirable renewable energy source due to its
+abundance, accessibility, and environmental benefits. Renewable energy sources
+offer a range of benefits, including reduced greenhouse gas emissions, improved
+air quality, and increased energy security. While solar photovoltaic energy has
+proven to be both cost-efficient and environmentally friendly, it also comes
+with unprecedented challenges, such as its intermittent nature, low electrical
+inertia, complex forecasting, and geographic-dependent operating conditions.
+Despite these challenges, recent reports \cite{cap} show that the economic
+benefits of investing in renewable energy outweigh the complications, as there
+is an increasing global investment trend in these sources.
 
-Neste primeiro capítulo ilustra-se a utilização de citações e de
-referências bibliográficas.
+% Motivation (goal: 2 paragraphs)
+The general construction of PV farms, particularly on the utility-scale, has led
+to a need for effective maintenance and monitoring to ensure maximum efficiency
+and operational reliability. To achieve this, various algorithms and routines
+are used to monitor the state of PV farms and identify any potential issues that
+may arise. Fault detection is a crucial aspect of this process, as it allows PV
+farm operators to identify and address any problems that may occur quickly.
+Given the importance of maintaining high levels of operation, knowing if action
+is needed to restore or fix components from an anomalous scenario is desirable.
+By detecting faults and identifying the necessary steps, PV farm operators can
+prevent or minimize downtime and ensure optimal performance.
 
-\section{Context} \label{sec:context}
+Integrating intermittent energy resources into modern electric grids has led to
+stricter requirements for connecting such power systems to ensure safe grid
+operating conditions. As a result, companies that own or plan to build
+photovoltaic farms must comply with these requirements and have adequate power
+electronics and monitoring/control capabilities. Failure to meet these
+requirements can result in sanctions or fines for the responsible party, as well
+as potential impacts on system availability, asset value, and disturbance
+propagation to the grid. To minimize these risks and maximize the value of their
+assets, companies may opt to implement fault detection and state estimation
+tools. These tools allow for the early detection and resolution of potential
+issues and can prevent or minimize downtime. The need to create or improve
+existing fault detection and state estimation tools, and the search for the most
+effective methodologies for addressing these issues, drive research in this
+field.
 
-The XIX century represents a substantial change in how the world perceives
-energy resources, characterized by the urge to invest in renewable energy to 
-power modern societies. Although these relatively modern alternatives are
-proving to be both cost-efficient and environmentally friendly, they also come
-with many other unprecedented issues.
-Some of these issues are reflected by their intermittent nature, complex
-forecasting, geographic-dependant operating conditions, complex power
-electronics interface, etc.
-
-As independent power producers become more frequent, it's in the grid operator's
-interest that these issues are as attenuated as possible, which has led to the
-continuous development of specialized algorithms and control structures.
-Therefore, many complex processes need to be implemented to reduce uncertainties
-in the aforementioned problems, which mostly come in the form of
-mathematical/statistical methodologies, machine learning and deep learning
-applications.
-
-Parting from the three general problem-solving principles mentioned, machine
-learning and deep learning are proving to be the most popular and successful
-ones for recent applications that ought to solve complex problems. Such
-potential leads to interest in their application to the renewable energy sector.
-
-\dots
-
-\section{Motivation} \label{sec:motivation}
-
-Given the widespread increase in the construction of PV (Photovoltaic) farms, there
-comes a need to maintain these facilities operational and yielding at maximum
-efficiency. For that to be achieved, a series of algorithms must be executed
-routinely to maintain the state estimation of a farm, as it is
-desirable to know if any action must be taken to restore or fix components from
-an anomalous scenario. Detecting and predicting component faults allows the
-responsible agents to perform reparative or preventive maintenance on the
-equipment as soon as possible, which in turn minimizes any potential losses by
-increasing system availability.
-
-With the continuous effort of integrating intermittent energy resources into
-modern electric grids, the requirements for connecting such power systems have
-been increasingly stricter to maintain safe grid operating conditions.
-Consequently, companies that either possess or plan to build photovoltaic farms
-must comply with these requirements, which not only come with the need for adequate
-power electronics but also monitoring/control capability.
-\textcolor{red}{(INSERT SOURCES!)}
-Since system faults can incur unpredicted electrical production behavior,
-sanctions or fines might be applied to the responsible party. Being aware of
-that, the mentioned preventive maintenance can be critical to minimize
-potential disturbance propagation to the grid, and avoid the
-corresponding fines.
-
-\section{Goals} \label{sec:goals}
-
-The main scope of this paper is to apply deep learning techniques to diagnose
-the operation of PV farms. It is desired to achieve the following:
+% Investigation questions
+Having laid the basis for why there must be system behavior assessment in
+utility-scale PV plants, it is necessary to understand what business concepts
+are crucial to this field. In the course of this work, the presented topics will
+go over the following questions:
 
 \begin{itemize}
-  \item Identify and study the existing fault prediction/detection tools;
-  \item Adapt and/or develop a new tool based on distributed architecture AI;
-  \item Apply and test the new tool on a real case study;
-  \item Validate methodologies through benchmarking and reference tools.
+    \item What components mostly fail in photovoltaic power systems?
+    \item What is the average frequency of faults?
+    \item What fault detection/state estimation tools exist for photovoltaic
+    power systems?
+    \item What are the most successful ones?
+    \item What's their structure? Are they mostly centralized or decentralized?
+    \item What are their computational costs/efficiency?
+    \item What is the expected magnitude of precision and confidence?
+    \item Which key performance indicators can evaluate the success of these
+    tools? 
+    \item What are their implementation difficulties?
 \end{itemize}
 
+% Goals
+With these questions uncovered, the main objective is to adapt or design a novel
+algorithm/approach to fault detection based on modern artificial intelligence
+solutions. However, this can be split up into finer goals:
 
-\section{Estrutura da Dissertação} \label{sec:struct}
+\begin{itemize}
+    \item  Identify and study existing fault detection tools for photovoltaic
+    power systems.
+    \item  Adapt or develop a new tool.
+    \item Apply and test the new tool in real case study PV assets.
+    \item Validate the developed methodologies by comparison to reference tools.
+\end{itemize}
 
-Para além da introdução, esta dissertação contém mais x capítulos.
-No capítulo~\ref{chap:sota}, é descrito o estado da arte e são
-apresentados trabalhos relacionados. 
-No capítulo~\ref{chap:chap3}, ipsum dolor sit amet, consectetuer
-adipiscing elit.
-No capítulo~\ref{chap:chap4} praesent sit amet sem. 
-No capítulo~\ref{chap:concl}  posuere, ante non tristique
-consectetuer, dui elit scelerisque augue, eu vehicula nibh nisi ac
-est. 
+% Methodology
+Before reviewing state-of-the-art fault detection tools, types of failures in
+photovoltaic systems need to be understood: find which components usually fail,
+which ones fail more often, and how often. For this, it is necessary to
+understand such components' physical and electrical properties and the modeling
+techniques used to characterize them. There will be an assessment of
+utility-scale power plants architecture through literature, alongside the
+detection objective of state-of-the-art fault detection tools applied in this
+field. Then, there shall be an extensive analysis and review of what tools have
+been designed and used in this field. In this step, critical evaluation of the
+literature is a must for understanding the tool's scope, ease of implementation,
+and understanding that the data sets available for this work are compatible.
+Having selected the most prominent ones, they're to be qualitatively and
+quantitatively compared to each other in their application context so that the
+results allow objective evaluations. This process requires implementing these
+tools, following the guidelines in the respective article/book/report, verifying
+their metrics, and checking if the achieved results resemble the same as the
+literature suggests. It will require gathering data sets, which can either be
+artificially generated through simulation or provided by an enterprise that
+services photovoltaic plant owners.
+
+
+% Impact and expected results
+There's a desire that, in the end, the developed work helps achieve an improved
+method for fault detection and state estimation in photovoltaic power systems,
+resulting in a production-ready software application agile enough to deploy for
+any PV assets. Depending on the new algorithm's characteristics, it could result
+in an approach capable of generalization and application to other engineering
+systems, benefiting more than just PV systems. No matter the chosen methodology,
+fault detection will, in most cases, result in an economic benefit, catastrophe
+prevention, and safety increase. Those are a few positive contributions that are
+possible for this work's outcome.
