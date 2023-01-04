@@ -4,6 +4,23 @@
             "language": "latex",
             "scheme": "file",
             "pattern": "chapter1.tex"
+        },
+        {
+            "language": "latex",
+            "scheme": "file",
+            "pattern": "chapter2.tex"
+        },
+        {
+            "language": "latex",
+            "scheme": "file",
+            "pattern": "abstract.tex"
         }
-    ]
+    ],
+    "emeraldwalk.runonsave": {
+        "commands": [
+            {
+                "cmd": "make"
+            }
+        ]
+    }
 }
