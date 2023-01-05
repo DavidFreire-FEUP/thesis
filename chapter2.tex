@@ -30,13 +30,13 @@ Most of these components have intrinsic variables, such as voltage and current v
 
 \section{Types of faults}
 
-Several types of faults can occur in utility-scale photovoltaic (PV) power plants, which can negatively impact the performance and reliability of the system, possibly causing safety hazards \cite{Alam2015}. Some are challenging to detect and protect the electrical installation against, thus requiring sophisticated detection algorithms \cite{Pillai2018}. According to \cite{Pillai2018}, these faults can fit into three categories: electrical, mechanical, and environmental. Electrical faults include short circuits, open circuits, and inverter failure, affecting the PV panels' power output and the system's overall efficiency. Mechanical faults include broken panels, damaged cables, and defective inverters, which can lead to system downtime and reduced performance. Environmental faults include extreme weather events, such as hail or strong winds, which can damage the PV panels and other components \cite{faults}. Figure \ref{fig: faults} illustrates a more extensive summary of fault types.
+Several types of faults can occur in utility-scale photovoltaic (PV) power plants, which can negatively impact the performance and reliability of the system, possibly causing safety hazards \cite{Alam2015}. Some are challenging to detect and protect the electrical installation against, thus requiring sophisticated detection algorithms \cite{Pillai2018}. According to \cite{Pillai2018}, these faults can fit into three categories: electrical, mechanical, and environmental. Electrical faults include short circuits, open circuits, and inverter failure, affecting the PV panels' power output and the system's overall efficiency. Mechanical faults include broken panels, damaged cables, and defective inverters, which can lead to system downtime and reduced performance. Environmental faults include extreme weather events, such as hail or strong winds, which can damage the PV panels and other components \cite{faults}. Figure \ref{fig:faults} illustrates a more extensive summary of fault types.
 
 \begin{figure}[h]
     \centering
     \includegraphics[width=16cm, trim={2cm 2.1cm 2cm 12cm},
     clip]{figures/chapter2/types\_of\_faults.pdf} \caption{"Classification of
-    faults in PV Systems", from \ref{Pillai2018}.}
+    faults in PV Systems", from \cite{Pillai2018}.}
     \label{fig:faults}
 \end{figure}
 
@@ -59,7 +59,7 @@ hot spot faults and bypass diode faults/disconnections were among the most commo
     \centering
     \includegraphics[width=10cm, trim={11cm 20.6cm 2.4cm 2cm},
     clip]{figures/chapter2/chartfailsurvey.pdf} \caption{"Circle chart related to the module defects in the 5 plants
-    (over the total number of failures)", from \ref{Grimaccia2017}.}
+    (over the total number of failures)", from \cite{Grimaccia2017}.}
     \label{fig:faultchart}
 \end{figure}
 
@@ -71,7 +71,22 @@ Due to the difficulty of classifying some of these faults, given their similarit
 
 \section{Modeling photovoltaic's physical/electrical behavior}
 
-Photovoltaic cells are the fundamental components of photovoltaic panels. They are made from semiconductor materials, such as silicon,  and absorb photons that generate an electric current. Their electrical behavior is characterizable using the current-voltage (I-V) equation. This equation, which represents a fundamental relationship governing the operation of PV cells, can be used to predict their performance under various operating conditions, such as solar irradiance and temperature.
+Photovoltaic cells are the fundamental components of photovoltaic panels. They are made from semiconductor materials, such as silicon,  and absorb photons that generate an electric current. Their electrical behavior is characterizable using the current-voltage (I-V) equation \ref{eq:iv}. This equation, which represents a fundamental relationship governing the operation of PV cells, can be used to predict their performance under various operating conditions, such as solar irradiance and temperature.
+
+\begin{equation} \label{eq:iv}
+    I = I_{ph} - I_d \times (e^{\frac{q \times (V_{pv} + I_{pv} \times R_{s})}{n \times k \times T}} - 1) - \frac{V_{pv} + I_{pv} \times R_s}{R_p}
+\end{equation}
+
+$I_{ph}$ (A) is the light-generated current;
+$I_{0}$ (A) is the reverse saturation current;
+$V_{pv}$ is the module's terminal voltage;
+$I_{pv}$ is the module's output current;
+$R_{s}$ ($\Omega$) is the series resistance;
+$R_{p}$ ($\Omega$) is the shunt resistance;
+$n$ (adimensional) is the diode ideality factor;
+$k$ (J/K) is the Boltzman constant;
+$T$ (K) is the cell temperature;
+$q$ (C) is the electron charge;
 
 For state estimation, it is crucial to accurately model PV modules' performance from the DC side of power converters. This information is vital for designing and optimizing PV power systems, as it enables predicting PV module performance under different conditions, as mentioned before. Accurate PV module models are also essential for state estimation and fault detection, as they provide critical information about the health and performance of PV modules, allowing for early identification of potential issues. In addition, they can be used to optimize the control and operation of PV power systems, which can improve the overall efficiency and reliability of the system \cite{Braun2011}.
 
@@ -81,15 +96,13 @@ Suppose the need arises to model PV modules in this work. In that case, it is cr
 
 \subsection{The five-parameter model}
 
-The single-diode model representation of the photovoltaic module is presented in figure \ref{}. The I-V curve can be obtained by numerically solving the following equation:
+Figure \ref{fig:onediodedraw} presents the single-diode model representation of the photovoltaic module. According to the five-parameter model, the unknown parameters are determined by fitting the model to experimental data or using data from the PV module's datasheet. The single-diode model can predict the PV module's performance under a wide range of operating conditions while maintaining reasonable accuracy. However, remembering that the single-diode model is a simplified representation of the PV module, it will have poor accuracy under certain situations compared to the more representative two-diode model \cite{Godina2017}.
 
-\begin{equation}
-I = I_{L} - I_{0} \times (e^{\frac{V + I \times R_{s}}{n \times V_T}} - 1)
-\end{equation}
-
-where $I_{L}$ is the light-generated current, $I_{0}$ is the reverse saturation current, $R_{s}$ is the series resistance, $n$ is the ideality factor, and $V_{T}$ is the thermal voltage. These parameters are determined by fitting the model to experimental data or using data from the PV module's datasheet. The single-diode model can predict the PV module's performance under a wide range of operating conditions while maintaining reasonable accuracy. However, remembering that the single-diode model is a simplified representation of the PV module, it will have poor accuracy under certain conditions compared to the more representative two-diode model \cite{Godina2017}.
-
-% insert image here
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=10cm]{figures/chapter2/onediode.drawio.pdf} \caption{Single-diode model for photovoltaic modules.}
+    \label{fig:onediodedraw}
+\end{figure}
 
 \section{Literature on Fault detection for Photovoltaic Systems}
 
@@ -99,20 +112,32 @@ The parent field of fault detection is anomaly detection (also known as outlier 
 
 Statistical methodologies look into historical data to find the characteristics of how samples relate to the population (interpolation). These methodologies yield good results in case studies of PV farms that have been logging data for a considerable time, suffering in the cases that do not. Therefore, they are limited in that it is required to have curated data sets of historical significance for relevant features of the studied systems.
 
-% write about signal processing
 
-For the field of fault detection in PV systems, the literature on statistical and signal processing algorithms is mostly quite dated (\cite{Buddha2012}, \cite{Zhao2014}, \cite{Vergura2008}), given that more recent machine learning methods became increasingly interesting for this matter. Nonetheless, anomaly (or outlier) detection statistical algorithms can be used for fault detection in PV systems by identifying unusual patterns or deviations from normal behavior in the data collected from the PV system. For this, we might employ distance-based methods, such as Euclidean, Mahalanobis, and MCD-based distances \cite{Braun2011}. Although simple, distance-based techniques only might work for detecting outliers in the context of PV systems if they are scale-invariant (due to the different magnitude in the system's state variables) and resilient to outlier contamination (only with MCD-based distance). In  \cite{Vergura2008}, the authors applied Analysis of Variance (ANOVA) and Kruskal-Wallis test for inverter failure detection, with the downside of only being able to identify outliers in a sub-array resolution, i.e., not for specific string or module failures.
+Some algorithms consider incoming data from PV systems as signals, allowing the adaptation of signal processing theory to develop ad hoc algorithms. In \cite{Fan2020}, the authors successfully formulated a graph signal processing algorithm for fault classification that yields increasingly better results when there is a considerable amount of labeled data. The results outperformed other standard machine learning methods for the same training data, given 30\% or more of labeled data. On another note, the data utilized came from the PVWatts \cite{Dobos2013} dataset, and the PV system is on a small scale possessing a monitoring density and capability that should be considered irrealistic on a utility-scale. This same dataset appears in other mentioned references.
+
+Notably, some graph-based methods for this purpose don't rely on signal processing theory. Section \ref{subsec:machinelearning} reviews these.
+
+Coming up with a relatively simple algorithm, the authors in \cite{Iles2021} propose a power-based fault detection method that only requires delayed samples of the PV array's power output and a threshold. It was based on the fact that the power output of PV systems can't vary beyond a given point, considering a very short period (milliseconds). Although the simplicity and ease of implementation, it's clear that the success of this method requires feeding the algorithm with high-frequency data, which would only be feasible on-site (and with specialized equipment).
+
+For the field of fault detection in PV systems, the literature on statistical and signal processing algorithms is mostly quite dated (\cite{Buddha2012}, \cite{Zhao2014}, \cite{Vergura2008}), given that more recent machine learning methods became increasingly interesting for this matter. Nonetheless, anomaly (or outlier) detection statistical algorithms can be used for fault detection in PV systems by identifying unusual patterns or deviations from normal behavior in the data collected from the PV system. For this, engineers might employ distance-based methods, such as Euclidean, Mahalanobis, and MCD-based distances \cite{Braun2011}. Although simple, distance-based techniques only might work for detecting outliers in the context of PV systems if they are scale-invariant (due to the different magnitude in the system's state variables) and resilient to outlier contamination (only with MCD-based distance).
+
+In  \cite{Vergura2008}, the authors applied Analysis of Variance (ANOVA) and Kruskal-Wallis test for inverter failure detection, with the downside of only being able to identify outliers in a sub-array resolution, i.e., not for specific string or module failures.
+
+
 
 % should graph signal processing be here too?
 
-\subsection{Machine Learning Algorithms}
+\subsection{Machine Learning Algorithms} \label{subsec:machinelearning}
 
 Machine learning came to solve some of the complications referred to in the two past subjects, as neural networks (or other learning structures) are easily capable of modeling complex, non-trivial, and nonlinear relations between data. Still, they are as good as the training data, with many structures requiring many representative learning examples to achieve good results. Their output can also be very obfuscated, meaning that many methods do not allow a direct interpretation of the relationship between inputs and outputs. This "black-box" characteristic, specifically of neural networks, is considered a disadvantage. Besides, extrapolating data remains a challenge when classically using these structures. Still, they have immense applications for PV systems, from MPP (Max Power Point) estimation to power forecasting, soiling, and fault prediction.
+
+FALTA MENCIONAR O ESTADO DA ARTE DESTA SECÇÃO.
 
 \subsection{Deep Learning Algorithms}
 
 The field of deep learning branches off from machine learning, with the term "deep" referring to amplified machine learning structures that ought to understand data patterns through numerous intertwined neuron connections. A simple example of a deep learning model would be the design of an artificial neural network with multiple hidden layers (multidimensional), with the intuition that each of these "extra" layers achieves feature/pattern recognition in a cascade. They have been explored alongside machine learning techniques for PV fault detection, although the known disadvantage is a usually high computational cost and relatively tricky implementation.
 
+FALTA MENCIONAR O ESTADO DA ARTE DESTA SECÇÃO.
 
 While classical fault detection lies in the synchronous and direct evaluation of state estimation variables, fault prediction requires the input of time-series features. Although relatively simple, some classical time-series forecasting and analysis tools can be of great support to help design a fault prediction algorithm, such as Box-Jenkins methods and the Partial Auto-correlation function. Still, the majority of modern prediction tools comprise neural networks and variations. With this in mind, recent developments in the intelligent composition of learner structures spark some interest in the application to this field, such as the new deep learning technique named Cell Complex Neural Networks \cite{Hajij2020}. Further investigation of such modern practices will unroll throughout the development of this work.
 
