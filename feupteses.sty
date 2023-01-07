@@ -175,17 +175,17 @@ with the `report' document style}{}}{}
 \RequirePackage[firstpage]{draftwatermark}
 \fi
 
-\if@numericrefs
-  \newcommand{\citet}{\cite}
-  \newcommand{\citep}{\cite}
-\else
-  \if@alpharefs 
-     \newcommand{\citet}{\cite}
-     \newcommand{\citep}{\cite}
-  \else
-     \RequirePackage[round]{natbib}
-  \fi
-\fi
+% \if@numericrefs
+%   \newcommand{\citet}{\cite}
+%   \newcommand{\citep}{\cite}
+% \else
+%   \if@alpharefs 
+%      \newcommand{\citet}{\cite}
+%      \newcommand{\citep}{\cite}
+%   \else
+%      \RequirePackage[round]{natbib}
+%   \fi
+% \fi
 
 %% Watermark
 \if@watermark
