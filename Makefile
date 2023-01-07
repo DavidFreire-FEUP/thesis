@@ -38,6 +38,7 @@ PAPERSIZE=a4
 #we prefer pdflatex for bibtex
 LATEXBIB=$(PDFLATEX)
 
+.PHONY: main
 main:	$(TARGET).pdf
 
 index:

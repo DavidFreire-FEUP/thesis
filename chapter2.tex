@@ -3,40 +3,50 @@
 
 \section{Utility-Scale Photovoltaic System's Architecture}
 
-Utility-scale photovoltaic (PV) power plants are large-scale PV systems that are connected to the electrical grid and have installed capacities ranging from kilowatts peak (kWp) to megawatts peak (MWp). These systems typically consist of many PV panels interconnected through power electronics to aggregate and inject active power into the grid. The number and type of components in a PV power plant depend on the plant's scale and topology, with different configurations possible for large-scale applications, including central inverters, string inverters, and multi-string inverters \cite{lspv}. Understanding the architecture and components of PV power plants is vital for designing, operating, and maintaining these systems, as it helps optimize their performance and reliability.
+Utility-scale photovoltaic (PV) power plants are large-scale systems connected to the electrical grid, having installed capacities ranging from kilowatts peak (kWp) to megawatts peak (MWp). These systems typically consist of many PV panels interconnected through power electronics to aggregate and inject power into the grid. The number and type of components in a PV power plant depend on the plant's scale and topology, with different configurations possible for large-scale applications, including central inverters, string inverters, and multi-string inverters \cite{lspv}. The physical installation of PV modules can include solar tracking apparatuses, such as single and dual-axis trackers \cite{Mourad2022}, which add to system complexity and change production behavior. Understanding the architecture and components of PV power plants is vital for designing, operating, and maintaining these systems, as it helps optimize their performance and reliability.
 
-\begin{figure}[h]
+\begin{figure}[h!]
     \centering
-    \includegraphics[width=12cm]{figures/topologies.png}
-    \caption{PV inverter topologies:  (a) Central, (b) String, (c) Multi-string,
-    (d) Module integrated \cite{lspv}.}
-    \label{topologies}
+    \includegraphics[width=15cm]{figures/chapter2/pvplant.drawio.pdf}
+    \caption{Representation of utility-scale PV plant components and some possible faults.}
+    \label{fig:topologies}
 \end{figure}
 
-In figure \ref{topologies}, the fourth configuration presented (d) will not be considered for utility-scale plants due to its expensive nature. After DC/AC conversion, another voltage conversion step usually establishes the grid connection: an AC/AC transformer.
-
-For completeness, the physical installation of PV modules can include solar tracking apparatuses, such as single and dual-axis trackers, which add to system complexity and change production behavior. Nonetheless, and turning the focus back toward the electrical components, the main ones are the following:
+Figure \ref{fig:topologies} presents a typical utility-scale PV plant architecture using the central inverter (or possibly multi-string inverter) configuration. It is noticeable that many system components may fail in one or more ways, which is why monitoring and fault detection algorithms are essential to maintain state estimation. The main subsystems considered in this work are the following:
 
 \begin{itemize}
-    \item Solar photovoltaic panels.
-    \item Electric cabling.
+    \item Solar photovoltaic panels (with or without bypass diodes).
+    \item Tracking mount.
+    \item Electrical cabling.
     \item Inverter(s) (mostly with Max Power Point Trackers).
     \item AC Transformer(s).
     \item Protection components (circuit breakers, fuses, surge protectors,
     etc.)
 \end{itemize}
 
-Most of these components have intrinsic variables, such as voltage and current values, that can help determine their operation states. Given that the utility grids (and the associated electricity market) integrate large-scale PV assets, some of the before-mentioned components require constant monitoring and control, achieved with adequate embedded systems and sensor infrastructure \cite{AIPV}. Thanks to the continuous advancements in communication technologies, namely in IoT (Internet Of Things), data acquisition is becoming faster, more reliable, and more precise. Not only is this fundamental for real-time asset assessment, but it also allows better training of prediction algorithms. However, on the industrial scale (in the order of MWp production), having sensors embedded in every PV module comes with a high economical cost, and inverters are the components that usually possess monitoring capabilities. Since monitoring utility-scale PV assets rely on the investment and technologies employed for this purpose,  engineers must consider data availability when developing data-driven algorithms, such as forecasting and fault detection.
+Most of these components have intrinsic variables, such as voltage and current values, that can help determine their operation states. Given that the utility grids (and the associated electricity market) integrate large-scale PV assets, some of the before-mentioned components require constant monitoring and control, achieved with adequate embedded systems and sensor infrastructure \cite{AIPV}. Since monitoring utility-scale PV assets relies on the investment and technologies employed, engineers must consider data availability when developing data-driven algorithms. Thanks to the continuous advancements in communication technologies, namely in IoT (Internet Of Things), data acquisition is becoming faster, more reliable, and more precise. Not only is this fundamental for real-time asset assessment, but it also allows better training of fault detection algorithms. However, on the industrial scale (in the order of MWp production), having sensors embedded in every PV module comes with a high economic cost. Inverters are the components that usually possess monitoring capabilities, though the grid-tie connection should also be equipped with sensors. These can be considered the primary sources of information from utility-scale PV plants, with the most accurate, fast, and reliable data acquisition.
 
-\section{Types of faults}
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\linewidth]{figures/chapter2/pvdata.drawio.pdf}
+    \caption{Typical data flow of utility-scale PV power plants.}
+    \label{fig:pvdataflow}
+\end{figure}
 
-Several types of faults can occur in utility-scale photovoltaic (PV) power plants, which can negatively impact the performance and reliability of the system, possibly causing safety hazards \cite{Alam2015}. Some are challenging to detect and protect the electrical installation against, thus requiring sophisticated detection algorithms \cite{Pillai2018}. According to \cite{Pillai2018}, these faults can fit into three categories: electrical, mechanical, and environmental. Electrical faults include short circuits, open circuits, and inverter failure, affecting the PV panels' power output and the system's overall efficiency. Mechanical faults include broken panels, damaged cables, and defective inverters, which can lead to system downtime and reduced performance. Environmental faults include extreme weather events, such as hail or strong winds, which can damage the PV panels and other components \cite{faults}. Figure \ref{fig:faults} illustrates a more extensive summary of fault types.
+Figure \ref{fig:pvdataflow} represents a simplified data flow representation of a grid-tied PV system's most commonly available state variables, with most of them suggested by the IEC 61724 norm \cite{iec61724}. An external meteorological data source is defined since the PV system manager usually needs climate information for (at least) forecasting purposes.
+
+
+\section{Faults in Photovoltaic Systems}
+
+Several types of faults can occur in utility-scale photovoltaic (PV) power plants (figure \ref{fig:topologies}), which can negatively impact the performance and reliability of the system, possibly causing safety hazards \cite{Alam2015}. Some are challenging to detect and protect the electrical installation against, thus requiring sophisticated detection algorithms \cite{Pillai2018}. According to \cite{Pillai2018}, these faults can fit into three categories: electrical, mechanical, and environmental. Electrical faults include short circuits, open circuits, and inverter failure, affecting the PV panels' power output and the system's overall efficiency. Mechanical faults include broken panels, damaged cables, and defective inverters, which can lead to system downtime and reduced performance. Environmental faults include extreme weather events, such as hail or strong winds, which can damage the PV panels and other components \cite{faults}. Figure \ref{fig:faults} illustrates a more extensive summary of fault types. A comprehensive literature review on most types of faults is covered by 
+
+Although also prone to failure, most literature on fault detection and classification for photovoltaic systems does not encompass solar tracking faults: most studies cover fixed PV systems. The supervision of these subsystems can either be sensor-based \cite{Stepanov2014} or image-based, and some authors developed fault detection methods for these apparatuses \cite{Amaral2021}, using image processing on aerial photography to determine modules' slopes. This category of failures could be better supported when developing electrical data-driven algorithms since they can significantly affect the system's efficiency. Thus, this work will attempt to include this fault category in the proposed fault detection methodology.
 
 \begin{figure}[h]
     \centering
     \includegraphics[width=16cm, trim={2cm 2.1cm 2cm 12cm},
     clip]{figures/chapter2/types\_of\_faults.pdf} \caption{"Classification of
-    faults in PV Systems", from \cite{Pillai2018}.}
+    faults in PV Systems".} Image source and copyright: \cite{Pillai2018}.
     \label{fig:faults}
 \end{figure}
 
@@ -55,11 +65,13 @@ According to a 2017 survey conducted on five utility-scale PV plants in Italy, t
 the latter had a demonstrated cause that originated from manufacturing mistakes: snail trails. Besides this phenomenon,
 hot spot faults and bypass diode faults/disconnections were among the most common.
 
+Alongside manufacturing failures, installation, planning, and other external effects can be the root cause for many of the presented faults \cite{sunny}.
+
 \begin{figure}[h]
     \centering
     \includegraphics[width=10cm, trim={11cm 20.6cm 2.4cm 2cm},
     clip]{figures/chapter2/chartfailsurvey.pdf} \caption{"Circle chart related to the module defects in the 5 plants
-    (over the total number of failures)", from \cite{Grimaccia2017}.}
+    (over the total number of failures)."} Image source and copyright: \cite{Grimaccia2017}.
     \label{fig:faultchart}
 \end{figure}
 
@@ -104,28 +116,32 @@ Figure \ref{fig:onediodedraw} presents the single-diode model representation of 
     \label{fig:onediodedraw}
 \end{figure}
 
-\section{Literature on Fault detection for Photovoltaic Systems}
+\section{Literature on Fault Detection and Classification for Photovoltaic Systems}
 
-The parent field of fault detection is anomaly detection (also known as outlier detection), a highly studied subject in the scope of statistics \cite{Prasad2009}, applied in many scientific areas. The tools dedicated to fault detection and state estimation mostly come from mathematical/statistical methodologies, machine learning, and deep learning applications \cite{AIPV}. Parting from the three general problem-solving principles mentioned before, machine learning and deep learning are the most popular and successful ones for recent applications that ought to solve a plethora of complex problems. Such potential has led to an interest in their usage for implementing fault detection algorithms.
+The parent field of fault detection is anomaly detection (also known as outlier detection), a highly studied subject in the scope of statistics \cite{Prasad2009}, applied in many scientific areas. Classification is also a well-studied subject in this field, with applications in numerous scientific contexts, from medical diagnosis to airport safety \cite{classification}. Consequently, usage or adaptations of generic tools and ad hoc methodologies have originated to aid in solving fault detection and classification problems in photovoltaics.
+
+According to \cite{AIPV}, the tools dedicated to PV fault detection and state estimation mostly come from mathematical/statistical methodologies, machine learning, and deep learning applications. Regarding the three general problem-solving principles mentioned before, it's known that machine learning and deep learning are the most popular and successful ones for recent applications that ought to solve complex problems. However, this categorization is somewhat limited, with other literature suggesting an abundance of developed methodologies from different backgrounds, thoroughly reviewed in \cite{Hong2022} and \cite{Livera2019}. In \cite{Hong2022}, the authors consider two principal fault detection and classification algorithm branches: image-based and electrical-based. Image-based refers to aerial or visual capture of the PV array by photography and thermal imaging, commonly used along with artificial intelligence algorithms for assessing the photovoltaic module's state. Although the contribution and importance of such methods are appreciable, this work will mainly focus on the electrical-based ones, as the use case of the developed tool is bound to this type of data.
+
+Electrical-based fault detection and classification algorithms come in many forms, ranging from more straightforward and focused on physical behavior to more abstract and data-driven. Since the proposed work might result in a hybrid approach, it is best not to discard algorithms entirely based on their solo importance.
+
+% list methods
+
+The developed tool in this work must meet certain real-life constraints, such as data availability, frequency, and accuracy. Therefore, the qualitative potential estimation for each methodology is based on the capability of adapting the proposed algorithm to the same restrictions. This evaluation process confines the methodology review to emphasize the ones thought to be most capable of implementation in a real scenario.
+
 
 \subsection{Statistical and Signal Processing Algorithms}
 
 Statistical methodologies look into historical data to find the characteristics of how samples relate to the population (interpolation). These methodologies yield good results in case studies of PV farms that have been logging data for a considerable time, suffering in the cases that do not. Therefore, they are limited in that it is required to have curated data sets of historical significance for relevant features of the studied systems.
 
-
 Some algorithms consider incoming data from PV systems as signals, allowing the adaptation of signal processing theory to develop ad hoc algorithms. In \cite{Fan2020}, the authors successfully formulated a graph signal processing algorithm for fault classification that yields increasingly better results when there is a considerable amount of labeled data. The results outperformed other standard machine learning methods for the same training data, given 30\% or more of labeled data. On another note, the data utilized came from the PVWatts \cite{Dobos2013} dataset, and the PV system is on a small scale possessing a monitoring density and capability that should be considered irrealistic on a utility-scale. This same dataset appears in other mentioned references.
 
 Notably, some graph-based methods for this purpose don't rely on signal processing theory. Section \ref{subsec:machinelearning} reviews these.
 
-Coming up with a relatively simple algorithm, the authors in \cite{Iles2021} propose a power-based fault detection method that only requires delayed samples of the PV array's power output and a threshold. It was based on the fact that the power output of PV systems can't vary beyond a given point, considering a very short period (milliseconds). Although the simplicity and ease of implementation, it's clear that the success of this method requires feeding the algorithm with high-frequency data, which would only be feasible on-site (and with specialized equipment).
+Coming up with a relatively simple algorithm, the authors in \cite{Iles2021} propose a power-based fault detection method that only requires delayed samples of the PV array's power output and a threshold. It is based on the fact that the power output of PV systems can't vary beyond a given point, considering a very short-term period (milliseconds). Although the simplicity and ease of implementation, it's clear that the success of this method requires feeding the algorithm with high-frequency data, which would only be feasible on-site (and with specialized equipment).
 
-For the field of fault detection in PV systems, the literature on statistical and signal processing algorithms is mostly quite dated (\cite{Buddha2012}, \cite{Zhao2014}, \cite{Vergura2008}), given that more recent machine learning methods became increasingly interesting for this matter. Nonetheless, anomaly (or outlier) detection statistical algorithms can be used for fault detection in PV systems by identifying unusual patterns or deviations from normal behavior in the data collected from the PV system. For this, engineers might employ distance-based methods, such as Euclidean, Mahalanobis, and MCD-based distances \cite{Braun2011}. Although simple, distance-based techniques only might work for detecting outliers in the context of PV systems if they are scale-invariant (due to the different magnitude in the system's state variables) and resilient to outlier contamination (only with MCD-based distance).
+The literature on statistical and signal processing fault detection algorithms for PV is mostly quite dated (\cite{Buddha2012}, \cite{Zhao2014}, \cite{Vergura2008}), given that more recent machine learning methods have become increasingly attractive in this matter. Nonetheless, anomaly (or outlier) detection statistical algorithms can be used for fault detection in PV systems by identifying unusual patterns or deviations from normal behavior in the data collected from the PV system. Distance-based methods, such as Euclidean, Mahalanobis, and MCD-based distances \cite{Braun2011}, may be adequate. Although simple, these techniques might only work for detecting outliers in the context of PV systems if they are scale-invariant (due to the different magnitude in the system's state variables) and resilient to outlier contamination (only with MCD-based distance).
 
-In  \cite{Vergura2008}, the authors applied Analysis of Variance (ANOVA) and Kruskal-Wallis test for inverter failure detection, with the downside of only being able to identify outliers in a sub-array resolution, i.e., not for specific string or module failures.
-
-
-
-% should graph signal processing be here too?
+In \cite{Vergura2008}, the authors applied Analysis of Variance (ANOVA) and Kruskal-Wallis test for inverter failure detection, with the downside of only being able to identify outliers in a sub-array resolution, i.e., not for specific string or module failures.
 
 \subsection{Machine Learning Algorithms} \label{subsec:machinelearning}
 
@@ -141,3 +157,7 @@ FALTA MENCIONAR O ESTADO DA ARTE DESTA SECÇÃO.
 
 While classical fault detection lies in the synchronous and direct evaluation of state estimation variables, fault prediction requires the input of time-series features. Although relatively simple, some classical time-series forecasting and analysis tools can be of great support to help design a fault prediction algorithm, such as Box-Jenkins methods and the Partial Auto-correlation function. Still, the majority of modern prediction tools comprise neural networks and variations. With this in mind, recent developments in the intelligent composition of learner structures spark some interest in the application to this field, such as the new deep learning technique named Cell Complex Neural Networks \cite{Hajij2020}. Further investigation of such modern practices will unroll throughout the development of this work.
 
+
+\subsection{Proposed method's scope}
+
+The proposed method should pertain to the hybrid category, with a central component of deep learning.
