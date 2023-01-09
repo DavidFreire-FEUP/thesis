@@ -380,3 +380,127 @@ pages = {225-233},
 title = {Towards real-time and real-life image classification and detection using CNN: a review of practical applications requirements, algorithms, hardware and current trends},
 doi = {10.1109/SIITME50350.2020.9292253}
 }
+
+
+@article{Katoch2018,
+   abstract = {This paper describes three methods used in the development of a utility-scale solar cyber-physical system. The study describes remote fault detection using machine learning approaches, power output optimization using cloud movement prediction and consensus-based solar array parameter estimation. Dynamic cloud movement, shading and soiling, lead to fluctuations in power output and loss of efficiency. For optimization of output power, a cloud movement prediction algorithm is proposed. Integrated fault detection methods are also described to predict and by pass failing modules. Finally, the fully connected solar array, which is fitted with multiple sensors, is operated as an Internet of things network. Integrated with each module are sensors and radio electronics communicating all data to a fusion center. Gathering data at the fusion center to compute and transmit analytics requires secure low power communication solutions. To optimize the resources and power consumption, we describe a method to integrate fully distributed algorithms designed for a wireless sensor network in this CPS system.},
+   author = {Sameeksha Katoch and Gowtham Muniraju and Sunil Rao and Andreas Spanias and Pavan Turaga and Cihan Tepedelenlioglu and Mahesh Banavar and Devarajan Srinivasan},
+   doi = {10.1109/ICPHYS.2018.8387662},
+   isbn = {9781538665312},
+   journal = {Proceedings - 2018 IEEE Industrial Cyber-Physical Systems, ICPS 2018},
+   keywords = {Distributed average consensus,Fault detection,IoT Energy,PV,Shading,Solar power analytics},
+   month = {6},
+   note = {They have sensors per each panel, not realistic for utility scale pv plants<br/>good information about consensus in graphs<br/>consensus is used for determining average values along the entire array, based on each sensor’s measurements},
+   pages = {217-222},
+   publisher = {Institute of Electrical and Electronics Engineers Inc.},
+   title = {Shading prediction, fault detection, and consensus estimation for solar array control},
+   year = {2018},
+}
+
+
+@article{Rao2016,
+   abstract = {Monitoring utility-scale solar arrays was shown to minimize cost of maintenance and help optimize the performance of the array under various conditions. In this paper, we describe the design of an 18 kW experimental facility that consists of 104 panels fitted with smart monitoring devices. Each of these devices embeds sensors, wireless transceivers, and relays that enable continuous monitoring, fault detection, and real-time connection topology changes. The facility enables networked data exchanges via the use of wireless data sharing with servers, fusion and control centers, and mobile devices. Research planned at this stage includes developing machine learning methods for fault detection. Preliminary simulation results on fault detection using machine learning are given in this paper.},
+   author = {Sunil Rao and David Ramirez and Henry Braun and Jongmin Lee and Cihan Tepedelenlioglu and Elias Kyriakides and Devarajan Srinivasan and Jeffrey Frye and Shinji Koizumi and Yoshitaka Morimoto and Andreas Spanias},
+   doi = {10.1109/MELCON.2016.7495369},
+   isbn = {9781509000579},
+   journal = {Proceedings of the 18th Mediterranean Electrotechnical Conference: Intelligent and Efficient Technologies and Services for the Citizen, MELECON 2016},
+   keywords = {Machine learning,Photovoltaics(PV),Solar Panel Monitoring},
+   month = {6},
+   publisher = {Institute of Electrical and Electronics Engineers Inc.},
+   title = {An 18 kW solar array research facility for fault detection experiments},
+   year = {2016},
+}
+
+
+@article{Kumari2022,
+   abstract = {This paper presents an artificial neural network-based fault detection technique (ANNFD) to detect the short circuit fault (SCF) and hot spot faults (HSF) in PV array. The fault analysis is performed in the MATLAB-Simulink to identify the parameters which provide useful information on the faults. The pattern classification model of artificial neural network (PCANN) is used as a classifier to distinguish the SCF, HSF, and normal operating conditions. Various cases of faults are simulated under different irradiance, temperature, and fault resistance to validate the proposed methods. A sufficient number of training patterns is created through the simulation and used to train the PCANN. In addition, the optimal number of hidden neurons is determined on performance error evaluation. Further, the performance of the ANNFD is evaluated in terms of performance accuracy with the confusion matrix analysis.},
+   author = {Anamika Kumari and Anshul Shekhar and M. Senthil Kumar},
+   doi = {10.1109/ICEFEET51821.2022.9847793},
+   isbn = {9781665488754},
+   journal = {2022 2nd International Conference on Emerging Frontiers in Electrical and Electronic Technologies, ICEFEET 2022},
+   keywords = {PV array,artificial neural network,confusion matrix,hot spot fault,short circuit fault},
+   note = {Uses ANN for classification Classified Faults:  short circuit faults and hot spot faults Inputs:  dI/dt and dV/dt Results: 98.4% classification accuracy Pros: is that it can use the dI/dt and dV/dt as network inputs to assess faults, yields high accuracy. Cons: uses high frequency data from current and voltage of the panels, sampled every few milliseconds.},
+   publisher = {Institute of Electrical and Electronics Engineers Inc.},
+   title = {An Artificial Neural Network-Based Fault Detection Technique for PV Array},
+   year = {2022},
+}
+
+
+@article{Aziz2020,
+   abstract = {Fault diagnosis in photovoltaic (PV) arrays is essential in enhancing power output as well as the useful life span of a PV system. Severe faults such as Partial Shading (PS) and high impedance faults, low location mismatch, and the presence of Maximum Power Point Tracking (MPPT) make fault detection challenging in harsh environmental conditions. In this regard, there have been several attempts made by various researchers to identify PV array faults. However, most of the previous work has focused on fault detection and classification in only a few faulty scenarios. This paper presents a novel approach that utilizes deep two-dimensional (2-D) Convolutional Neural Networks (CNN) to extract features from 2-D scalograms generated from PV system data in order to effectively detect and classify PV system faults. An in-depth quantitative evaluation of the proposed approach is presented and compared with previous classification methods for PV array faults-both classical machine learning based and deep learning based. Unlike contemporary work, five different faulty cases (including faults in PS-on which no work has been done before in the machine learning domain) have been considered in our study, along with the incorporation of MPPT. We generate a consistent dataset over which to compare ours and previous approaches, to make for the first (to the best of our knowledge) comprehensive and meaningful comparative evaluation of fault diagnosis. It is observed that the proposed method involving fine-tuned pre-trained CNN outperforms existing techniques, achieving a high fault detection accuracy of 73.53%. Our study also highlights the importance of representative and discriminative features to classify faults (as opposed to the use of raw data), especially in the noisy scenario, where our method achieves the best performance of 70.45%. We believe that our work will serve to guide future research in PV system fault diagnosis.},
+   author = {Farkhanda Aziz and Azhar Ul Haq and Shahzor Ahmad and Yousef Mahmoud and Marium Jalal and Usman Ali},
+   doi = {10.1109/ACCESS.2020.2977116},
+   issn = {21693536},
+   journal = {IEEE Access},
+   keywords = {Photovoltaic array,convolutional neural network,fault classification,maximum power point tracking,scalograms,transfer learning},
+   note = {“utilizes deep two-dimensional (2-D) Convolutional Neural Networks (CNN) to extract features from 2-D scalograms generated from PV system data in order to effectively detect and classify PV system faults.”<br/><br/>“A survey study conducted in 2010 showed that such faults can reduce the generated power of photovoltaic systems annually by about 18.9%”<br/><br/>Compares methods with the same dataset<br/>Resilient to noice. Heavy deep learning model},
+   pages = {41889-41904},
+   publisher = {Institute of Electrical and Electronics Engineers Inc.},
+   title = {A Novel Convolutional Neural Network-Based Approach for Fault Classification in Photovoltaic Arrays},
+   volume = {8},
+   year = {2020},
+}
+
+@article{Rao2021,
+   abstract = {Automatic detection of solar array faults reduces maintenance costs and increases efficiency. In this paper, we address the problem of fault detection, localization, and classification in utility-scale photovoltaic (PV) arrays using machine learning methods. More specifically, we develop a series of customized neural networks for detection and classification of solar array faults. We evaluate fault detection and classification using metrics such as accuracy, confusion matrices, and the Risk Priority Number (RPN). We examine and assess the use of customized neural networks with dropout regularizers. We develop and evaluate neural network pruning strategies and illustrate the trade-off between fault classification model accuracy and algorithm complexity. Our approach promises to elevate the performance and robustness of PV arrays and compares favorably against existing methods.},
+   author = {Sunil Rao and Gowtham Muniraju and Cihan Tepedelenlioglu and Devarajan Srinivasan and Govindasamy Tamizhmani and Andreas Spanias},
+   doi = {10.1109/ACCESS.2021.3108684},
+   issn = {21693536},
+   journal = {IEEE Access},
+   keywords = {Dropout neural networks,machine learning,photovoltaic panel fault detection,pruned neural networks,solar array fault classification},
+   note = {Uses an autoencoder machine learning framework<br/>Emphasizes the performance<br/>Autoencoder detects the fault, and neural network classifies it<br/>“We consider the approach of fault detection and classification by monitoring the electrical signals such as maximum power point tracking (MPPT) parameters”<br/>They use the THE PVWatts DATASET<br/>BEST ARTICLE SO FAR!},
+   pages = {120034-120042},
+   publisher = {Institute of Electrical and Electronics Engineers Inc.},
+   title = {Dropout and Pruned Neural Networks for Fault Classification in Photovoltaic Arrays},
+   volume = {9},
+   year = {2021},
+}
+
+
+@article{Kilic2020,
+   abstract = {In recent years, there has been an increasing interest in the integration of photovoltaic (PV) systems in the power grids. Although PV systems provide the grid with clean and renewable energy, their unsafe and inefficient operation can affect the grid reliability. Early stage fault detection plays a crucial role in reducing the operation and maintenance costs and provides a long lifespan for PV arrays. PV Fault detection, however, is challenging especially when DC short circuit occurs under the low irradiance conditions while the arrays are equipped with an active maximum power point tracking (MPPT) mechanism. In this case, the efficiency and power output of a PV array decrease significantly under hard-to-detect faults such as active MPPT and low irradiance. If the hard-to-detect faults are not detected effectively, they will lead to PV array damage and potential fire hazard. To address this issue, in this paper we propose a new sparse representation classifier (SRC) based on feature extraction to effectively detect DC short circuit faults of PV array. To verify the effectiveness of the proposed SRC fault detection method, we use numerical simulation and compare its performance with the artificial neural network (ANN) based fault detection.},
+   author = {Heybet Kilic and Behnam Khaki and Bilal Gumus and Musa Yilmaz and Peter Palensky},
+   doi = {10.1109/ISIE45063.2020.9152421},
+   isbn = {9781728156354},
+   journal = {IEEE International Symposium on Industrial Electronics},
+   keywords = {Compressive sensing,Photovoltaic array fault detection,sparse representation.},
+   month = {6},
+   note = {Detect faults: DC short circuit faults of PV array. line to line and line to ground<br/>Has a lot of sources and compares a lot of them!<br/>“The aim of the proposed method is to detect the faults under low-mismatch, low-irradiance and high-impedance conditions.”<br/>“The common faults in PV systems are short and open circuit faults as well as panel mismatch and module failures”<br/>Relatively light algorithm that doesn’t require tuning},
+   pages = {1015-1021},
+   publisher = {Institute of Electrical and Electronics Engineers Inc.},
+   title = {Fault Detection in Photovoltaic Arrays via Sparse Representation Classifier},
+   volume = {2020-June},
+   year = {2020},
+}
+
+
+@article{Rao2019,
+   abstract = {In this paper, we describe a Cyber-Physical system approach to fault detection in Photovoltaic (PV) arrays. More specifically, we explore customized neural network algorithms for fault detection from monitoring devices that sense data and actuate at each individual panel. We develop a framework for the use of feedforward neural networks for fault detection and identification. Our approach promises to improve efficiency by detecting and identifying eight different faults and commonly occurring conditions that affect power output in utility scale PV arrays.},
+   author = {Sunil Rao and Andreas Spanias and Cihan Tepedelenlioglu},
+   doi = {10.1109/ICPHYS.2019.8780208},
+   isbn = {9781538685006},
+   journal = {Proceedings - 2019 IEEE International Conference on Industrial Cyber Physical Systems, ICPS 2019},
+   keywords = {Cyber-Physical Systems,Fault Detection,Machine Learning,Neural Networks,Photovoltaics (PV),Solar Energy},
+   month = {5},
+   note = {Covers a lot of faults: 8 in total},
+   pages = {196-200},
+   publisher = {Institute of Electrical and Electronics Engineers Inc.},
+   title = {Solar array fault detection using neural networks},
+   year = {2019},
+}
+
+
+@article{Krizhevsky2012,
+   abstract = {We trained a large, deep convolutional neural network to classify the 1.2 million high-resolution images in the ImageNet LSVRC-2010 contest into the 1000 different classes. On the test data, we achieved top-1 and top-5 error rates of 37.5% and 17.0%, respectively, which is considerably better than the previous state-of-the-art. The neural network, which has 60 million parameters and 650,000 neurons, consists of five convolutional layers, some of which are followed by max-pooling layers, and three fully connected layers with a final 1000-way softmax. To make training faster, we used nonsaturating neurons and a very efficient GPU implementation of the convolution operation. To reduce overfitting in the fully connected layers we employed a recently developed regularization method called "dropout" that proved to be very effective. We also entered a variant of this model in the ILSVRC-2012 competition and achieved a winning top-5 test error rate of 15.3%, compared to 26.2% achieved by the second-best entry.},
+   author = {Alex Krizhevsky and Ilya Sutskever and Geoffrey E. Hinton},
+   doi = {10.1145/3065386},
+   issn = {15577317},
+   issue = {6},
+   journal = {Communications of the ACM},
+   month = {6},
+   pages = {84-90},
+   publisher = {Association for Computing Machinery},
+   title = {ImageNet classification with deep convolutional neural networks},
+   volume = {60},
+   year = {2012},
+}
