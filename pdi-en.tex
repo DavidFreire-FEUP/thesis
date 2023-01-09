@@ -20,7 +20,13 @@
 
 \documentclass[11pt,a4paper,twoside,openright]{report}
 
+\usepackage[english]{babel}
+\addto{\captionsenglish}{%
+  \renewcommand{\bibname}{References}
+}
+
 \usepackage{float}
+\usepackage{multirow}
 
 %% For iso-8859-1 (latin1), comment next line and uncomment the second line
 \usepackage[utf8]{inputenc}
@@ -43,7 +49,7 @@
 %% - backrefs: include back references from bibliography to citation place
 
 %% Uncomment to create an index (at the end of the document)
-%\makeindex
+% \makeindex
 
 %% Path to the figures directory
 %% TIP: use folder ``figures'' to keep all your figures
@@ -137,7 +143,7 @@
 %% Assumes that bibliography is in ``myrefs.bib''
 % \PrintBib{myrefs}
 \bibliography{myrefs}
-\bibliographystyle{IEEEtran}
+\bibliographystyle{ieeetr}
 
 %% Index
 %% Uncomment next command if index is required, 

@@ -14,6 +14,11 @@
             "language": "latex",
             "scheme": "file",
             "pattern": "abstract.tex"
+        },
+        {
+            "language": "latex",
+            "scheme": "file",
+            "pattern": "chapter3.tex"
         }
     ],
     "emeraldwalk.runonsave": {

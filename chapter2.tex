@@ -98,7 +98,7 @@ $k$ (J/K) is the Boltzman constant;
 $T$ (K) is the cell temperature;
 $q$ (C) is the electron charge;
 
-For state estimation, it is crucial to accurately model PV modules' performance from the DC side of power converters. This information is vital for designing and optimizing PV power systems, as it enables predicting PV module performance under different conditions, as mentioned before. Accurate PV module models are also essential for state estimation and fault detection, as they provide critical information about the health and performance of PV modules, allowing for early identification of potential issues. In addition, they can be used to optimize the control and operation of PV power systems, which can improve the overall efficiency and reliability of the system \cite{Braun2011}.
+For state estimation, it is crucial to accurately model PV modules' performance from the DC side of power converters. This information is vital for designing and optimizing PV power systems, as it enables predicting PV module performance under different conditions, as mentioned before. Accurate PV module models are also essential for state estimation and fault detection, as they provide critical information about the health and performance of PV modules, allowing for early identification of potential issues. In addition, they can be used to optimize the control and operation of PV power systems, improving their efficiency and reliability \cite{Braun2011}.
 
 Physical and empirical models broadly categorize the several state-of-the-art methods for modeling photovoltaic modules \cite{Braun2011}. Physical models lie on the fundamental physical principles governing PV modules' operation. They typically require detailed knowledge of the PV module's electrical and optical properties, such as its current-voltage (I-V) characteristics, spectral response, and temperature dependence. These models can accurately predict the PV module's performance under a wide range of operating conditions, but they may be complex and computationally intensive to implement \cite{Kumar2019}. On the other hand, empirical models are based on experimental data and are typically more straightforward to implement. However, they may not be as accurate as physical models, especially under conditions that differ significantly from those used to generate the experimental data (usually STC) \cite{Braun2011}. Some examples of state-of-the-art physical models for PV modules include the single-diode model (also known as the five-parameter model), and the two-diode model \cite{Godina2017}. In contrast, one of the most used state-of-the-art empirical models is the Sandia model \cite{Braun2011}. The choice of modeling method will depend on the specific application and the required level of accuracy and complexity; in some cases, there can be a combination of physical and empirical models.
 
@@ -175,3 +175,62 @@ In \cite{Aziz2020}, not only is a DL technique presented for fault detection and
 While classical fault detection resides in the synchronous and direct evaluation of state and climate variables, realistic industrial scenarios can have data from various types, sources, and acquisition rates. It's also important to realize that monitoring equipment can register erroneous information, and current communication technology is also susceptible to delays and data loss. With this in mind, recent developments in the intelligent composition of deep learning structures aligned with graph theory spark some interest in their application to this field, such as the new deep learning technique named Cell Complex Neural Networks \cite{Hajij2020}. The motivation for choosing such a structure comes from its data propagation and consensus capability. The propagation techniques utilized in a CXN appeal to graph theory, dividing a system into other subsystems and components (nodes, also called cells in \cite{Hajij2020}) that share information. Even if the direct application of this structure might not be feasible or grant better results in the context of fault detection, its modification to meet the scope's needs could result in a robust and efficient solution. Further investigation of this state-of-the-art tool will unroll throughout the development of this work in an attempt to adapt this knowledge to the PV fault detection field.
 
 According to the reviewed methodologies, the proposed tool should pertain to the DL or the hybrid category since, while having a central component of DL, it may also require modeling the PV system's components. The intention of proposing such a novel approach is to contribute to the deep learning methodology ecosystem, explicitly formulated for electrical-based PV fault detection and classification. As mentioned before, it aims at an asynchronous and online application, which differs from most current methods and presents a novel DL paradigm considering current knowledge. It is also desired that this work brings a comprehensive benchmark between popular methods (likewise \cite{Aziz2020}), utilizing a richer dataset with samples from tangible utility-scale PV assets, allowing accuracy assessment in a realistic scenario.
+
+
+\begin{table}[h]
+    \centering
+    \caption{Comparison of literature that inspired this work.}
+    \label{tab:comparelit}
+    \resizebox{\textwidth}{!}{%
+    \begin{tabular}{|l|l|l|l|l|c|c|l|l|}
+    \hline
+    \multicolumn{1}{|c|}{\textbf{\begin{tabular}[c]{@{}c@{}}Reference\\ and year\end{tabular}}} &
+      \multicolumn{1}{c|}{\textbf{\begin{tabular}[c]{@{}c@{}}Data\\ Source\end{tabular}}} &
+      \multicolumn{1}{c|}{\textbf{Inputs}} &
+      \multicolumn{1}{c|}{\textbf{\begin{tabular}[c]{@{}c@{}}Proposed\\ methodology\end{tabular}}} &
+      \multicolumn{1}{c|}{\textbf{\begin{tabular}[c]{@{}c@{}}Classified Faults\\ (alongside STC)\end{tabular}}} &
+      \textbf{\begin{tabular}[c]{@{}c@{}}Validation\\ data\\ realism\end{tabular}} &
+      \textbf{\begin{tabular}[c]{@{}c@{}}Computational\\ cost\end{tabular}} &
+      \multicolumn{1}{c|}{\textbf{Notes}} &
+      \multicolumn{1}{c|}{\textbf{Drawbacks}} \\ \hline
+    \begin{tabular}[c]{@{}l@{}}\cite{Aziz2020}\\ \\ 2020\end{tabular} &
+      \begin{tabular}[c]{@{}l@{}}Simulated \\ PV System,\\ added noise\end{tabular} &
+      \begin{tabular}[c]{@{}l@{}}Irradiance,\\ Temperature,\\ Short circuit current,\\ Open circuit voltage,\\ PV current,\\ MPP current,\\ MPP voltage,\\ MPP power.\\ Boost converter\\ Maximum current,\\ Voltage and power.\end{tabular} &
+      \begin{tabular}[c]{@{}l@{}}Pre-trained\\ CNN (AlexNet)\\ for feature extraction\\ and classification\end{tabular} &
+      \begin{tabular}[c]{@{}l@{}}Arc fault,\\ Partial shading,\\ Fault\\ during\\ partial shading,\\ Open circuit, \\ Line to line SC\end{tabular} &
+      Moderate &
+      High &
+      \begin{tabular}[c]{@{}l@{}}Resilient against noisy data.\\ Outperforms classical ML\\ methodologies.\end{tabular} &
+      \begin{tabular}[c]{@{}l@{}}Requires data samples\\ from the MPPT\\ boost converter.\end{tabular} \\ \hline
+    \begin{tabular}[c]{@{}l@{}}\cite{Kilic2020}\\ \\ 2020\end{tabular} &
+      \begin{tabular}[c]{@{}l@{}}Simulated\\ PV System,\\ no added noise\end{tabular} &
+      \begin{tabular}[c]{@{}l@{}}MPP voltage, \\ MPP current,\\ Short circuit current,\\ Open circuit voltage,\\ Irradiance\end{tabular} &
+      \begin{tabular}[c]{@{}l@{}}Sparse\\ representation\\ classifier\end{tabular} &
+      \begin{tabular}[c]{@{}l@{}}Line to line SC\\ Line to ground SC\end{tabular} &
+      Low &
+      Low &
+      \begin{tabular}[c]{@{}l@{}}Very fast learning speed compared to\\ classical ML structures.\\ Straightforward implementation.\\ Good feature extraction process.\end{tabular} &
+      \begin{tabular}[c]{@{}l@{}}Validation data\\ was very idealistic.\\ Only classifies line to line\\ and line to ground faults.\end{tabular} \\ \hline
+    \begin{tabular}[c]{@{}l@{}}\cite{Fan2020}\\ \\ 2020\end{tabular} &
+      \multirow{2}{*}{\begin{tabular}[c]{@{}l@{}}PVWatts\\ dataset\end{tabular}} &
+      \multirow{2}{*}{\begin{tabular}[c]{@{}l@{}}MPP voltage,\\ MPP current,\\ Short circuit current,\\ Open circuit voltage,\\ Irradiance, Fill factor,\\ Temperature,\\ Gamma ratio,\\ Maximum power\end{tabular}} &
+      Graph signal processing &
+      \multirow{2}{*}{\begin{tabular}[c]{@{}l@{}}Shading\\ Degraded modules\\ Soiling\\ Short circuit\end{tabular}} &
+      \multirow{2}{*}{High} &
+      Low &
+      \begin{tabular}[c]{@{}l@{}}Semi-supervised,\\ allows usage of\\ unlabeled data for training.\\ Better accuracy relatively to other\\ ML methods for less labeled data. \\ Low training cost.\end{tabular} &
+      - \\ \cline{1-1} \cline{4-4} \cline{7-9} 
+    \begin{tabular}[c]{@{}l@{}}\cite{Rao2021}\\ \\ 2021\end{tabular} &
+       &
+       &
+      \begin{tabular}[c]{@{}l@{}}Autoencoder for detection\\ and pruned neural network\\ for classification\end{tabular} &
+       &
+       &
+      Medium &
+      \begin{tabular}[c]{@{}l@{}}Separate the task of\\ detection from classification,\\ allowing for other combinations.\\ Good performance method\\ considering the\\ algorithms complexity.\\ Pruning creates an\\ ANN less prone to overfitting.\end{tabular} &
+      \begin{tabular}[c]{@{}l@{}}Requires more complex\\ training phase, for two\\ different networks, and\\ utilizing a dropout\\ algorithm for pruning.\end{tabular} \\ \hline
+    \end{tabular}%
+    }
+    \end{table}
+
+Table \ref{tab:comparelit} represents a summary that compares four of the most inspiring reviewed proposals. These were chosen based on the authors' attention to detail and depth, traits not always found throughout the literature.
