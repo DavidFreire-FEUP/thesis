@@ -18,13 +18,13 @@ MKIDX=makeindex
 ## Basename for result in PT
 #TARGET:=mieec
 ## Basename for result in EN
-#TARGET:=mieec-en
+TARGET:=mieec-en
 
 # Basename for result in PT: PDI
-#TARGET:=pdi
+# TARGET:=pdi
 
 # Basename for result in EN: PDI
-TARGET:=pdi-en
+# TARGET:=pdi-en
 
 ## .tex files
 TEXFILES=$(wildcard *.tex **/*.tex)

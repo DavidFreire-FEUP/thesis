@@ -27,5 +27,6 @@
                 "cmd": "make"
             }
         ]
-    }
+    },
+    "latex-workshop.latex.search.rootFiles.include": ["mieec-en.tex"]
 }

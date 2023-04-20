@@ -17,6 +17,14 @@
 
 \documentclass[11pt,a4paper,twoside,openright]{report}
 
+\usepackage[english]{babel}
+\addto{\captionsenglish}{%
+  \renewcommand{\bibname}{References}
+}
+
+\usepackage{float}
+\usepackage{multirow}
+
 %% For iso-8859-1 (latin1), comment next line and uncomment the second line
 \usepackage[utf8]{inputenc}
 %\usepackage[latin1]{inputenc}
@@ -53,16 +61,16 @@
 %%----------------------------------------
 %% Information about the work
 %%----------------------------------------
-\title{Title of the Dissertation}
-\author{Name of the Author}
+\title{Aplicação de técnicas de aprendizagem profunda estruturada para diagnóstico de funcionamento de centrais fotovoltaicas.}
+\author{David da Silva Moreira Freire}
 
 %% Uncomment next line for date of submission
 %\thesisdate{July 31, 2008}
 
 %% Comment next line copyright text if not used
-\copyrightnotice{Name of the Author, 2008}
+\copyrightnotice{David Freire, 2023}
 
-\supervisor{Supervisor}{Name of the Supervisor}
+\supervisor{Orientador}{Cláudio Domingos Martins Monteiro}
 
 %% Uncomment next line if necessary
 %\supervisor{Second Supervisor}{Name of the Supervisor}
@@ -123,7 +131,8 @@
 %% Bibliography
 %% Comment the next command if BibTeX file not used
 %% bibliography is in ``myrefs.bib''
-\PrintBib{myrefs}
+\bibliography{myrefs}
+\bibliographystyle{ieeetr}
 
 %% Index
 %% Uncomment next command if index is required
