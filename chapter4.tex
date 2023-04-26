@@ -1,6 +1,8 @@
 \chapter{CellTAN: Cellular Time Activation Networks} \label{chap:chap4}
 
-This chapter proposes a new tool called CellTAN (Cellular Time Activation Networks) that can effectively address the challenges of distributed information systems characterized by time series data. CellTAN represents sparse yet interconnected components that function independently, cooperatively, and asynchronously. While initially designed for photovoltaic (PV) systems, the concepts of cells, connections, neighbors, time series, and uncertainty are universal and applicable to other fields such as biology, physics, and more.
+This chapter proposes a new tool called CellTAN (Cellular Time Activation Networks) that can effectively address the challenges of distributed information systems characterized by time series data. CellTAN represents sparse yet interconnected components that function independently, cooperatively, and asynchronously. The primary purpose is to identify incoherent components and possible faults effectively. However, the following proposals will introduce other valuable features that come naturally from fulfilling the main objective. 
+
+While initially designed for photovoltaic (PV) systems, the concepts of cells, connections, neighbors, time series, and uncertainty are universal and applicable to other fields such as biology, physics, and more.
 Inspired by other effective mechanisms like GNNs, CXNs, and Weighted Cross-Connection Networks (WCCNs), CellTAN uses a graph-like structure to represent a network of components. This structure allows for decentralized knowledge and requires minimal resources for each component to operate in real time.
 The subsequent sections of this chapter will explain the working of the "cell" and its interactions within the network, offering a comprehensive understanding of the tool.
 
@@ -23,7 +25,13 @@ The subsequent sections of this chapter will explain the working of the "cell" a
 
 \section{The Cell}
 
-Inside a cell there are artifacts (data) and processes.
+A cell is an independent entity composed of \textbf{data} and \textbf{processes}. As an individual part of the system, it follows a set of rules that define its intrinsic and extrinsic behavior. These rules address data privacy, request boundaries, rights, duties, and real-world operational limitations.
+
+\paragraph*{Independence} During operation, dependence on neighbors or other network entities for continuous processing of outputs results in a less robust system and decreases availability. Thus, the cell shall be independent of its surroundings and continue operating in an isolated state given connection cutoffs. This, of course, is not its preferred state, but enduring isolation until outside contact is re-established avoids shutdown and startup procedures. 
+
+\paragraph*{Selfish Computations} The cell is selfish in that it will not perform any computations based on the request of others. This aspect creates a fundamental layer of protection against overloading the infrastructure in which it is deployed, increasing availability.
+
+\paragraph*{Selfless Data} Although selfish in computations, the cell shall provide access to a select set of data useful to the network.
 
 \subsection{Cell's Core}
 
@@ -36,7 +44,24 @@ One approach to simplifying the process of temporal similarity extraction in mul
 
 \paragraph{Self Similarity}
 
-Having a knowledge base, the cell is capable of performing temporal similarity extraction with itself given its set of inputs.
+Having a knowledge base, the cell is capable of performing temporal similarity extraction with itself, using its input variables. When filtering its historical data with two or more variables, there will be a tendency of narrowing down the activated timestamps, which can be utilized to infer a range of more probable uncertainty.
+
+From now on, equations refering to the time variable $t$ assumes that present time is equal to $t=0$. Uniform fuzzy variables will have the notation $x^$.
+
+
+To demonstrate this process, consider the a cell that is characterized by two variables, which are a function of time: $x(t)$ and $y(t)$. 
+Assume that, at a given instant, these are the new cell inputs:
+
+\begin{equation*}
+    x(0) = 1.0 \rightarrow x(0) \subset [0.9, 1.1]
+\end{equation*}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=15cm]{figures/chapter4/cell/solo_state_estimation.png}
+    \caption{Visualization of self similarity extraction example.}
+    \label{fig:solo_state_estimation}
+\end{figure}
 
 \paragraph{Mutual Similarity}
 Capacidade de estimação de estado intrínsica + extrínsica
