@@ -1,10 +1,22 @@
 \chapter{CellTAN: Cellular Time Activation Networks} \label{chap:chap4}
 
-This chapter proposes a new tool called CellTAN (Cellular Time Activation Networks) that can effectively address the challenges of distributed information systems characterized by time series data. CellTAN represents sparse yet interconnected components that function independently, cooperatively, and asynchronously. The primary purpose is to identify incoherent components and possible faults effectively. However, the following proposals will introduce other valuable features that come naturally from fulfilling the main objective. 
+Distributed information systems characterized by time series data present various challenges, primarily due to their complex and dynamic nature. The sheer volume of data that must be processed and analyzed in real time is a significant challenge, leading to concerns over storage, computation, and scalability. Moreover, data quality issues such as missing or incomplete data and data heterogeneity arising from sourcing data from disparate sources with varying consistency and structure further exacerbate these challenges. Another critical challenge of these systems is handling the temporal aspects of time series data, requiring specialized pre-processing, feature extraction, and modeling techniques. The distributed nature of these systems further complexifies matters, with issues encompassing data synchronization and accuracy being a common concern. Furthermore, their implementation in real-world applications requires robust mechanisms for data security and privacy, which adds a layer of complexity to the design and implementation of these systems.
 
-While initially designed for photovoltaic (PV) systems, the concepts of cells, connections, neighbors, time series, and uncertainty are universal and applicable to other fields such as biology, physics, and more.
-Inspired by other effective mechanisms like GNNs, CXNs, and Weighted Cross-Connection Networks (WCCNs), CellTAN uses a graph-like structure to represent a network of components. This structure allows for decentralized knowledge and requires minimal resources for each component to operate in real time.
-The subsequent sections of this chapter will explain the working of the "cell" and its interactions within the network, offering a comprehensive understanding of the tool.
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=10cm]{figures/chapter4/cell/celltan.pdf}
+    \caption{Ilustrative overview of a CellTAN.}
+    \label{fig:celltan}
+\end{figure}
+
+This chapter proposes a novel tool entitled CellTAN (Cellular Time Activation Network) to address such challenges. CellTAN represents sparse yet interconnected components that function independently, cooperatively, and asynchronously.
+Inspired by other effective mechanisms like GNNs, CXNs, and Weighted Cross-Connection Networks (WCCNs), CellTAN uses a graph-like structure to represent a network of components. Following the introductory chapters, its primary purpose is to detect anomalous scenarios on PV systems. However, its generalized formulation introduces other valuable features which come naturally from fulfilling this goal. Such are state estimation, forecasting, and PV operator collaboration (while maintaining data privacy). For briefness' sake, future sections will highlight the other benefits of CellTAN.
+
+Instead of tackling fault detection and classification in a classical centralized manner, which is already extensively showcased throughout the literature, this tool approaches the same problem with a paradigm change: a distributed system. By having a virtual representation closely related to the physical form of the system, relationships between components can be leveraged to assess their correct (or incorrect) operation. While initially designed for photovoltaic (PV) systems, the concepts of cells, connections, neighbors, time series, and uncertainty are universal and applicable to other fields such as biology, physics, and more. The potential for generic applicability sparks the interest to not bake specifics of PV systems directly into this tool so that its preserved from usage with other distributed systems.
+
+% escrever sobre os benefícios?
+
+Figure \ref{fig:celltan} illustrates a simple CellTAN network overview. Regarding the \textbf{Hub}, one might infer (correctly) that it breaks the non-centralized paradigm. Nevertheless, it is present to solve some real-life implementation challenges and limitations, as will be further discussed in this chapter. The subsequent sections explain the working of the \textbf{Cell} and its interactions within the network. Since it is the core component, understanding its behavior is crucial for a complete understanding of the tool.
 
 \section{Glossary}
 
@@ -17,7 +29,7 @@ The subsequent sections of this chapter will explain the working of the "cell" a
 
     \item \textbf{Time decay}: a process associated with increased uncertainty of variables over time.
     
-    \item \textbf{Time Activations}: a series of time intervals defined by start and end timestamps.
+    \item \textbf{Time Activations}: timestamps of past ocurrences that have a non zero value of membership against the sets of recent inputs.
 
     \item \textbf{Hub}: the central component of the cell network, which facilitates its visualization, management, and expansion. It acts as the proxy agent between the cell's communication.
     
@@ -25,44 +37,62 @@ The subsequent sections of this chapter will explain the working of the "cell" a
 
 \section{The Cell}
 
-A cell is an independent entity composed of \textbf{data} and \textbf{processes}. As an individual part of the system, it follows a set of rules that define its intrinsic and extrinsic behavior. These rules address data privacy, request boundaries, rights, duties, and real-world operational limitations.
+A cell is an independent entity composed of \textbf{data} and \textbf{processes}. As an individual part of the system, it follows a set of rules that define its intrinsic and extrinsic behavior. These rules address data privacy, request boundaries, and real-world operational limitations.
 
-\paragraph*{Independence} During operation, dependence on neighbors or other network entities for continuous processing of outputs results in a less robust system and decreases availability. Thus, the cell shall be independent of its surroundings and continue operating in an isolated state given connection cutoffs. This, of course, is not its preferred state, but enduring isolation until outside contact is re-established avoids shutdown and startup procedures. 
+\paragraph*{Independence} During operation, independence on neighbors or other network entities for continuous processing of outputs results in a more robust system and increases availability. Thus, the cell shall be unbothered of its surroundings and continue operating in an isolated state given any connection cutoffs. This, of course, is not its preferred state, but enduring isolation until outside contact is re-established avoids shutdown and startup procedures. 
 
-\paragraph*{Selfish Computations} The cell is selfish in that it will not perform any computations based on the request of others. This aspect creates a fundamental layer of protection against overloading the infrastructure in which it is deployed, increasing availability.
+\paragraph*{Selfish Computations} The cell is selfish in that it will not perform any computations based on the request of others. This aspect creates a fundamental layer of protection against overloading the infrastructure in which it is deployed, which also increases availability.
 
-\paragraph*{Selfless Data} Although selfish in computations, the cell shall provide access to a select set of data useful to the network.
+\paragraph*{Selfless Data} Although selfish in computations, the cell shall provide access to a select set of data useful to the network. However, public data shall not compromise the cell's privacy (more on this later).
 
 \subsection{Cell's Core}
 
 \subsubsection{Temporal similarity extraction}
 
-Temporal similarity extraction is essential for identifying recurring patterns in time series data. It involves the identification of past instances where the current state is observed to extract useful information about the system's behavior over time. By identifying historical periods with similar states, temporal similarity extraction can help assess the current state or predict future trends. This technique is prized in finance, medicine, and environmental science, where accurate forecasting is critical for effective planning and management. However, the process of temporal similarity extraction can be challenging due to the complexity and size of time series data, as well as the need to accurately measure and compare similarity across different periods.
+Temporal similarity extraction the process of identifying recurring patterns in time series data. It involves the identification of past instances where the current state is observed to extract useful information about the system's behavior over time. By identifying historical periods with similar states, temporal similarity extraction can help assess the current state or predict future trends. This technique might be used in a plethora of fields (e.g. medicine and physics), for purposes such as state estimation and forecasting. However, the process of temporal similarity extraction can be challenging due to the complexity and size of time series data, as well as the need to accurately measure and compare similarity across different periods.
 
-One approach to simplifying the process of temporal similarity extraction in multi-variate time series data is to use uniform fuzzy values to filter historical data. This technique involves assigning fuzzy membership values to each data point in the time series based on its similarity to the current state. The use of fuzzy values can capture the inherent uncertainty in time series data, making the approach robust to noisy or incomplete data. Moreover, uniform fuzzy values make filtering history trivial and easily streamlined/automated.
+One approach to simplifying the process of temporal similarity extraction in multi-variate time series data is to use classical or fuzzy sets to filter historical data. This technique involves assigning values to each data point in the time series based on a membership function generated from the current state. The use of sets, specially fuzzy, can capture the inherent uncertainty in time series data, making the approach more robust to noisy or incomplete data.
+
+As a starting point, we use classical sets, since filtering history becomes trivial and easily streamlined/automated. However, this simplification does not account for density, since the filter reflect a binary state: a value either belongs to the uniform interval defined by the set (membership equals one) or doesn't (membership equals zero). This decision was taken to lighten the computational load that incides in the cell core for each historical filtering. Nonetheless, using the adequate fuzzy sets or probability distributions could increase the potential of temporal similarity extraction, considering the choise is based on the variable's statistical data.
+
+
+
+% A célula podia aceitar em cada valor se queria um numero fuzzy e ter mais que um disponivel ou aceitar distribuição probabilística.
 
 
 \paragraph{Self Similarity}
 
 Having a knowledge base, the cell is capable of performing temporal similarity extraction with itself, using its input variables. When filtering its historical data with two or more variables, there will be a tendency of narrowing down the activated timestamps, which can be utilized to infer a range of more probable uncertainty.
 
-From now on, equations refering to the time variable $t$ assumes that present time is equal to $t=0$. Uniform fuzzy variables will have the notation $x^$.
+From now on, equations refering to the time variable $t$ assumes that present time is equal to $t=0$. Uniform fuzzy variables will have the notation $x'$.
 
 
 To demonstrate this process, consider the a cell that is characterized by two variables, which are a function of time: $x(t)$ and $y(t)$. 
 Assume that, at a given instant, these are the new cell inputs:
 
-\begin{equation*}
-    x(0) = 1.0 \rightarrow x(0) \subset [0.9, 1.1]
-\end{equation*}
+\begin{equation}
+x(0) = 1.0 \rightarrow \mu_{x(0)}(x) =
+\begin{cases}
+1, & x \in [0.9, 1.1] \\
+0, & x \notin [0.9, 1.1] \\
+\end{cases}
+\end{equation}
+
+\begin{equation}
+y(0) = 2.0 \rightarrow \mu_{y(0)}(y) =
+\begin{cases}
+1, & y \in [1.8, 2.2] \\
+0, & y \notin [1.8, 2.2] \\
+\end{cases}
+\end{equation}
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=15cm]{figures/chapter4/cell/solo_state_estimation.png}
-    \caption{Visualization of self similarity extraction example.}
+    \includegraphics[width=\linewidth]{figures/chapter4/cell/solo_state_estimation.drawio.png}
+    \caption{Visualization of a self similarity extraction example.}
     \label{fig:solo_state_estimation}
 \end{figure}
-
+ 
 \paragraph{Mutual Similarity}
 Capacidade de estimação de estado intrínsica + extrínsica
 
