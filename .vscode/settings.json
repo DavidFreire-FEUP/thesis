@@ -28,5 +28,8 @@
             }
         ]
     },
-    "latex-workshop.latex.search.rootFiles.include": ["mieec-en.tex"]
+    "latex-workshop.latex.search.rootFiles.include": [
+        "mieec-en.tex"
+    ],
+    "latex-workshop.latex.recipe.default": "lastUsed"
 }
