@@ -42,7 +42,9 @@ Vast and scattered information across multiple agents is a common scenario faced
 A cell is an independent entity composed of \textbf{data} and \textbf{processes}. The main idea is to abstract fundamental system components (e.g. inverters, MPPT's) into this virtual entity. With an added layer of intelligence, it will assess their current state, adding value to the existing data acquisition and monitoring systems.
 For this, it features an intrinsic inference algorithm that takes advantage of uncertainty in the input variables to . 
 
-% TODO maioria da descrição fazê-la aqui
+We have established that the cell has both inputs and outputs. They are an instantaneous view of the values that define a cell at a given timestamp, which is continuously rolling. What differs between them is that inputs are directly associated to raw sampled data from the system, while  This time instant may be arbitrary and not just the present. Thus, choosing an offset towards the future permits forecasting.
+
+It features an intrinsic inference process that utilizes the continuous stream of multi-variate time-series data of inputs. Considering all inputs as outputs increase data coherence, which is explored in section \ref{subsec:tempsim}. Then, by modeling uncertainty using a set/interval-based approach, it performs temporal similarity extraction.
 
 As an individual part of the system, it follows a set of rules that define its intrinsic and extrinsic behavior. These rules address data privacy, request boundaries, and real-world operational limitations.
 
@@ -52,7 +54,6 @@ As an individual part of the system, it follows a set of rules that define its i
 
 \paragraph*{Selfless Data} Although selfish in computations, the cell shall provide access to select data valuable to the network. However, public data shall not compromise the cell's privacy (more on this later).
 
-% ? escrever mais 
 
 \begin{figure}[h!]
     \centering
@@ -61,10 +62,6 @@ As an individual part of the system, it follows a set of rules that define its i
     \label{fig:cellprocesses}
 \end{figure}
 
-
-In the cell, there are inputs and outputs, which represent the same variables. They are an instantaneous representation of the values that define a cell at a given timestamp, which is continuously rolling. This time instant may be arbitrary and not just the present. Thus, choosing an offset in the future grants it forecasting capabilities.
-
-It features an intrinsic inference process that utilizes the continuous stream of multi-variate time-series data of inputs. Considering all inputs as outputs increase data coherence, which is explored in section \ref{subsec:tempsim}. Then, by modeling uncertainty using a set/interval-based approach, it performs temporal similarity extraction.
 
 \subsection{Temporal similarity extraction} \label{subsec:tempsim}
 
@@ -77,6 +74,13 @@ Using sets or probability distributions to filter historical data is one approac
     \item Fuzzy number: generalized fuzzy number representation \cite{Zhang2019} (e.g. triangular fuzzy number (a,b,d;h));
     \item Probability distribution: the distribution's characteristics (e.g. mean ($\mu$) and standard deviation ($\delta$) for Gaussian, mean rate of occurence ($\lambda$) for Poisson, etc.);
 \end{itemize}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=15cm]{figures/chapter4/cell/classic_fuzzy_gaussian.pdf}
+    \caption{Classical set, triangular fuzzy number and gaussian distributions represented as a membership function.}
+    \label{fig:classicfuzzygaussian}
+\end{figure}
 
 The proposal for similarity extraction in the cell consists of receiving new values for the cell's variables from a data source (sensors or other data acquisition equipment, calculations, forecasting, etc.), generating a classical set, fuzzy number, or probability distribution from the it, and then applying its bounds/membership function or probability density function to the knowledge base (see figure \ref{fig:solo_state_estimation}). The initial choice is to use classical sets since filtering history becomes trivial and efficient: restrict the knowledge base to samples where all variables belong to a corresponding interval.
 
@@ -127,26 +131,32 @@ With the knowledge base represented in figure \ref{fig:solo_state_estimation}, t
 \end{equation}
 
 \paragraph{Mutual Similarity}
-Capacidade de estimação de estado intrínsica + extrínsica
+\dots
+% Capacidade de estimação de estado intrínsica + extrínsica
 
 \subsection{Data model}
 
-O que é publico e privado
+% O que é publico e privado
+\dots
 
 \subsection{Connections and Trust}
-O que é uma conexão, como se caracteriza, e que valores tem a ela associada
 
-to take advantage of sharing information with neighbours, there comes a need to have trust
+A network could not be formed without the existence of connections. Having neighbours grants the cells perform actions such as mutual similarity extraction. Besides, there can be certain indicators associates with these links, and to take advantage of sharing information with neighbours, there comes a need to have something we named \textbf{Trust}.
+
+In order to distinguish cells, each one of them has a unique identifier, generated upon criation and independent from the cell's name. This serves to easily register cells and manage the network. Since interconnections require an agent to keep track of these id's and correctly direct traffic, we introduce a component named \textbf{Hub} for keeping track of registered cells in the network and their corresponding id's. By having a central component which provides global network visibility, connections are easier to form.
+
 
 \subsection{Events}
 
-TODO
+\dots
 
 
 \section{The Hub}
 
-TODO
+\dots
+
 
 \section{Implementation}
 
-TODO: escrever sobre a concretização real destas ideias
+% TODO: escrever sobre a concretização real destas ideias
+\dots
