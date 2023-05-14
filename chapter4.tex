@@ -43,11 +43,11 @@ Vast and scattered information across multiple agents is a common scenario faced
 
 A cell is an independent entity composed of \textbf{data} and \textbf{processes}. The idea is to abstract fundamental system components (e.g. inverters, MPPT's) into this virtual entity. With an added intelligence layer and featuring a few different processes, it assesses its current state based on all available internal and external information, adding value to the existing data acquisition and monitoring systems. As an individual part of the system, it follows a set of rules that define its intrinsic and extrinsic behavior. These rules address data privacy, request boundaries, and real-world operational limitations.
 
-\paragraph*{Independence} During operation, independence on neighbors or other network entities for continuous processing of outputs results in a more robust system and increases availability. Thus, given any connection cutoffs, the cell shall be unbothered by its surroundings and continue operating in an isolated state. Isolation is not preferred, but enduring it until outside contact is re-established avoids shutdown and startup procedures.
+\paragraph*{Independence} During operation, independence on neighbors or other network entities for continuous processing of outputs results in a more robust system and increases cell availability. Thus, given any connection cutoffs, the cell shall be unbothered by its surroundings and continue operating in an isolated state. Isolation is not preferred, but enduring it until outside contact is re-established avoids shutdown and startup procedures.
 
 \paragraph*{Selfish Computations} The cell is selfish in that it will not perform any computations based on the request of others. This aspect creates a fundamental layer of protection against overloading the infrastructure in which it is deployed, which also increases availability.
 
-\paragraph*{Selfless Data} Although selfish in computations, the cell shall provide access to select data valuable to the network. However, public data shall not compromise the cell's privacy (more on this later).
+\paragraph*{Data accessibility} Although selfish in computations, the cell shall provide access to select data valuable to the network. However, not all internal data is shared, and public data shall not compromise the cell's privacy (more on this later).
 
 \subsection{Processes and Data}
 
@@ -57,6 +57,14 @@ A cell is an independent entity composed of \textbf{data} and \textbf{processes}
     \caption{Cell's core main loop of processes.}
     \label{fig:cellprocesses}
 \end{figure}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\linewidth]{figures/chapter4/cell/data.pdf}
+    \caption{Cell's public and private attributes.}
+    \label{fig:celldata}
+\end{figure}
+
 
 % TODO explicar processos da célula por alto
 
