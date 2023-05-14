@@ -58,10 +58,15 @@ A cell is an independent entity composed of \textbf{data} and \textbf{processes}
     \label{fig:cellprocesses}
 \end{figure}
 
+% TODO explicar processos da célula por alto
+
 \subsection{Inputs and Outputs}
 
-The cell has inputs and outputs. Both are a view of the values that define its variables at a given timestamp, which is continuously rolling. While inputs are directly associated with raw sampled data from the system (injected by the owner), outputs are a byproduct of internal processes. The latter should present more accurate information since it is based on internal and external information (ideally).
-Representing the cell's variables in a fuzzy (or probabilistic) manner can better capture the inherent uncertainty in time series data. For the cell's inner workings, we chose that inputs and outputs are not represented by crisp values but rather by classical sets. However, they are not limited to sets; fuzzy numbers or probability distributions could represent them. Thus, inputs and outputs may be characterized by:
+The cell has inputs and outputs. Both are a view of the values that define its variables at a given timestamp, which is continuously rolling. While inputs are directly associated with raw sampled data from the system (injected by the owner), outputs are a byproduct of internal processes. The latter should present more accurate information since it is based on internal and external information (ideally) and be helpful for the cell's owner to assess its state.
+
+Representing the cell's variables in a fuzzy (or probabilistic) manner can better capture the inherent uncertainty in time series data. For the cell's inner workings, we chose that inputs and outputs are not represented by crisp values but rather by classical sets. However, they are not limited to sets; fuzzy numbers or probability distributions could represent them also. Besides, they can be subject to a process named \textbf{time decay}, which ensures that the passage of time negatively affects uncertainty (more on section \ref{subsec:timedecay}). This mechanism increases the robustness of the cell by acknowledging the value of time in assessing its current state.
+
+Summing up, the following may characterize inputs and outputs:
 
 \begin{itemize}
     \item Classical set: simple uncertainty band (e.g. uncertainty up, down, relative, etc);
@@ -76,16 +81,15 @@ Representing the cell's variables in a fuzzy (or probabilistic) manner can bette
     \label{fig:classicfuzzygaussian}
 \end{figure}
 
-Thanks to this representation, both inputs and outputs can be subject to a process named \textbf{time decay}, which ensure that the passage of time negatively affects uncertainty (more on section \ref{subsec:timedecay}).
-
+The choice of using classical sets comes with some pros and cons: many operations become quite efficient, but we lose any notion . For example, filtering historical data becomes trivial: a value either lies within the bounds of the interval (membership value of one) or it does not (membership value of zero). This will be critical for some processes of the cell, primarily in temporal similarity extraction (\ref{subsec:tempsim}).
 
 \subsection{Time decay} \label{subsec:timedecay}
 
 In real-world dynamic systems that involve data acquisition, the certainty of the data collected tends to fade over time due to the nature of the data acquisition process. Typically, the most recent data is the most accurate representation of the system's current state, and as time elapses, the accuracy of previous data points decreases. This occurs naturally due to various factors such as environmental changes, equipment degradation, or other system's dynamics. As a result, it is crucial to consider the time dimension when analyzing dynamic systems and to develop methods that can account for the decay in data certainty over time.
 
-Towards considering the time dimention for the current state of a cell, we formulate a \textbf{time decay} method to ensure a more truthful and reliable assessment of its current state. During the standby stage, this process ensures that the inputs and outputs suffer an increase in uncertainty, which is has different side effects depending on what represents them (classical set, fuzzy number or probability distribution).
+As stated before, and towards considering the time dimension for the current state of a cell, we formulate a \textbf{time decay} method to ensure a more truthful and reliable assessment of the cell's current state. During the standby stage, this process ensures that the inputs and outputs suffer an increase in uncertainty, which is has different side effects depending on what represents them (classical set, fuzzy number or probability distribution).
 
-Consider the following example of converting a crisp value and uncertainty to a set:
+Consider the following example of converting a crisp value and uncertainty to a classical set:
 
 $$x = 5 \pm 1 \rightarrow [5-1, 5+1] = [4, 6]$$
 
@@ -98,6 +102,8 @@ lower = lower - (lower - minimum) \times \frac{age}{decay}
 \begin{equation}
 upper = upper + (maximum - upper) \times \frac{age}{decay}
 \end{equation}
+
+The $age$ variable refers to the time difference between the present time and the instant the value was created. For implementation, the unit considered is the second. The $decay$ is a parametrized constant (same unit as $age$) that defines the time it takes for the set to expand into its limits when starting from the median. It should be chosen based on the characteristics of the variable. However, a good starting point is defining it as equal to the data acquisition period so that the set is entirely expanded until a new value is measured.
 
 \begin{figure}[h!]
     \begin{floatrow}
@@ -122,13 +128,13 @@ upper = upper + (maximum - upper) \times \frac{age}{decay}
     \end{tabular}%
     }
     }{%
-    \caption{Parameters and values of $x_{lower}$ and $x_{upper}$ varying with age.}%
+    \caption{Parameters and values of $x_{lower}$ and $x_{upper}$ varying with age when affected by time decay.}%
     \label{tab:timedecay}
     }
     \ffigbox{%
     \includegraphics[width=9cm]{figures/chapter4/cell/time_decay.png}%
     }{%
-      \caption{Visualization of $x_{lower}$ and $x_{upper}$ expanding through time.}%
+      \caption{Visualization of the effect of time decay on $x_{lower}$ and $x_{upper}$.}%
       \label{fig:timedecay}
     }
     \end{floatrow}
@@ -141,8 +147,8 @@ upper = upper + (maximum - upper) \times \frac{age}{decay}
 %     \label{fig:timedecay}
 % \end{figure}
 
-% TODO
-Table \ref{tab:timedecay} and figure \ref{fig:timedecay} represent the expansion of the set throughout a period of time equal to the decay parameter (ten seconds). We can observe an exponential decay caused by the simultaneous variation of age and difference between bounds and maximum/minimum.
+Table \ref{tab:timedecay} and figure \ref{fig:timedecay} represent the expansion of the set throughout a period equal to the decay parameter (ten seconds). When $x$ reaches the age of ten seconds, its set represents complete uncertainty since its bounds became equal to the variable limits ($x_{min}$ and $x_{max}$). We can see that the decreasing difference between the bounds and maximum/minimum values causes attenuation in the decay curve, as it displays a non-linear behavior. This behavior seems appropriate according to the reality of systems: as a variable becomes increasingly uncertain, there is less potential for its uncertainty to increase.
+
 
 \subsection{Temporal similarity extraction} \label{subsec:tempsim}
 
@@ -210,6 +216,10 @@ These results confirm that outputs with less uncertainty are achieved, while onl
 A network could not be formed without the existence of connections. Having neighbours grants the cells perform actions such as mutual similarity extraction. Besides, there can be certain indicators associates with these links, and to take advantage of sharing information with neighbours, there comes a need to have something we named \textbf{Trust}.
 
 In order to distinguish cells, each one of them has a unique identifier, generated upon criation and independent from the cell's name. This serves to easily register cells and manage the network. Since interconnections require an agent to keep track of these id's and correctly direct traffic, we introduce a component named \textbf{Hub} for keeping track of registered cells in the network and their corresponding id's. By having a central component which provides global network visibility, connections are easier to form.
+
+
+\subsubsection{Trust computation}
+\dots
 
 
 \subsection{Events}
