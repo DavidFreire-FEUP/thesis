@@ -1,6 +1,6 @@
 \chapter{CellTAN: Cellular Time Activation Networks} \label{chap:chap4}
 
-Distributed information systems characterized by time series data present various challenges, primarily due to their complex and dynamic nature. The sheer volume of data that must be processed and analyzed in real time is a significant challenge, leading to concerns over storage, computation, and scalability. Moreover, data quality issues such as missing or incomplete data and data heterogeneity arising from sourcing data from disparate sources with varying consistency and structure further exacerbate these challenges. Another critical challenge of these systems is handling the temporal aspects of time series data, requiring specialized pre-processing, feature extraction, and modeling techniques. The distributed nature of these systems further complexifies matters, with issues encompassing data synchronization and accuracy being a common concern. Furthermore, their implementation in real-world applications requires robust mechanisms for data security and privacy, which adds a layer of complexity to the design and implementation of these systems.
+Distributed information systems characterized by time series data present various challenges, primarily due to their complex and dynamic nature. The sheer volume of data that must be processed and analyzed in real-time is a significant challenge, leading to concerns over storage, computation, and scalability. Moreover, data quality issues such as missing or incomplete data and data heterogeneity arising from sourcing data from disparate sources with varying consistency and structure further exacerbate these challenges. Another critical challenge of these systems is handling the temporal aspects of time series data, requiring specialized pre-processing, feature extraction, and modeling techniques. The distributed nature of these systems further complexifies matters, with issues encompassing data synchronization and accuracy being a common concern. Furthermore, their implementation in real-world applications requires robust mechanisms for data security and privacy, which adds a layer of complexity to the design and implementation of these systems.
 
 \begin{figure}[h!]
     \centering
@@ -9,11 +9,11 @@ Distributed information systems characterized by time series data present variou
     \label{fig:celltanintro}
 \end{figure}
 
-This chapter proposes a novel tool entitled CellTAN (Cellular Time Activation Network) that undertakes those challenges. CellTAN represents sparse yet interconnected components that function independently, cooperatively, and asynchronously. Inspired by other effective mechanisms like GNNs, CXNs, and Weighted Cross-Connection Networks (WCCNs), CellTAN uses a graph-like structure to represent a network of components, with nodes and connections. Following the introductory chapters, its primary purpose is to detect anomalous scenarios on PV systems. However, its generalized formulation introduces other valuable features which come naturally from fulfilling this goal. Such are state estimation, forecasting, and capturing the value in data from different PV asset owners without violating their privacy. For briefness' sake, we will the details about its benefits to be unfolded during the rest of this chapter.
+This chapter proposes a novel tool entitled CellTAN (Cellular Time Activation Network) that undertakes those challenges. CellTAN represents sparse yet interconnected components that function independently, cooperatively, and asynchronously. Inspired by other effective mechanisms like GNNs, CXNs, and Weighted Cross-Connection Networks (WCCNs), CellTAN uses a graph-like structure to represent a network of components with nodes and connections. Following the introductory chapters, its primary purpose is to detect abnormal scenarios on PV systems. However, its generalized formulation introduces other valuable features which come naturally from fulfilling this goal. Such are state estimation, forecasting, and capturing the value in data from different PV asset owners without violating their privacy. For briefness' sake, we will unfold details about its benefits during the rest of this chapter.
 
-Instead of tackling fault detection and classification in a classical centralized manner, which is already extensively showcased throughout the literature, this tool approaches this problem with a paradigm change: a distributed and asynchronous data coherence system. By having a virtual representation closely related to the physical form of sparse systems, relationships between components can be leveraged to assess their correct (or incorrect) operation. While initially designed for photovoltaic (PV) systems, the concepts of cells, connections, neighbors, time series, and uncertainty are universal and applicable to other fields such as biology, physics, and more. Thus, the potential for generic applicability sparks the interest to not bake specifics of PV systems directly into this tool, allowing its usage for other subjects. Figure \ref{fig:celltanintro} represents minimal scenario for a network: only two cells. It showcases some terms specific to this tool, that might be difficult to grasp at first, such as trust, events, and activations. Consequently, the glossary in \ref{sec:glossary} and detailed explanations throughout this chapter serve to clarify them.
+Instead of tackling fault detection and classification in a classical centralized manner, which is already extensively showcased throughout the literature, this tool approaches this problem with a paradigm change: a distributed and asynchronous data coherence system. By having a virtual representation closely related to the physical form of sparse systems, relationships between components can be leveraged to assess their correct (or incorrect) operation. While initially designed for photovoltaic (PV) systems, the concepts of cells, connections, neighbors, time series, and uncertainty are universal and applicable to other fields such as biology, physics, and more. Thus, the potential for generic applicability sparks the interest to not bake specifics of PV systems directly into this tool, allowing its usage for other subjects. Figure \ref{fig:celltanintro} represents minimal scenario for a network: only two cells. It showcases some terms specific to this tool, that might be difficult to grasp initially, such as trust, events, and activations. Consequently, the glossary in \ref{sec:glossary} and detailed explanations throughout this chapter serve to clarify them.
 
-Vast and scattered information across multiple agents is a common scenario faced by the industry of AI for energy systems, which cannot be aggregated due to privacy and confidentiality reasons. Nevertheless, its conjunction could have a lot of added value, given the similarity of certain assets: PV plants (as well as wind farms) from different owners in neighbouring geographical regions. This information-sharing potential for AI algorithms motivates the development of a mechanism that provides a way of communicating information between differently owned assets without any of the compromises above. However, and as stated before, data acquisition in PV scenario's is scarcely synchronous and might not occur in equal time resolutions for all the different components. The CellTAN addresses these issues with an instrument referred to as \textbf{Time activations}. It proposes a new way of communication that decouples from the needs of units, sampling rate, and synchronization, avoiding any resampling, normalization, or even obfuscation (to protect privacy). This mechanism is a core feature of the tool since it will be the means that will allow connecting different stakeholders' data, hence section \ref{sec:thecell} develops this matter thoroughly. Likewise, succeeding sections formulate the working of the \textbf{Cell} and its interactions within the network. Since it is the core component, understanding its behavior is crucial for a complete understanding of the tool.
+Vast and scattered information across multiple agents is a common scenario faced by the industry of AI for energy systems, which cannot be aggregated due to privacy and confidentiality reasons. Nevertheless, its conjunction could have a lot of added value, given the similarity of certain assets: PV plants (as well as wind farms) from different owners in neighboring geographical regions. This information-sharing potential for AI algorithms motivates the development of a mechanism that communicates information between differently owned assets without any of the compromises above. However, as stated before, data acquisition in PV scenarios is scarcely synchronous and might not occur in equal time resolutions for all the different components. The CellTAN addresses these issues with an instrument called \textbf{Time activations}. It proposes a new way of communication that decouples from the needs of units, sampling rate, and synchronization, avoiding resampling, normalization, or even obfuscation (to protect privacy). This mechanism is a core feature of the tool since it will be the means that will allow connecting different stakeholders' data, and section \ref{sec:thecell} develops this matter thoroughly. Likewise, succeeding sections formulate the working of the \textbf{Cell} and its interactions within the network. Since it is the core component, understanding its behavior is crucial for a complete understanding of the tool.
 
 \section{Glossary} \label{sec:glossary}
 
@@ -23,21 +23,23 @@ Vast and scattered information across multiple agents is a common scenario faced
 
     \item \textbf{Inputs}: Uniform fuzzy numbers (not necessarily, but it's the current choice) that represent one sample of the group of time series variables that define the state of a cell.
 
-    \item \textbf{Outputs}: Similar to inputs, but obtained through mroe complex computations.
+    \item \textbf{Outputs}: Similar to inputs, but obtained through some computations.
 
     \item \textbf{Time decay}: A process associated with increased uncertainty of variables over time.
 
-    \item \textbf{Activations}: Timestamps of past ocurrences on a knowledge base that have a non zero value of membership against a set of recent inputs.
+    \item \textbf{Activations}: Timestamps of past occurrences on a knowledge base with a non-zero membership value against a set of recent inputs.
 
-    \item \textbf{Events}: Occurences that the cell reports back to the hub, that in most cases are triggered by the exceeding of parametrized thresholds.
+    \item \textbf{Events}: Occurrences that the cell reports back to the hub, usually triggered by exceeding parametrized thresholds.
 
-    \item \textbf{Trust}: A decimal number that represents how coherent two cells's activations are with each other. Besides its instantaneous computed value, it can also come from a cumulative computation on a defined time window.
+    \item \textbf{Trust}: A decimal number that represents how coherent two cells' activations are with each other. Besides its instantaneous computed value, it can also come from a cumulative computation on a defined time window.
 
     \item \textbf{Hub}: The central component of the cell network, which facilitates its visualization, management, and expansion. It acts as the proxy agent between the cell's communication.
 
 \end{itemize}
 
 \section{The Cell} \label{sec:thecell}
+
+% TODO falta mencionar que o dono da célula é que é responsável por estabelecer conexões
 
 \subsection{Principles}
 
@@ -52,12 +54,20 @@ A cell is an independent entity composed of \textbf{data} and \textbf{processes}
 \subsection{Processes and Data}
 
 
+The cell has a main process loop that executes a sequence of actions periodically: 
+
 \begin{figure}[h!]
     \centering
     \includegraphics[width=12cm]{figures/chapter4/cell/processes.pdf}
-    \caption{The cell's core main loop of processes.}
+    \caption{The cell's core sequence of processes (colored orange) and flow of data (colored blue).}
     \label{fig:cellprocesses}
 \end{figure}
+
+Figure \ref{fig:cellprocesses} showcases the cell's core procedures. It starts in a standby mode, which is only left when new information arrives or a predetermined amount of time has passed. This mode ensures that there isn't an unnecessary computational burden of repeating all other computations: they provide the most valuable results when new data is available. Nonetheless, defining a maximum sleep time ensures the cell's activations are periodically updated to reflect the neighbors' state and intrinsic uncertainty.
+
+The process of computing activations relates to the temporal similarity extraction showcased in section \ref{subsec:tempsim}. It occurs twice because inputs only contain intrinsic information, while outputs aggregate intrinsic and extrinsic data (information from neighbors), and the latter is more worthy to the network. The cell makes this procedure's byproduct (Activations) publicly available, pictured in figure \ref{fig:celldata}.
+
+Fetching neighbor's activations 
 
 \begin{figure}[h!]
     \centering
@@ -66,31 +76,33 @@ A cell is an independent entity composed of \textbf{data} and \textbf{processes}
     \label{fig:celldata}
 \end{figure}
 
+Figure \ref{fig:celldata} showcases the cell's public and private data attributes. The network may have access to its activations, knowledge base coverage, and neighbors' trust. Conversely, the cell extracts neighbors' activations from the network and gives its owner exclusive access to inputs, outputs, and knowledge base. The cell's knowledge base might only represent an interface with a private database (thus a bidirectional connection), not the data itself, since the owner might prefer a centralized storage server. The relationship between the owner and private cell data is bidirectional because it's his responsibility to update the inputs.
+
 
 % TODO explicar processos da célula por alto
 
 \subsection{Inputs and Outputs}
 
-The cell has inputs and outputs. Both are a view of the values that define its variables at a given timestamp, which is continuously rolling. While inputs are directly associated with raw sampled data from the system (injected by the owner), outputs are a byproduct of internal processes. The latter should present more accurate information since it is based on internal and external information (ideally) and be helpful for the cell's owner to assess its state.
+The cell has inputs and outputs. Both are a view of the values that define its variables at a given timestamp, which is continuously rolling. While inputs are directly associated with raw sampled data from the system (injected by the owner), outputs are a byproduct of internal processes. The latter should present more accurate information since it is based on internal and external data (ideally) and be helpful for the cell's owner to assess its state.
 
-Representing the cell's variables in a fuzzy (or probabilistic) manner can better capture the inherent uncertainty in time series data. For the cell's inner workings, we chose that inputs and outputs are not represented by crisp values but rather by classical sets. However, they are not limited to sets; fuzzy numbers or probability distributions could represent them also. Besides, they can be subject to a process called \textbf{time decay}, which ensures that the passage of time negatively affects uncertainty (more on section \ref{subsec:timedecay}). This mechanism increases the robustness of the cell by acknowledging the value of time in assessing its current state.
+Representing the cell's variables in a fuzzy (or probabilistic) manner can better capture the inherent uncertainty in time series data. For the cell's inner workings, we chose that inputs and outputs are not represented by crisp values but rather by classical sets. However, they are not limited to this representation, with fuzzy numbers or probability distributions as alternatives. Besides, they can be subject to a process called \textbf{time decay}, which ensures that the passage of time negatively affects uncertainty (more on section \ref{subsec:timedecay}). This mechanism increases the robustness of the cell by acknowledging the value of time in assessing its current state.
 
 Summing up, the following may characterize inputs and outputs:
 
 \begin{itemize}
     \item Classical set: simple uncertainty band (e.g. uncertainty up, down, relative, etc);
     \item Fuzzy number: generalized fuzzy number representation \cite{Zhang2019} (e.g. triangular fuzzy number (a,b,d;h));
-    \item Probability distribution: the distribution's characteristics (e.g. mean ($\mu$) and standard deviation ($\delta$) for Gaussian, mean rate of occurence ($\lambda$) for Poisson, etc.);
+    \item Probability distribution: the distribution's characteristics (e.g. mean ($\mu$) and standard deviation ($\delta$) for Gaussian, the mean rate of occurrence ($\lambda$) for Poisson, etc.);
 \end{itemize}
 
 \begin{figure}[h!]
     \centering
     \includegraphics[width=15cm]{figures/chapter4/cell/classic_fuzzy_gaussian.pdf}
-    \caption{Classical set, triangular fuzzy number and gaussian distributions and the associated membership function.}
+    \caption{Classical set, triangular fuzzy number, Gaussian distributions, and the associated membership function.}
     \label{fig:classicfuzzygaussian}
 \end{figure}
 
-The choice of using classical sets comes with some pros and cons: many operations become quite efficient, but we lose any notion . For example, filtering historical data becomes trivial: a value either lies within the bounds of the interval (membership value of one) or it does not (membership value of zero). This will be critical for some processes of the cell, primarily in temporal similarity extraction (\ref{subsec:tempsim}).
+Classical sets have pros and cons: many operations become more efficient, but we lose density information. Filtering historical data becomes trivial: a value lies within the bounds of the interval (membership value of one) or does not (membership value of zero). This more accessible representation will benefit some cell processes, primarily in temporal similarity extraction (\ref{subsec:tempsim}).
 
 \subsection{Time decay} \label{subsec:timedecay}
 
@@ -112,59 +124,23 @@ lower = lower - (lower - minimum) \times \frac{age}{decay}
 upper = upper + (maximum - upper) \times \frac{age}{decay}
 \end{equation}
 
-The $age$ variable refers to the time difference between the present time and the instant the value was created. For implementation, the unit considered is the second. The $decay$ is a parametrized constant (same unit as $age$) that defines the time it takes for the set to expand into its limits when starting from the median. It should be chosen based on the characteristics of the variable. However, a good starting point is defining it as equal to the data acquisition period so that the set is entirely expanded until a new value is measured.
+The $age$ variable refers to the time difference between the present time and the instant of data acquisition. For implementation, the time unit considered is the second. The $decay$ is a parametrized constant (same unit as $age$) that defines the time it takes for the set to expand into its limits when starting from the median. It is chosen based on the characteristics of the variable, i.e., knowledge of its uncertainty over time. However, a good starting point is defining it as equal to the data acquisition period so that the set expands entirely until a new value is acquired.
 
-% TODO em vez de tabela e gráfico, colocar só gráfico com anotações dos valores (e.g. aos 10s)
 \begin{figure}[h!]
-    \begin{floatrow}
-    \capbtabbox{%
-    \resizebox{4cm}{!}{%
-        \begin{tabular}{|l|l|l|}
-            \hline
-            $x_{min}$   & $x_{max}$   & decay (s) \\ \hline
-            0       & 10      & 10        \\ \hhline{===}
-            $x_{lower}$ & $x_{upper}$ & age (s)   \\ \hline
-            4.000   & 6.000   & 0.000     \\ \hline
-            3.600   & 6.400   & 1.000     \\ \hline
-            2.880   & 7.120   & 2.000     \\ \hline
-            2.016   & 7.984   & 3.000     \\ \hline
-            1.210   & 8.790   & 4.000     \\ \hline
-        0.605   & 9.395   & 5.000     \\ \hline
-        0.242   & 9.758   & 6.000     \\ \hline
-        0.073   & 9.927   & 7.000     \\ \hline
-        0.015   & 9.985   & 8.000     \\ \hline
-        0.001   & 9.999   & 9.000     \\ \hline
-        0.000   & 10.000  & 10.000    \\ \hline
-    \end{tabular}%
-    }
-    }{%
-    \caption{Parameters and values of $x_{lower}$ and $x_{upper}$ varying with age when affected by time decay.}%
-    \label{tab:timedecay}
-    }
-    \ffigbox{%
-    \includegraphics[width=9cm]{figures/chapter4/cell/time_decay.png}%
-    }{%
-      \caption{Visualization of the effect of time decay on $x_{lower}$ and $x_{upper}$.}%
-      \label{fig:timedecay}
-    }
-    \end{floatrow}
-    \end{figure}
+    \centering
+    \includegraphics[width=10cm]{figures/chapter4/cell/time_decay.pdf}
+    \caption{Visualization of the effect of time decay on $x_{lower}$ and $x_{upper}$.}
+    \label{fig:timedecay}
+\end{figure}
 
-% \begin{figure}[h!]
-%     \centering
-%     \includegraphics[width=10cm]{figures/chapter4/cell/time_decay.png}
-%     \caption{Time decay.}
-%     \label{fig:timedecay}
-% \end{figure}
-
-Table \ref{tab:timedecay} and figure \ref{fig:timedecay} represent the expansion of the set throughout a period equal to the decay parameter (ten seconds). When $x$ reaches the age of ten seconds, its set represents complete uncertainty since its bounds became equal to the variable limits ($x_{min}$ and $x_{max}$). We can see that the decreasing difference between the bounds and maximum/minimum values causes attenuation in the decay curve, as it displays a non-linear behavior. This behavior seems appropriate according to the reality of systems: as a variable becomes increasingly uncertain, there is less potential for its uncertainty to increase.
+Table \ref{tab:timedecay} and figure \ref{fig:timedecay} represent the expansion of the set throughout a period equal to the decay parameter (ten seconds). When $x$ reaches the age of ten seconds, its set represents complete uncertainty since its bounds become similar to the variable limits ($x_{min}$ and $x_{max}$). We can see that the decreasing difference between the bounds and maximum/minimum values causes attenuation in the decay curve, as it displays a non-linear behavior. This behavior seems appropriate according to the reality of systems: as a variable becomes more uncertain, there is less potential for its uncertainty to increase.
 
 
 \subsection{Temporal similarity extraction} \label{subsec:tempsim}
 
-Temporal similarity extraction the process of identifying recurring patterns in time series data. It involves the identification of past instances where the current state is observed to extract useful information about the system's behavior over time. By identifying historical periods with similar states, temporal similarity extraction can help assess the current state or predict future trends. This technique is common in statistics, for purposes such as estimation and forecasting.
+Temporal similarity extraction is the process of identifying recurring patterns in time series data. It involves the identification of past instances where the current state is observed to extract useful information about the system's behavior over time. By identifying historical periods with similar conditions, temporal similarity extraction can help assess the current state or predict future trends. This technique is common in statistics for purposes such as estimation and forecasting.
 
-Using sets or probability distributions to filter historical data is one approach to simplify the process of temporal similarity extraction in multivariate time series data, while also making it more robust against noisy or incomplete data. This approach assigns membership values to each data point in the time series based on the corresponding set (or distribution) generated from the current cell inputs, and by eliminating samples past a certain threshold we can generate outputs. This is one of the reasons for deciding to represent the inputs and outputs of the cell in a fuzzy manner. 
+Using sets or probability distributions to filter historical data is one approach to simplify the process of temporal similarity extraction in multivariate time series data while also making it more robust against noisy or incomplete data. This approach assigns membership values to each data point in the time series based on the corresponding set (or distribution) generated from the current cell inputs. By eliminating samples past a certain threshold, we can form the outputs. The possibility of this process is one of the reasons for deciding to represent the inputs and outputs of the cell in a fuzzy manner. 
 
 The proposal for similarity extraction in the cell consists of receiving new values (inputs) for the cell's variables from a data source (sensors or other data acquisition equipment, calculations, forecasting, etc.), generating a classical set, fuzzy number, or probability distribution from them, and then applying the bounds/membership function or probability density function to the knowledge base (see figure \ref{fig:solo_state_estimation}). When historical samples are associated with membership values, there may be a process for determining outputs by combining data and membership values.
 
@@ -174,7 +150,7 @@ This process also makes possible for simple forecasting. Considering an offset (
 
 The following examples consider that $t=0$ is associated with the present, and $\mu$ represents membership functions.
 
-\paragraph{Self Similarity}
+\paragraph{Self-similarity}
 Having a knowledge base and input variables, the cell can perform intrinsic temporal similarity extraction.
 Consider the a cell that is characterized by two variables, which are a function of time: $x(t)$ and $y(t)$.
 Assume that, at a given instant, these are the new cell inputs:
@@ -195,17 +171,17 @@ Assume that, at a given instant, these are the new cell inputs:
     \end{cases}
 \end{equation}
 
-The membership functions $\mu$ are generated considering that $x$ and $y$ are characterized by uniform and symetrical uncertainty, and that the received samples of $x(0)$ and $y(0)$ represent its median.
+The membership functions $\mu$ are generated considering that $x$ and $y$ are characterized by uniform and symmetrical uncertainty and that the received samples of $x(0)$ and $y(0)$ represent their median.
 
 \begin{figure}[h!]
     \centering
     \includegraphics[width=\linewidth]{figures/chapter4/cell/solo_state_estimation.pdf}
-    \caption{Visualization of a self similarity extraction example.}
+    \caption{Visualization of a self-similarity extraction example.}
     \label{fig:solo_state_estimation}
 \end{figure}
 
 
-With the knowledge base represented in figure \ref{fig:solo_state_estimation}, the resulting activations will be 2023-01-01 00:02:00 and 2023-01-01 00:03:00. These are the timestamps of past instances where the cell's variables have values belonging to the set generated from new inputs. Now we can also infer that the actual values of $x$ and $y$ should reside in a set constrained by the filtered historical data ($x(t)$ and $y(t)$). Therefore, the outputs based on self similarity extraction are:
+With the knowledge base represented in figure \ref{fig:solo_state_estimation}, the resulting activations will be 2023-01-01 00:02:00 and 2023-01-01 00:03:00. These are the timestamps of past instances where the cell's variables have values belonging to the set generated from new inputs. Now we can also infer that the actual values of $x$ and $y$ should reside in a set constrained by the filtered historical data ($x(t)$ and $y(t)$). Therefore, the outputs based on self-similarity extraction are:
 
 \begin{equation}
     x'(0) \in [0.90, 0.95]
@@ -215,18 +191,19 @@ With the knowledge base represented in figure \ref{fig:solo_state_estimation}, t
     y'(0) \in [1.80, 2.20]
 \end{equation}
 
-These results confirm that outputs with less uncertainty are achieved, while only depending on intrinsic processes and private data.
+These results confirm that we achieve outputs with less uncertainty only depending on intrinsic processes and private data.
 
 \paragraph{Mutual Similarity}
-Extending similarity extraction to multiple cells is a relatively trivial process. If a cell has access to another's activations, at the same rolling timestamp, and for an historical window that intersects its knowledge base, it can use that information to refine the result of intrinsic temporal similarity extraction. Using sets, this can occur by joining intrinsic and extrinsic membership values by aggregation (e.g. sum, multiplication, average, etc).
-Although simple, this process has some tricky requirements, such has not allowing a time difference between the computation of membership values of different cells to avoid joining incoherent information, and 
+
+Extending similarity extraction to multiple cells is a relatively trivial process. Suppose a cell has access to another's activations at the same rolling timestamp and for a historical window that intersects its knowledge base. In that case, it can use that information to refine the intrinsic temporal similarity extraction result. Using sets, this can occur by joining intrinsic and extrinsic membership values by aggregation (e.g. sum, multiplication, average, etc).
+Although simple, this process has some tricky requirements, such as not allowing a time difference between the computation of membership values of different cells to avoid joining incoherent information, and 
 % Capacidade de estimação de estado intrínsica + extrínsica
 
 \subsection{Connections and Trust}
 
-A network could not be formed without the existence of connections. Having neighbours grants the cells perform actions such as mutual similarity extraction. Besides, there can be certain indicators associates with these links, and to take advantage of sharing information with neighbours, there comes a need to have something we named \textbf{Trust}.
+Connections are the essence of forming the CellTAN network. Mutual similarity extraction and comparison of activations can only occur in cell neighborhoods. These links may have associated indicators that describe the cells' relationships, and a critical metric we consider for anomaly detection is entitled \textbf{Trust}.
 
-In order to distinguish cells, each one of them has a unique identifier, generated upon criation and independent from the cell's name. This serves to easily register cells and manage the network. Since interconnections require an agent to keep track of these id's and correctly direct traffic, we introduce a component entitles \textbf{Hub} for keeping track of registered cells in the network and their corresponding id's. By having a central component which provides global network visibility, connections are easier to form.
+Each cell has a unique identifier, generated upon creation and independent of the name attributed by the owner. This ID serves to register cells and better manage the network. Since interconnections require an agent to keep track of these IDs and correctly direct traffic, we introduce a component entitles \textbf{Hub} for keeping track of registered cells in the network and their corresponding id's. By having a central component which provides global network visibility, connections are easier to form.
 
 
 \subsubsection{Trust computation}
@@ -243,32 +220,39 @@ In order to distinguish cells, each one of them has a unique identifier, generat
 
 \section{The Hub}
 
-The CellTAN tool is supposed to be easily accessible for different assets and owners on any given location. However, due to privacy and security reasons, monitoring equipment and other smart devices (IoT, servers, etc.) present in PV plants and the owner's database's are usually protected from unwanted outside connections. These facts 
+The CellTAN tool is supposed to be easily accessible for different assets and owners in any given location. However, for privacy and security reasons, monitoring equipment and other smart devices (IoT, servers, etc.) in PV plants and the owner's database are usually protected from unwanted outside connections. Because of this, the CellTAN network owner can act as a proxy and be responsible for arranging the necessary connections between the equipment of different asset owners and the network. This way, all traffic is routed through its system, which solves the issues mentioned before but possibly introduces a bottleneck and affects availability. These downsides are inevitable for aggregating distributed systems and sharing information between otherwise reserved agents. Besides being a proxy, other responsibilities associated with the Hub are:
 
+\begin{itemize}
+    \item Provide network visibility: cells and connections;
+    \item Receive events from cells;
+    \item Cell connection proposal.
+\end{itemize}
+
+Adding this component permits visualizing all the cells registered in the system and their public data. This 
 
 \section{Implementation}
 
 \subsection{Programming and Infraestructure}
 
-The cell is materialized through a Python module. It was developed using a mix of the OOP (Object Oriented Programing) and FP (functional programing) paradigms and features a structure very familiar with all that has been discussed thus far. Using Python comes with the following advantages:
+Materializing both the Cell and the Hub happened through Python modules. It was developed using a mix of the OOP (Object Oriented Programming) and FP (functional programming) paradigms and features a structure familiar with the descriptions in previous sections. Using Python for the implementation of the CellTAN comes with the following advantages:
 
 \begin{itemize}
-    \item Easy to read and write code, requiring less syntax for complex operations compared to low level languages;
+    \item Easy to read and write code, requiring less syntax for complex operations compared to low-level languages;
     \item Extensive availability of libraries and tools;
     \item Deployment ease: doesn't have to compile, only needing an interpreter and dependencies to run;
-    \item Big comunity, with lots of resources (such as documentation) publicly available online. 
+    \item Big community support, with many resources publicly available online (e.g. documentation, tutorials, etc.). 
 \end{itemize}
 
-% imagem com as tecnologias
-% nao esquecer de adicionar referências às ferramentas mencionadas
+% imagem com as tecnologias em anexos talvez
 
-The infrastructure choice for running both the cells and the hub is Docker containers. It allows running the cell's program as a containerized application, with all the necessary dependencies installed virtually, while also adding a layer of isolation between it and the host machine (increased safety). This makes the "production" environment more predictable and stable, since it acts as a whole separate system built for the sole purpose of running the application, instead of relying in the host's OS (Operating System) and running bare-metal.
+Docker containers \cite{docker} are the infrastructure choice for deploying cells and the Hub. They allow running software as containerized applications, with all the necessary dependencies installed virtually. It acts as a separate system built for running the application instead of relying on the host's OS (Operating System) and running bare-metal. This execution strategy adds an isolation layer between the program and the host machine, increasing safety and making the "production" environment more predictable and stable. An overview of the technology stack utilized and proposed for the software products created in this work is pictured in appendix \ref{ap1:techstack}.
 
-% anexo do dockerfile?
+% dockerfile em anexos?
 
 \subsection{Cell configuration and deployment}
 
-% adicionar ref para o YAML
 
-Configuring cells can be done through a simple configuration file using the YAML protocol (one per cell). It should contain the definition of its variables, database credentials, hub credentials, and all other parameters. % meter anexo com screenshot de configuração exemplo
+Configuring cells can be done through configuration files (one per cell). They should contain the cell variables' definitions, database credentials, hub credentials, and all other parameters. Because of its simplicity, we chose the YAML serialization specification \cite{yaml} to parse these configurations. A walkthrough of the cell configuration and expected file structure is present in appendix \ref{ap1:config}
 
+
+% meter anexo para explicação das configs com screenshot de configuração exemplo
