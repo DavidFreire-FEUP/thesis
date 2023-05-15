@@ -51,17 +51,18 @@ A cell is an independent entity composed of \textbf{data} and \textbf{processes}
 
 \subsection{Processes and Data}
 
+
 \begin{figure}[h!]
     \centering
     \includegraphics[width=12cm]{figures/chapter4/cell/processes.pdf}
-    \caption{Cell's core main loop of processes.}
+    \caption{The cell's core main loop of processes.}
     \label{fig:cellprocesses}
 \end{figure}
 
 \begin{figure}[h!]
     \centering
     \includegraphics[width=\linewidth]{figures/chapter4/cell/data.pdf}
-    \caption{Cell's public and private attributes.}
+    \caption{The cell's public and private data attributes.}
     \label{fig:celldata}
 \end{figure}
 
@@ -113,6 +114,7 @@ upper = upper + (maximum - upper) \times \frac{age}{decay}
 
 The $age$ variable refers to the time difference between the present time and the instant the value was created. For implementation, the unit considered is the second. The $decay$ is a parametrized constant (same unit as $age$) that defines the time it takes for the set to expand into its limits when starting from the median. It should be chosen based on the characteristics of the variable. However, a good starting point is defining it as equal to the data acquisition period so that the set is entirely expanded until a new value is measured.
 
+% TODO em vez de tabela e gráfico, colocar só gráfico com anotações dos valores (e.g. aos 10s)
 \begin{figure}[h!]
     \begin{floatrow}
     \capbtabbox{%
@@ -216,7 +218,8 @@ With the knowledge base represented in figure \ref{fig:solo_state_estimation}, t
 These results confirm that outputs with less uncertainty are achieved, while only depending on intrinsic processes and private data.
 
 \paragraph{Mutual Similarity}
-\dots
+Extending similarity extraction to multiple cells is a relatively trivial process. If a cell has access to another's activations, at the same rolling timestamp, and for an historical window that intersects its knowledge base, it can use that information to refine the result of intrinsic temporal similarity extraction. Using sets, this can occur by joining intrinsic and extrinsic membership values by aggregation (e.g. sum, multiplication, average, etc).
+Although simple, this process has some tricky requirements, such has not allowing a time difference between the computation of membership values of different cells to avoid joining incoherent information, and 
 % Capacidade de estimação de estado intrínsica + extrínsica
 
 \subsection{Connections and Trust}
@@ -227,6 +230,9 @@ In order to distinguish cells, each one of them has a unique identifier, generat
 
 
 \subsubsection{Trust computation}
+
+
+% TODO só fazer depois de confirmar as equações com o prof
 \dots
 
 
@@ -237,10 +243,32 @@ In order to distinguish cells, each one of them has a unique identifier, generat
 
 \section{The Hub}
 
-\dots
+The CellTAN tool is supposed to be easily accessible for different assets and owners on any given location. However, due to privacy and security reasons, monitoring equipment and other smart devices (IoT, servers, etc.) present in PV plants and the owner's database's are usually protected from unwanted outside connections. These facts 
 
 
 \section{Implementation}
 
-% TODO: escrever sobre a concretização real destas ideias
-\dots
+\subsection{Programming and Infraestructure}
+
+The cell is materialized through a Python module. It was developed using a mix of the OOP (Object Oriented Programing) and FP (functional programing) paradigms and features a structure very familiar with all that has been discussed thus far. Using Python comes with the following advantages:
+
+\begin{itemize}
+    \item Easy to read and write code, requiring less syntax for complex operations compared to low level languages;
+    \item Extensive availability of libraries and tools;
+    \item Deployment ease: doesn't have to compile, only needing an interpreter and dependencies to run;
+    \item Big comunity, with lots of resources (such as documentation) publicly available online. 
+\end{itemize}
+
+% imagem com as tecnologias
+% nao esquecer de adicionar referências às ferramentas mencionadas
+
+The infrastructure choice for running both the cells and the hub is Docker containers. It allows running the cell's program as a containerized application, with all the necessary dependencies installed virtually, while also adding a layer of isolation between it and the host machine (increased safety). This makes the "production" environment more predictable and stable, since it acts as a whole separate system built for the sole purpose of running the application, instead of relying in the host's OS (Operating System) and running bare-metal.
+
+% anexo do dockerfile?
+
+\subsection{Cell configuration and deployment}
+
+% adicionar ref para o YAML
+
+Configuring cells can be done through a simple configuration file using the YAML protocol (one per cell). It should contain the definition of its variables, database credentials, hub credentials, and all other parameters. % meter anexo com screenshot de configuração exemplo
+
