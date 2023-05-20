@@ -133,7 +133,7 @@ The $age$ variable refers to the time difference between the present time and th
     \label{fig:timedecay}
 \end{figure}
 
-Table \ref{tab:timedecay} and figure \ref{fig:timedecay} represent the expansion of the set throughout a period equal to the decay parameter (ten seconds). When $x$ reaches the age of ten seconds, its set represents complete uncertainty since its bounds become similar to the variable limits ($x_{min}$ and $x_{max}$). We can see that the decreasing difference between the bounds and maximum/minimum values causes attenuation in the decay curve, as it displays a non-linear behavior. This behavior seems appropriate according to the reality of systems: as a variable becomes more uncertain, there is less potential for its uncertainty to increase.
+Figure \ref{fig:timedecay} represents the expansion of the set throughout a period equal to the decay parameter (ten seconds). When $x$ reaches the age of ten seconds, its set represents complete uncertainty since its bounds become similar to the variable limits ($x_{min}$ and $x_{max}$). We can see that the decreasing difference between the bounds and maximum/minimum values causes attenuation in the decay curve, as it displays a non-linear behavior. This behavior seems appropriate according to the reality of systems: as a variable becomes more uncertain with time, there is less potential for its uncertainty to increase.
 
 
 \subsection{Temporal similarity extraction} \label{subsec:tempsim}
@@ -208,14 +208,14 @@ Each cell has a unique identifier, generated upon creation and independent of th
 
 \subsubsection{Trust computation}
 
-
-% TODO só fazer depois de confirmar as equações com o prof
+% TODO só fazer depois de confirmar o método com o prof
 \dots
 
 
 \subsection{Events}
 
-\dots
+Having a mechanism that informs the owner of relevant occurrences in his cells is one of the most critical aspects of visibility and anomaly detection in the CellTAN. For this effect, we developed something called \textbf{Events}, representing a pre-determined type of occurrence related to the cell, optionally grouped with additional information. They occur by comparing specific metrics with parametrized thresholds.
+
 
 
 \section{The Hub}
