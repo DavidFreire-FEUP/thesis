@@ -83,7 +83,7 @@ Figure \ref{fig:celldata} showcases the cell's public and private data attribute
 
 \subsection{Inputs and Outputs}
 
-The cell has inputs and outputs. Both are a view of the values that define its variables at a given timestamp, which is continuously rolling. While inputs are directly associated with raw sampled data from the system (injected by the owner), outputs are a byproduct of internal processes. The latter should present more accurate information since it is based on internal and external data (ideally) and be helpful for the cell's owner to assess its state.
+The cell has inputs and outputs. Both are a view of the values that define its variables at a given timestamp, which is continuously rolling. While inputs are directly associated with raw sampled data from the system (injected by the owner), outputs are a byproduct of internal processes. The latter should present more accurate information since it is based on internal and external data (ideally) and may be helpful for the cell's owner to assess its state.
 
 Representing the cell's variables in a fuzzy (or probabilistic) manner can better capture the inherent uncertainty in time series data. For the cell's inner workings, we chose that inputs and outputs are not represented by crisp values but rather by classical sets. However, they are not limited to this representation, with fuzzy numbers or probability distributions as alternatives. Besides, they can be subject to a process called \textbf{time decay}, which ensures that the passage of time negatively affects uncertainty (more on section \ref{subsec:timedecay}). This mechanism increases the robustness of the cell by acknowledging the value of time in assessing its current state.
 
@@ -106,25 +106,25 @@ Classical sets have pros and cons: many operations become more efficient, but we
 
 \subsection{Time decay} \label{subsec:timedecay}
 
-In real-world dynamic systems that involve data acquisition, the certainty of the data collected tends to fade over time due to the nature of the data acquisition process. Typically, the most recent data is the most accurate representation of the system's current state, and as time elapses, the accuracy of previous data points decreases. This occurs naturally due to various factors such as environmental changes, equipment degradation, or other system's dynamics. As a result, it is crucial to consider the time dimension when analyzing dynamic systems and to develop methods that can account for the decay in data certainty over time.
+In real-world dynamic systems that involve data acquisition, the certainty of the data collected tends to fade over time due to their dynamic nature. Typically, the most recent data is the most accurate representation of the system's current state, and as time elapses, the accuracy of previous data points decreases. As a result, it is crucial to consider the time dimension when analyzing dynamic systems and to develop methods that can account for the decay in data certainty over time.
 
-As stated before, and towards considering the time dimension for the current state of a cell, we formulate a \textbf{time decay} method to ensure a more truthful and reliable assessment of the cell's current state. During the standby stage, this process ensures that the inputs and outputs suffer an increase in uncertainty, which is has different side effects depending on what represents them (classical set, fuzzy number or probability distribution).
+As stated before, and towards considering the time dimension for the current state of a cell, we formulate a \textbf{time decay} method to ensure a more truthful and reliable assessment of the cell's current state. During the standby stage, this process ensures that the inputs and outputs suffer an increase in uncertainty.
 
-Consider the following example of converting a crisp value and uncertainty to a classical set:
+Consider the following example of converting a crisp value (5) and uncertainty ($\pm$1) to a classical set:
 
 $$x = 5 \pm 1 \rightarrow [5-1, 5+1] = [4, 6]$$
 
-To simulate the increase in uncertainty over time, we can apply the following formula to each bound:
+To simulate the increase in uncertainty over time, we suggest the following equations (\ref{eq:uncertain_down} and \ref{eq:uncertain_up}), applied to each bound:
 
-\begin{equation}
+\begin{equation} \label{eq:uncertain_down}
 lower = lower - (lower - minimum) \times \frac{age}{decay}
 \end{equation}
 
-\begin{equation}
+\begin{equation} \label{eq:uncertain_up}
 upper = upper + (maximum - upper) \times \frac{age}{decay}
 \end{equation}
 
-The $age$ variable refers to the time difference between the present time and the instant of data acquisition. For implementation, the time unit considered is the second. The $decay$ is a parametrized constant (same unit as $age$) that defines the time it takes for the set to expand into its limits when starting from the median. It is chosen based on the characteristics of the variable, i.e., knowledge of its uncertainty over time. However, a good starting point is defining it as equal to the data acquisition period so that the set expands entirely until a new value is acquired.
+The $age$ variable refers to the time difference between the present time and the instant of data acquisition. For implementation, the time unit considered is the 'second'. The $decay$ is a parametrized constant (same unit as $age$) that defines the time it takes for the set to expand into its limits when starting from the median. It is chosen based on the characteristics of the variable, i.e., knowledge of its uncertainty over time. However, a good starting point is defining close to the data acquisition period so that the set expands entirely until a new value is acquired.
 
 \begin{figure}[h!]
     \centering
@@ -151,9 +151,10 @@ This process also makes possible for simple forecasting. Considering an offset (
 The following examples consider that $t=0$ is associated with the present, and $\mu$ represents membership functions.
 
 \paragraph{Self-similarity}
-Having a knowledge base and input variables, the cell can perform intrinsic temporal similarity extraction.
-Consider the a cell that is characterized by two variables, which are a function of time: $x(t)$ and $y(t)$.
-Assume that, at a given instant, these are the new cell inputs:
+
+With a knowledge base and input variables, the cell can perform intrinsic temporal similarity extraction.
+Consider a cell characterized by two variables that are a function of time: $x(t)$ and $y(t)$,
+let's assume that, at a given instant, these are the new inputs:
 
 \begin{equation}
     x(0) = 1.0 \rightarrow \mu_{x(0)}(x) =
@@ -199,6 +200,99 @@ Extending similarity extraction to multiple cells is a relatively trivial proces
 Although simple, this process has some tricky requirements, such as not allowing a time difference between the computation of membership values of different cells to avoid joining incoherent information, and 
 % Capacidade de estimação de estado intrínsica + extrínsica
 
+
+\subsection{Trust between Cells}  \label{subsec:trust}
+
+A 2x2 contingency table represents the intersection of activations of two cells. In this table, the rows define the activation status of one cell (labeled as "Activated" and "Not Activated"), and the columns represent the activation status of the other cell (same labels).
+
+\begin{table}[h!]
+    \centering
+    \caption{Contigency table representing the activation intersection of two cells.}
+    \label{tab:cellactivationsintersection}
+    \resizebox{8cm}{!}{%
+    \begin{tabular}{ll|cc|}
+    \cline{3-4}
+    \multicolumn{2}{l|}{\multirow{2}{*}{}} & \multicolumn{2}{c|}{Cell 2} \\ \cline{3-4} 
+    \multicolumn{2}{l|}{}                                     & \multicolumn{1}{l|}{Activated} & \multicolumn{1}{l|}{Not Activated} \\ \hline
+    \multicolumn{1}{|c|}{\multirow{2}{*}{Cell 1}} & Activated & \multicolumn{1}{c|}{a}         & b                                  \\ \cline{2-4} 
+    \multicolumn{1}{|c|}{} & Not Activated & \multicolumn{1}{c|}{c}  & d \\ \hline
+    \end{tabular}%
+    }
+\end{table}
+
+Each element of the matrix represented in Table \ref{tab:cellactivationsintersection} ($a$,$b$,$c$, and $d$) corresponds to a specific combination of activations, such as "Activated-Activated," "Activated-Not Activated," "Not Activated-Activated," and "Not Activated-Not Activated". They represent the frequency or count of observations falling into that specific combination. The main diagonal relates to the cells' agreeableness, while the secondary diagonal is the opposite: disagreeableness. For the application at hand, the 'second' is utilized, meaning that, for example, $a$ is the total amount of seconds both cells are active.
+
+\subsubsection{Statistical tests for measuring association}
+
+In statistics, numerous tests are available to measure the association between variables in contingency tables. One of the most known tests is Pearson's chi-square test (\ref{ap1:pearsonschi}), which assesses whether there is a significant association between the two variables. It compares the observed frequencies in the contingency table with the expected frequencies under an assumption of independence. If this test yields a statistically significant result, it suggests a non-random association between the activations of the two cells.
+
+
+Another widely employed test is Fisher's exact test (\ref{ap1:fischer}), as an alternative to the chi-squared, which is particularly useful for small sample sizes. It calculates the probability of obtaining the observed distribution of activations in the contingency table, also assuming independence between the variables. If this probability is sufficiently low, it implies that the association between the activations is unlikely to occur by chance. The odds ratio and relative risk can also quantify the strength and direction of the association between two variables. The odds ratio would compare the odds of activation in one cell close to the other, while the relative risk compares the risk of activation in one cell to the risk in the other.
+
+Considering that the desired outcome of activation comparison between cells is a normalized index that translates into how much they conform to each other (hence the term "trust"), there is a preference for inherently normalized tests, such as the $\phi$ coefficient (\ref{ap1:phi}), contingency coefficient (\ref{ap1:contingencyc}), and Theil's U (\ref{ap1:theilsu}). The goal is that this index represents how much the historical incidence of two cells' states match.
+
+The $\phi$ coefficient, also known as Matthews correlation coefficient, is a measure of association designed explicitly for 2x2 contingency tables, quite popular in machine learning for measuring the quality of binary classification. It ranges from -1 to 1, where 0 indicates no association, -1 represents a perfect negative association, and 1 represents a perfect positive association. The contingency coefficient extends this coefficient's usability, allowing its application in larger contingency tables, and ranges from 0 to 0.707 (no association to strong association).
+Finally, another relevant test is Theil's U . It accounts for the variables' mutual information and entropy based on information theory principles, providing a measure for the proportion of total entropy in one variable that the other can explain. It also ranges from 0 to 1.
+
+\subsubsection{Proposed trust measurement method}
+
+All the mentioned tests may offer different perspectives on the association between the activations of two cells. However, none are considered adequate for our application, so we propose a new method, defined by \ref{eq:cdmchi}.
+
+\begin{equation} \label{eq:cdmchi}
+    \chi_a^{2'} = \frac{(p_a - E(p_a))^2}{E(p_a)}
+\end{equation}
+
+where:
+
+\[
+    p_a = \frac{a}{a+b+c+d}
+\]
+
+\[
+    E(p_a) = \frac{(a + c) \times (a + b)}{(a+b+c+d)^2}
+\]
+
+\begin{align*}
+    p_a &: \text{Probability of both cells being active} \\
+    E(p_a) &: \text{Expected value for the probability of both cells being active}
+\end{align*}
+
+Based on Pearson's chi-squared test, this new approach focuses on the "a" component: the pure agreeableness between two cells. Its value ranges from 0 to 1 (no "trust" to complete "trust"). Some of the most relevant tests previously presented, namely the $\phi$ coefficient, contingency coefficient, and Theil's U, are compared to this new method for comparison and validation.
+
+\paragraph{Test nº1}
+
+The first test simulates the variation of the $d$ component and its effect on the association measurements. It's expected that, as not activated time increases, the chance of the two cells intersecting activations lowers, and so their trust should increase. The starting point and tested spaces of $d$ are:
+
+$$
+\begin{bmatrix}
+    30 & 10 \\ 10 & d
+\end{bmatrix}
+$$
+$$
+d \in [0, 100], d \in [0, 3000]
+$$
+
+\begin{figure}[h!]
+\centering
+    \includegraphics[width=0.8\textwidth]{figures/chapter4/cell/trust_tests/1_a.pdf}
+    \caption{Trust measurement evolution for different methods with $a=30, b=10, c=10, d \in [0, 100]$.}
+    \label{fig:trust_test_1_a}
+\end{figure}
+
+
+In figure \ref{fig:trust_test_1_a}, we can observe that all measurements increase with $d$, with a slight reduction at the start, although attenuated on the new method. Theil's U's minimum is 0.5, while the expectation for having a lower $d$ (few deactivated intersecting periods) is a value closer to zero (as the rest demonstrate). This scenario means both cells have a short history or significant input uncertainty (remember the time extraction process from \ref{subsec:tempsim}). Therefore, their "trust" in each other should be minimal.
+Not having a reduction in the first values of $d$, showcased by the new method, is the intended behavior. Having equal activated and deactivated intersections ($a$ and $d$) should not be significantly penalized versus having $a>>d$, justified by the above reasoning.
+
+
+\begin{figure}[h!]
+\centering
+    \includegraphics[width=0.8\textwidth]{figures/chapter4/cell/trust_tests/1_b.pdf}
+    \caption{test 1 b}
+    \label{fig:trust_test_1_b}
+\end{figure}
+
+Figure \ref{fig:trust_test_1_b} extends the previous analysis, showcasing that all methods have asymptotical behavior. All except Theil's U have asymptotes deemed acceptable for this test. Since disagreement terms "b" and "c" are non-null and relatively close to "a", it's expected that the trust index doesn't reach a significant value, and remain close to half.
+
 \subsection{Connections}
 
 Mutual similarity extraction and comparing activations can only occur in groups. Thus, connections are the essence of forming the CellTAN network. These links may have associated indicators that describe the cells' relationships, and a critical metric we consider for anomaly detection is entitled \textbf{Trust}.
@@ -207,16 +301,16 @@ Each cell has a unique identifier, generated upon creation and independent of th
 
 On cell deployment, the system expects the owner and the CellTAN manager to manually link cells together by assigning each connection. However, the plan is to develop a mechanism that proposes new connections based on the neighbor's neighbors through the Hub. This mechanism could function based on the strength of the relationship between cells and neighbors in common, recommending a direct link if both "trust" them similarly. As the last phrase hints, an indicator called "trust" is the criterion for evaluating these links. The following subsection defines the conception of this metric.
 
-\subsubsection{Trust}  \label{subsec:trust}
-\dots
-
 \subsubsection{Communication Protocol}
-In the context of ensuring proper data sharing between cells, the choice of communication protocol is a crucial aspect of establishing connections. For this work, we implemented a local communication mode for cells running on the same machine or within the same process and a remote communication model intended for cells distributed across different servers. The local communication mode is straightforward, assuming direct links between cells within the program. However, there are multiple protocol options regarding remote communication, including HTTP, HTTPS, WebSocket, and MQTT (excluding protocols for wireless proximity communication, as the CellTAN system assumes cells may be located in different geographical locations). Initially, we implemented HTTP/HTTPS for remote communications due to its accessibility and ease of implementation. However, given its synchronous operation (based on request and response), we soon realized there might be more appropriate and robust choices for a distributed asynchronous system. Consequently, as future work, we should refactor the remote interface to utilize MQTT.
+
+In the context of ensuring proper data sharing between cells, the choice of communication protocol is a crucial aspect of establishing connections. For this work, we implemented a local communication mode for cells running on the same machine or within the same process and a remote communication model intended for cells distributed across different servers. The local communication mode is straightforward, assuming direct links between cells within the program. However, multiple protocol options regarding remote communication exist, including HTTP, HTTPS, WebSocket, and MQTT (excluding protocols for wireless proximity communication, as the CellTAN system assumes cells may be in different geographical locations). Initially, we implemented HTTP/HTTPS for remote communications due to its accessibility and ease of implementation. However, given its synchronous operation (based on request and response), we soon realized there might be more appropriate and robust choices for a distributed asynchronous system. Consequently, as future work, we should refactor the remote interface to utilize MQTT.
 
 HTTP (Hypertext Transfer Protocol) and MQTT (Message Queuing Telemetry Transport) are communication protocols in different contexts. HTTP, a request-response protocol widely used in web applications, operates over TCP and follows a client-server model. It proves suitable when clients need to retrieve or send specific data to and from a server. HTTP is simple, widely supported, and compatible with browsers and standard web technologies. However, its stateless nature and lack of optimization for real-time communication can result in high overhead caused by frequent request-response cycles.
+
 % TODO referencias
+
 In contrast, MQTT is a lightweight publish-subscribe messaging protocol designed for efficient communication in distributed systems, especially within the Internet of Things (IoT). MQTT utilizes a broker-based architecture, where clients publish messages to topics and subscribe to receive messages from specific topics of interest. MQTT is highly scalable, bandwidth-efficient, and supports asynchronous messaging. It minimizes network and power consumption while providing reliable message delivery. However, implementing MQTT may require additional infrastructure, such as MQTT brokers.
-The publish-subscribe model of MQTT facilitates decoupled communication between system components, allowing for scalable and flexible systems. It is suitable for scenarios where devices or services exchange information in a distributed environment asynchronously. MQTT often outshines HTTP as the preferable choice for a distributed asynchronous system that emphasizes real-time data exchange and efficient communication. Nevertheless, HTTP remains the more appropriate choice if the system primarily revolves around traditional web applications and request-response interactions. Ultimately, the scope of CellTAN requires the leverage of both protocols in different aspects of the tool: HTTP is more suitable for human-system interaction, and MQTT for system-system interaction.
+The publish-subscribe model of MQTT facilitates decoupled communication between system components, allowing for scalable and flexible systems. It is suitable for scenarios where devices or services exchange information in a distributed environment asynchronously. MQTT often outshines HTTP as the preferable choice for a distributed asynchronous system emphasizing real-time data exchange and efficient communication. Nevertheless, HTTP remains the more appropriate choice if the system primarily revolves around traditional web applications and request-response interactions. Ultimately, the scope of CellTAN requires the leverage of both protocols in different aspects of the tool: HTTP is more suitable for human-system interaction, and MQTT for system-system exchanges.
 
 
 \subsection{States}
@@ -261,3 +355,4 @@ Configuring cells can be done through configuration files (one per cell). They s
 
 
 % meter anexo para explicação das configs com screenshot de configuração exemplo
+'
