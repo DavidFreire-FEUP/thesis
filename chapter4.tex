@@ -280,7 +280,7 @@ $$
 \end{figure}
 
 
-In figure \ref{fig:trust_test_1_a}, we can observe that all measurements increase with $d$, with a slight reduction at the start, although attenuated on the new method. Theil's U's minimum is 0.5, while the expectation for having a lower $d$ (few deactivated intersecting periods) is a value closer to zero (as the rest demonstrate). This scenario means both cells have a short history or significant input uncertainty (remember the time extraction process from \ref{subsec:tempsim}). Therefore, their "trust" in each other should be minimal.
+In figure \ref{fig:trust_test_1_a}, we can observe that all measurements increase with $d$, with a slight reduction at the start, although attenuated on the new method. Theil's U's minimum is 0.5, while the expectation for having a lower $d$ (few deactivated intersecting periods) is a value closer to zero (as the rest demonstrate). This scenario means both cells have a short history or significant input uncertainty (remember the time extraction process from \ref{subsec:tempsim}). Therefore, their "trust" should be minimal.
 Not having a reduction in the first values of $d$, showcased by the new method, is the intended behavior. Having equal activated and deactivated intersections ($a$ and $d$) should not be significantly penalized versus having $a>>d$, justified by the above reasoning.
 
 
@@ -291,7 +291,54 @@ Not having a reduction in the first values of $d$, showcased by the new method, 
     \label{fig:trust_test_1_b}
 \end{figure}
 
-Figure \ref{fig:trust_test_1_b} extends the previous analysis, showcasing that all methods have asymptotical behavior. All except Theil's U have asymptotes deemed acceptable for this test. Since disagreement terms "b" and "c" are non-null and relatively close to "a", it's expected that the trust index doesn't reach a significant value, and remain close to half.
+Figure \ref{fig:trust_test_1_b} extends the previous analysis, showcasing that all methods have asymptotical behavior, settling in a value greater than the start. All except Theil's U have asymptotes deemed acceptable for this test. Since disagreement terms $b$ and $c$ are non-null and relatively close to $a$, we expect that the trust index doesn't reach a value near the max, remaining closer to a measure of "half trust".
+
+\paragraph{Test nº2} In this next experiment, we observe the impact of disagreeing terms $b$ and $c$.
+
+$$
+\begin{bmatrix}
+    30 & b \\ 10 & 10
+\end{bmatrix}
+$$
+$$
+b \in [0, 1000]
+$$
+\begin{figure}[h!]
+\centering
+    \includegraphics[width=0.8\textwidth]{figures/chapter4/cell/trust_tests/2_a.pdf}
+    \caption{test 2 a}
+    \label{fig:trust_test_2_a}
+\end{figure}
+
+In figure \ref{fig:trust_test_2_a}, it is clear that, for all methods, an increase in $b$ leads to lower trust. All except the new algorithm tend towards similar asymptotes, near 0.3. However, the expectation is that an increase in disagreement should lead to zero trust, precisely what happens in the proposed method.
+
+$$
+\begin{bmatrix}
+    30 & 10 \\ c & 10
+\end{bmatrix}
+$$
+$$
+c \in [0, 1000]
+$$
+\begin{figure}[h!]
+\centering
+    \includegraphics[width=0.8\textwidth]{figures/chapter4/cell/trust_tests/2_b.pdf}
+    \caption{test 2 b}
+    \label{fig:trust_test_2_b}
+\end{figure}
+
+With figure \ref{fig:trust_test_2_b}, we can observe the asymmetry of Theil's U coefficient, opposing to what figure \ref{fig:trust_test_2_a} showed. It does not represent the trust between cell nº1 and cell nº2, but the trust of nº1 in nº2. The rest of the methods are symmetrical, thus presenting the same results.
+
+\paragraph{Test nº3} This last experiment 
+
+\begin{figure}[h!]
+\centering
+    \includegraphics[width=0.8\textwidth]{figures/chapter4/cell/trust_tests/3.pdf}
+    \caption{test 3}
+    \label{fig:trust_test_3}
+\end{figure}
+
+
 
 \subsection{Connections}
 
@@ -315,7 +362,7 @@ The publish-subscribe model of MQTT facilitates decoupled communication between 
 
 \subsection{States}
 
-\dots
+Intending to attribute good use to all the processes developed for the cell, we introduce a state system that seeks to provide short and critical information about it.
 
 \section{The Hub}
 
