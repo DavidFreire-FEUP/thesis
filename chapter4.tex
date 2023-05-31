@@ -203,6 +203,10 @@ Although simple, this process has some tricky requirements, such as not allowing
 
 \subsection{Trust between Cells}  \label{subsec:trust}
 
+After n the potential for time similarity extraction in the intrinsic inference process of the cell, we encounter another application for the "activations". Given that it represents the past instances of the cell that resemble the current inputs, it allows comparing different cell's behavior. This is the peculiar characteristic of the CellTAN that allows it to be used without data privacy issues and even normalization.
+
+Time is inherently normalized, considering all commponents experience it equally. which allows the network to compare systems without caring about their actual variables. This is what allows the proposed tool to be generalized beyond PV applications.
+
 A 2x2 contingency table represents the intersection of activations of two cells. In this table, the rows define the activation status of one cell (labeled as "Activated" and "Not Activated"), and the columns represent the activation status of the other cell (same labels).
 
 \begin{table}[h!]
@@ -225,7 +229,6 @@ Each element of the matrix represented in Table \ref{tab:cellactivationsintersec
 \subsubsection{Statistical tests for measuring association}
 
 In statistics, numerous tests are available to measure the association between variables in contingency tables. One of the most known tests is Pearson's chi-square test (\ref{ap1:pearsonschi}), which assesses whether there is a significant association between the two variables. It compares the observed frequencies in the contingency table with the expected frequencies under an assumption of independence. If this test yields a statistically significant result, it suggests a non-random association between the activations of the two cells.
-
 
 Another widely employed test is Fisher's exact test (\ref{ap1:fischer}), as an alternative to the chi-squared, which is particularly useful for small sample sizes. It calculates the probability of obtaining the observed distribution of activations in the contingency table, also assuming independence between the variables. If this probability is sufficiently low, it implies that the association between the activations is unlikely to occur by chance. The odds ratio and relative risk can also quantify the strength and direction of the association between two variables. The odds ratio would compare the odds of activation in one cell close to the other, while the relative risk compares the risk of activation in one cell to the risk in the other.
 
@@ -257,11 +260,13 @@ where:
     E(p_a) &: \text{Expected value for the probability of both cells being active}
 \end{align*}
 
-Based on Pearson's chi-squared test, this new approach focuses on the "a" component: the pure agreeableness between two cells. Its value ranges from 0 to 1 (no "trust" to complete "trust"). Some of the most relevant tests previously presented, namely the $\phi$ coefficient, contingency coefficient, and Theil's U, are compared to this new method for comparison and validation.
+Based on Pearson's chi-squared test, this new approach focuses on the "a" component: the pure agreeableness between two cells. Its value ranges from 0 to 1 (no "trust" to complete "trust"). Some of the most relevant tests previously presented, namely the $\phi$ coefficient, contingency coefficient, and Theil's U, are compared to this new method for comparison and validation in following experiments.
 
-\paragraph{Test nº1}
+\subsubsection{Experiments}
 
-The first test simulates the variation of the $d$ component and its effect on the association measurements. It's expected that, as not activated time increases, the chance of the two cells intersecting activations lowers, and so their trust should increase. The starting point and tested spaces of $d$ are:
+\paragraph{Experiment nº1}
+
+The first trial simulates the variation of the $d$ component and its effect on some association coefficients. It's expected that, as not activated time increases, the chance of the two cells intersecting activations lowers, and so their trust should increase. The starting point and used spaces of $d$ are:
 
 $$
 \begin{bmatrix}
@@ -278,11 +283,11 @@ $$
     \caption{Trust measurement evolution for different methods with $a=30, b=10, c=10, d \in [0, 100]$.}
     \label{fig:trust_test_1_a}
 \end{figure}
+\FloatBarrier
 
 
-In figure \ref{fig:trust_test_1_a}, we can observe that all measurements increase with $d$, with a slight reduction at the start, although attenuated on the new method. Theil's U's minimum is 0.5, while the expectation for having a lower $d$ (few deactivated intersecting periods) is a value closer to zero (as the rest demonstrate). This scenario means both cells have a short history or significant input uncertainty (remember the time extraction process from \ref{subsec:tempsim}). Therefore, their "trust" should be minimal.
+In figure \ref{fig:trust_test_1_a}, we can observe that all measurements increase with $d$, with a slight reduction at the start, although attenuated on the new method. Theil's U's minimum is 0.5, while the expectation for having a lower $d$ (few deactivated intersecting periods) is a value closer to zero (as the other methods demonstrate). This scenario means that either both cells have no history similar to current inputs or their inputs' values have significant uncertainty (remember the time extraction process from \ref{subsec:tempsim}). Therefore, their "trust" should be minimal.
 Not having a reduction in the first values of $d$, showcased by the new method, is the intended behavior. Having equal activated and deactivated intersections ($a$ and $d$) should not be significantly penalized versus having $a>>d$, justified by the above reasoning.
-
 
 \begin{figure}[h!]
 \centering
@@ -290,10 +295,11 @@ Not having a reduction in the first values of $d$, showcased by the new method, 
     \caption{test 1 b}
     \label{fig:trust_test_1_b}
 \end{figure}
+\FloatBarrier
 
-Figure \ref{fig:trust_test_1_b} extends the previous analysis, showcasing that all methods have asymptotical behavior, settling in a value greater than the start. All except Theil's U have asymptotes deemed acceptable for this test. Since disagreement terms $b$ and $c$ are non-null and relatively close to $a$, we expect that the trust index doesn't reach a value near the max, remaining closer to a measure of "half trust".
+Figure \ref{fig:trust_test_1_b} extends the previous analysis, showcasing that all methods have asymptotical behavior, settling in a value greater than the start. All except Theil's U have asymptotes deemed acceptable for this test: since disagreement terms $b$ and $c$ are non-null and relatively close to $a$, we expect that the trust index doesn't reach a value near the max, remaining closer to a measure of "half trust".
 
-\paragraph{Test nº2} In this next experiment, we observe the impact of disagreeing terms $b$ and $c$.
+\paragraph{Experiment nº2} Now, we observe the impact of the disagreeing terms $b$ and $c$ in the same coefficients, by varying one while maintaining all other fixed. The expectation is that an increase in disagreement should lead to zero trust.
 
 $$
 \begin{bmatrix}
@@ -309,8 +315,9 @@ $$
     \caption{test 2 a}
     \label{fig:trust_test_2_a}
 \end{figure}
+\FloatBarrier
 
-In figure \ref{fig:trust_test_2_a}, it is clear that, for all methods, an increase in $b$ leads to lower trust. All except the new algorithm tend towards similar asymptotes, near 0.3. However, the expectation is that an increase in disagreement should lead to zero trust, precisely what happens in the proposed method.
+In figure \ref{fig:trust_test_2_a}, it is clear that, for all methods, an increase in $b$ leads to lower coefficients. All except the new algorithm tend towards similar asymptotes, near a value of 0.3. The expected behavior is precisely met by the new method.
 
 $$
 \begin{bmatrix}
@@ -326,10 +333,11 @@ $$
     \caption{test 2 b}
     \label{fig:trust_test_2_b}
 \end{figure}
+\FloatBarrier
 
-With figure \ref{fig:trust_test_2_b}, we can observe the asymmetry of Theil's U coefficient, opposing to what figure \ref{fig:trust_test_2_a} showed. It does not represent the trust between cell nº1 and cell nº2, but the trust of nº1 in nº2. The rest of the methods are symmetrical, thus presenting the same results.
+With figure \ref{fig:trust_test_2_b}, we can observe the asymmetry of Theil's U coefficient, opposing to what figure \ref{fig:trust_test_2_a} showed. It does not represent the trust between cell nº1 and cell nº2, but the trust of cell nº1 \textbf{in} cell nº2. The rest of the methods have symmetrical coefficients, thus presenting the same results.
 
-\paragraph{Test nº3} This last experiment 
+\paragraph{Experiment nº3} This last experiment showcases the effect of changing term $a$. When the cells share an increasing amount of activated time, assuming their trust should increase is trivial. However, reasoning that having a disproportionally ample activated time means there is more uncertainty on their current state, then trust should lower. The expectation is that, as $a$ increases, there is also an increase in trust until a specific peak. It should decrease after reaching a global maximum and have an asymptote at zero.
 
 \begin{figure}[h!]
 \centering
@@ -337,12 +345,15 @@ With figure \ref{fig:trust_test_2_b}, we can observe the asymmetry of Theil's U 
     \caption{test 3}
     \label{fig:trust_test_3}
 \end{figure}
+\FloatBarrier
 
+Figure \ref{fig:trust_test_3} shows that only the new method presents the previously described "goal" behavior. Otherwise, all other coefficients approach their max when $a$ tends towards infinity.
 
+With the three experiments presented, we confirm that the proposed approach for computing the trust index between cells is better suited, considering the requirements and assumptions.
 
 \subsection{Connections}
 
-Mutual similarity extraction and comparing activations can only occur in groups. Thus, connections are the essence of forming the CellTAN network. These links may have associated indicators that describe the cells' relationships, and a critical metric we consider for anomaly detection is entitled \textbf{Trust}.
+Mutual similarity extraction and trust calculation cannot occur in isolation. Therefore, connections are the essence of forming the CellTAN. These links can also have indicators for describing the cells' relationships, like the trust index, which is crucial for anomaly detection.
 
 Each cell has a unique identifier, generated upon creation and independent of the name attributed by the owner. This ID serves to register cells and better manage the network. Since interconnections require an agent to keep track of these IDs and correctly redirect traffic, we introduce the \textbf{Hub} component. For a cell, a connection is no more than the identifier of the neighbor, which the Hub can directly associate with a communication link. This central element provides global network visibility and makes connections easier to form and maintain.
 
@@ -362,7 +373,17 @@ The publish-subscribe model of MQTT facilitates decoupled communication between 
 
 \subsection{States}
 
-Intending to attribute good use to all the processes developed for the cell, we introduce a state system that seeks to provide short and critical information about it.
+With the intention to summarize the results of cells' processes, we introduce a state system. The state represents a short view into intrinsic and extrinsic uncomformities occuring in the cell.
+
+\subsection{Application Plugins}
+
+% ? Isto devia criar um capítulo inteiro só por sí não?
+
+The broad capabilities of the CellTAN make it less insightful when extracting specific information from the cells. Although its generalized design extends usability to different types of systems, it still requires additional processes to assess specific situations beyond neighborhood or internal unconformities. During the literature review process, the specificity of algorithms is noticeable, and most techniques do not attempt to diverge from the PV application when it comes to fault detection and classification. This standard approach yields excellent results and could boost CellTAN's capabilities.
+
+To solve the presented issue and dwell on the PV application theme of this work, we present the concept of \textbf{plugins}. Plugins extend the cell's core functionality, introduced to leverage specific system logic to identify patterns in its variables, like classical algorithms. When binding them to a cell, they have a setup that checks if the required variables are present in its inputs. Then, after the intrinsic processes, they can run an algorithm that assesses what current situations the cell might be experiencing. This way, the CellTAN can still work with entities of different natures while these plugins work alongside them, accessing private data and reporting sensible insights to the owner. 
+
+To illustrate this feature, let us imagine setting up a PV inverter CellTAN representative of a solar farm. Although the tool does not "know" anything about inverters nor "cares" that the cells are of this type, the agent responsible for adding them to the network certainly does. Therefore, binding a PV-specific algorithm to assess particular inverter situations, such as malfunction, over(/under) voltage(/current), and performance degradation, is wise. This additional process makes the tool warn the owner of possible mismatches in neighboring inverters through the generalized cell procedures but also specific inverter faults (through the plugin).
 
 \section{The Hub}
 
@@ -402,4 +423,3 @@ Configuring cells can be done through configuration files (one per cell). They s
 
 
 % meter anexo para explicação das configs com screenshot de configuração exemplo
-'
