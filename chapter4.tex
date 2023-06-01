@@ -1,6 +1,6 @@
 \chapter{CellTAN: Cellular Time Activation Networks} \label{chap:chap4}
 
-Distributed information systems characterized by time series data present various challenges, primarily due to their complex and dynamic nature. The sheer volume of data that must be processed and analyzed in real-time is a significant challenge, leading to concerns over storage, computation, and scalability. Moreover, data quality issues such as missing or incomplete data and data heterogeneity arising from sourcing data from disparate sources with varying consistency and structure further exacerbate these challenges. Another critical challenge of these systems is handling the temporal aspects of time series data, requiring specialized pre-processing, feature extraction, and modeling techniques. The distributed nature of these systems further complexifies matters, with issues encompassing data synchronization and accuracy being a common concern. Furthermore, their implementation in real-world applications requires robust mechanisms for data security and privacy, which adds a layer of complexity to the design and implementation of these systems.
+Distributed information systems characterized by time series data present various challenges, primarily due to their complex and dynamic nature. The sheer volume of data that must be processed and analyzed in real time is a significant challenge, leading to concerns over storage, computation, and scalability. Moreover, data quality issues such as missing or incomplete data and data heterogeneity arising from sourcing data from disparate sources with varying consistency and structure further exacerbate these challenges. Another critical challenge of these systems is handling the temporal aspects of time series data, requiring specialized pre-processing, feature extraction, and modeling techniques. The distributed nature of these systems further complexifies matters, with issues encompassing data synchronization and accuracy being a common concern. Furthermore, their implementation in real-world applications requires robust mechanisms for data security and privacy, which adds a layer of complexity to the design and implementation of these systems.
 
 \begin{figure}[h!]
     \centering
@@ -11,9 +11,9 @@ Distributed information systems characterized by time series data present variou
 
 This chapter proposes a novel tool entitled CellTAN (Cellular Time Activation Network) that undertakes those challenges. CellTAN represents sparse yet interconnected components that function independently, cooperatively, and asynchronously. Inspired by other effective mechanisms like GNNs, CXNs, and Weighted Cross-Connection Networks (WCCNs), CellTAN uses a graph-like structure to represent a network of components with nodes and connections. Following the introductory chapters, its primary purpose is to detect abnormal scenarios on PV systems. However, its generalized formulation introduces other valuable features which come naturally from fulfilling this goal. Such are state estimation, forecasting, and capturing the value in data from different PV asset owners without violating their privacy. For briefness' sake, we will unfold details about its benefits during the rest of this chapter.
 
-Instead of tackling fault detection and classification in a classical centralized manner, which is already extensively showcased throughout the literature, this tool approaches this problem with a paradigm change: a distributed and asynchronous data coherence system. By having a virtual representation closely related to the physical form of sparse systems, we can leverage the relationships between components to assess their correct (or incorrect) operation. While initially designed for photovoltaic (PV) systems, the concepts of cells, connections, neighbors, time series, and uncertainty are universal and applicable to other fields such as biology, physics, and more. Thus, the potential for generic applicability sparks the interest to not bake specifics of PV systems directly into this tool, allowing its usage for other subjects. Figure \ref{fig:celltanintro} represents minimal scenario for a network: only two cells. It showcases some terms specific to this tool, that might be difficult to grasp initially, such as trust, events, and activations. Consequently, the glossary in \ref{sec:glossary} and detailed explanations throughout this chapter serve to clarify them.
+Instead of tackling fault detection and classification in a classical centralized manner, which is already extensively showcased throughout the literature, this tool approaches this problem with a paradigm change: a distributed and asynchronous data coherence system. By having a virtual representation closely related to the physical form of sparse systems, we can leverage the relationships between components to assess their correct (or incorrect) operation. While initially designed for photovoltaic (PV) systems, the concepts of cells, connections, neighbors, time series, and uncertainty are universal and applicable to other fields such as biology, physics, and more. Thus, the potential for generic applicability sparks the interest to not bake specifics of PV systems directly into this tool, allowing its usage for other subjects. Figure \ref{fig:celltanintro} represents a minimal scenario for a network: only two cells. It showcases some terms specific to this tool that might be difficult to grasp initially, such as trust, events, and activations. Consequently, the glossary in \ref{sec:glossary} and detailed explanations throughout this chapter serve to clarify them.
 
-Vast and scattered information across multiple agents is a common scenario faced by the industry of AI for energy systems, which cannot be aggregated due to privacy and confidentiality reasons. Nevertheless, its conjunction could have a lot of added value, given the similarity of certain assets: PV plants (as well as wind farms) from different owners in neighboring geographical regions. This information-sharing potential for AI algorithms motivates the development of a mechanism that communicates information between differently owned assets without any of the compromises above. However, as stated before, data acquisition in PV scenarios is scarcely synchronous and might not occur in equal time resolutions for all the different components. The CellTAN addresses these issues with an instrument called \textbf{Time activations}. It proposes a new way of communication that decouples from the needs of units, sampling rate, and synchronization, avoiding resampling, normalization, or even obfuscation (to protect privacy). This mechanism is a core feature of the tool since it will be the means that will allow connecting different stakeholders' data, and section \ref{sec:thecell} develops this matter thoroughly. Likewise, succeeding sections formulate the working of the \textbf{Cell} and its interactions within the network. Since it is the core component, understanding its behavior is crucial for a complete understanding of the tool.
+Vast and scattered information across multiple agents is a common scenario faced by the industry of AI for energy systems, which cannot be aggregated due to privacy and confidentiality reasons. Nevertheless, its conjunction could have a lot of added value, given the similarity of certain assets: PV plants (as well as wind farms) from different owners in neighboring geographical regions. This information-sharing potential for AI algorithms motivates the development of a mechanism that communicates information between differently owned assets without any of the compromises above. However, as stated before, data acquisition in PV scenarios is scarcely synchronous and might only occur in equal time resolutions for some of the different components. The CellTAN addresses these issues with an instrument called \textbf{Time activations}. It proposes a new way of communication that decouples from the needs of units, sampling rate, and synchronization, avoiding resampling, normalization, or even obfuscation (to protect privacy). This mechanism is a core feature of the tool since it will be the means that will allow connecting different stakeholders' data, and section \ref{sec:thecell} develops this matter thoroughly. Likewise, succeeding sections formulate the working of the \textbf{cell} and its interactions within the network. Since it is the core component, understanding its behavior is crucial for a complete understanding of the tool.
 
 \section{Glossary} \label{sec:glossary}
 
@@ -21,7 +21,7 @@ Vast and scattered information across multiple agents is a common scenario faced
 \begin{itemize}
     \item \textbf{Knowledge base}: Refers to registered historical knowledge (samples) of time series variables.
 
-    \item \textbf{Inputs}: Uniform fuzzy numbers (not necessarily, but it's the current choice) that represent one sample of the group of time series variables that define the state of a cell.
+    \item \textbf{Inputs}: Uniform fuzzy numbers (not necessarily, but it is the current choice) that represent one sample of the group of time series variables that define the state of a cell.
 
     \item \textbf{Outputs}: Similar to inputs, but obtained through some computations.
 
@@ -31,9 +31,9 @@ Vast and scattered information across multiple agents is a common scenario faced
 
     \item \textbf{Events}: Occurrences that the cell reports back to the hub, usually triggered by exceeding parametrized thresholds.
 
-    \item \textbf{Trust}: A decimal number that represents how coherent two cells' activations are with each other. Besides its instantaneous computed value, it can also come from a cumulative computation on a defined time window.
+    \item \textbf{trust}: A decimal number that represents how coherent two cells' activations are with each other. Besides its instantaneous computed value, it can also come from a cumulative computation on a defined time window.
 
-    \item \textbf{Hub}: The central component of the cell network, which facilitates its visualization, management, and expansion. It acts as the proxy agent between the cell's communication.
+    \item \textbf{hub}: The central component of the cell network, which facilitates its visualization, management, and expansion. It acts as the proxy agent between the cell's communication.
 
 \end{itemize}
 
@@ -43,7 +43,7 @@ Vast and scattered information across multiple agents is a common scenario faced
 
 \subsection{Principles}
 
-A cell is an independent entity composed of \textbf{data} and \textbf{processes}. The idea is to abstract fundamental system components (e.g. inverters, MPPT's) into this virtual entity. With an added intelligence layer and featuring a few different processes, it assesses its current state based on all available internal and external information, adding value to the existing data acquisition and monitoring systems. As an individual part of the system, it follows a set of rules that define its intrinsic and extrinsic behavior. These rules address data privacy, request boundaries, and real-world operational limitations.
+A cell is an independent entity composed of \textbf{data} and \textbf{processes}. The idea is to abstract fundamental system components (e.g., inverters, MPPTs) into this virtual entity. With an added intelligence layer and featuring a few different processes, it assesses its current state based on all available internal and external information, adding value to the existing data acquisition and monitoring systems. As an individual part of the system, it follows a set of rules that define its intrinsic and extrinsic behavior. These rules address data privacy, request boundaries, and real-world operational limitations.
 
 \paragraph*{Independence} During operation, independence on neighbors or other network entities for continuous processing of outputs results in a more robust system and increases cell availability. Thus, given any connection cutoffs, the cell shall be unbothered by its surroundings and continue operating in an isolated state. Isolation is not preferred, but enduring it until outside contact is re-established avoids shutdown and startup procedures.
 
@@ -63,7 +63,7 @@ The cell has a main process loop that executes a sequence of actions periodicall
     \label{fig:cellprocesses}
 \end{figure}
 
-Figure \ref{fig:cellprocesses} showcases the cell's core procedures. It starts in a standby mode, which is only left when new information arrives or a predetermined amount of time has passed. This mode ensures that there isn't an unnecessary computational burden of repeating all other computations: they provide the most valuable results when new data is available. Nonetheless, defining a maximum sleep time ensures the cell's activations are periodically updated to reflect the neighbors' state and intrinsic uncertainty.
+Figure \ref{fig:cellprocesses} showcases the cell's core procedures. It starts in a standby mode, which is only left when new information arrives or a predetermined amount of time has passed. This mode ensures no unnecessary computational burden of repeating all other computations: they provide the most valuable results when new data is available. Nonetheless, defining a maximum sleep time ensures the cell's activations are periodically updated to reflect the neighbors' state and intrinsic uncertainty.
 
 The process of computing activations relates to the temporal similarity extraction showcased in section \ref{subsec:tempsim}. It occurs twice because inputs only contain intrinsic information, while outputs aggregate intrinsic and extrinsic data (information from neighbors), and the latter is more worthy to the network. The cell makes this procedure's byproduct (Activations) publicly available, pictured in figure \ref{fig:celldata}.
 
@@ -76,7 +76,7 @@ Fetching neighbor's activations
     \label{fig:celldata}
 \end{figure}
 
-Figure \ref{fig:celldata} showcases the cell's public and private data attributes. The network may have access to its activations, knowledge base coverage, and neighbors' trust. Conversely, the cell extracts neighbors' activations from the network and gives its owner exclusive access to inputs, outputs, and knowledge base. The cell's knowledge base might only represent an interface with a private database (thus a bidirectional connection), not the data itself, since the owner might prefer a centralized storage server. The relationship between the owner and private cell data is bidirectional because it's his responsibility to update the inputs.
+Figure \ref{fig:celldata} showcases the cell's public and private data attributes. The network may have access to its activations, knowledge base coverage, and neighbors' trust. Conversely, the cell extracts neighbors' activations from the network and gives its owner exclusive access to inputs, outputs, and knowledge base. The cell's knowledge base might only represent an interface with a private database (thus a bidirectional connection), not the data itself, since the owner might prefer a centralized storage server. The relationship between the owner and private cell data is bidirectional because it is his responsibility to update the inputs.
 
 
 % TODO explicar processos da célula por alto
@@ -90,9 +90,9 @@ Representing the cell's variables in a fuzzy (or probabilistic) manner can bette
 Summing up, the following may characterize inputs and outputs:
 
 \begin{itemize}
-    \item Classical set: simple uncertainty band (e.g. uncertainty up, down, relative, etc);
-    \item Fuzzy number: generalized fuzzy number representation \cite{Zhang2019} (e.g. triangular fuzzy number (a,b,d;h));
-    \item Probability distribution: the distribution's characteristics (e.g. mean ($\mu$) and standard deviation ($\delta$) for Gaussian, the mean rate of occurrence ($\lambda$) for Poisson, etc.);
+    \item Classical set: simple uncertainty band (e.g., uncertainty up, down, relative, etc);
+    \item Fuzzy number: generalized fuzzy number representation \cite{Zhang2019} (e.g., triangular fuzzy number (a,b,d;h));
+    \item Probability distribution: the distribution's characteristics (e.g., mean ($\mu$) and standard deviation ($\delta$) for Gaussian, the mean rate of occurrence ($\lambda$) for Poisson, etc.);
 \end{itemize}
 
 \begin{figure}[h!]
@@ -102,11 +102,11 @@ Summing up, the following may characterize inputs and outputs:
     \label{fig:classicfuzzygaussian}
 \end{figure}
 
-Classical sets have pros and cons: many operations become more efficient, but we lose density information. Filtering historical data becomes trivial: a value lies within the bounds of the interval (membership value of one) or does not (membership value of zero). This more accessible representation will benefit some cell processes, primarily in temporal similarity extraction (\ref{subsec:tempsim}).
+Classical sets have pros and cons: many operations become more efficient compared to the alternatives, but we lose density information. Filtering historical data becomes trivial: a value lies within the bounds of the interval (membership value of one) or does not (membership value of zero). This more accessible representation will benefit some cell processes, primarily in temporal similarity extraction (\ref{subsec:tempsim}).
 
 \subsection{Time decay} \label{subsec:timedecay}
 
-In real-world dynamic systems that involve data acquisition, the certainty of the data collected tends to fade over time due to their dynamic nature. Typically, the most recent data is the most accurate representation of the system's current state, and as time elapses, the accuracy of previous data points decreases. As a result, it is crucial to consider the time dimension when analyzing dynamic systems and to develop methods that can account for the decay in data certainty over time.
+In real-world dynamic systems that involve data acquisition, the certainty of the data collected tends to fade over time due to its dynamic nature. Typically, the most recent data is the most accurate representation of the system's current state, and as time elapses, the accuracy of previous data points decreases. As a result, it is crucial to consider the time dimension when analyzing dynamic systems and to develop methods that can account for the decay in data certainty over time.
 
 As stated before, and towards considering the time dimension for the current state of a cell, we formulate a \textbf{time decay} method to ensure a more truthful and reliable assessment of the cell's current state. During the standby stage, this process ensures that the inputs and outputs suffer an increase in uncertainty.
 
@@ -154,7 +154,7 @@ The following examples consider that $t=0$ is associated with the present, and $
 
 With a knowledge base and input variables, the cell can perform intrinsic temporal similarity extraction.
 Consider a cell characterized by two variables that are a function of time: $x(t)$ and $y(t)$,
-let's assume that, at a given instant, these are the new inputs:
+let us assume that, at a given instant, these are the new inputs:
 
 \begin{equation}
     x(0) = 1.0 \rightarrow \mu_{x(0)}(x) =
@@ -196,16 +196,17 @@ These results confirm that we achieve outputs with less uncertainty only dependi
 
 \paragraph{Mutual Similarity}
 
-Extending similarity extraction to multiple cells is a relatively trivial process. Suppose a cell has access to another's activations at the same rolling timestamp and for a historical window that intersects its knowledge base. In that case, it can use that information to refine the intrinsic temporal similarity extraction result. Using sets, this can occur by joining intrinsic and extrinsic membership values by aggregation (e.g. sum, multiplication, average, etc).
+Extending similarity extraction to multiple cells is a relatively trivial process. Suppose a cell has access to another's activations at the same rolling timestamp and for a historical window that intersects its knowledge base. In that case, it can use that information to refine the intrinsic temporal similarity extraction result. Using sets, this can occur by joining intrinsic and extrinsic membership values by aggregation (e.g., sum, multiplication, average, etc).
 Although simple, this process has some tricky requirements, such as not allowing a time difference between the computation of membership values of different cells to avoid joining incoherent information, and 
 % Capacidade de estimação de estado intrínsica + extrínsica
 
 
 \subsection{Trust between Cells}  \label{subsec:trust}
 
-After n the potential for time similarity extraction in the intrinsic inference process of the cell, we encounter another application for the "activations". Given that it represents the past instances of the cell that resemble the current inputs, it allows comparing different cell's behavior. This is the peculiar characteristic of the CellTAN that allows it to be used without data privacy issues and even normalization.
 
-Time is inherently normalized, considering all commponents experience it equally. which allows the network to compare systems without caring about their actual variables. This is what allows the proposed tool to be generalized beyond PV applications.
+After recognizing the potential for time similarity extraction, we discovered an additional possibility with activations. Since these represent past cell instances that exhibit similar behavior to the current inputs, we can compare them between cells. This unique characteristic of the CellTAN enables its usage without data privacy issues and not requiring data normalization. However, the knowledge base must intersect for a time-based comparison to make sense, and it yields the best results if outliers are absent.
+
+Time possesses inherent normalization properties, as all components equally experience its passage. This characteristic enables the network to compare systems without concerns about the specific variables involved. Consequently, the proposed tool can be effectively applied beyond PV applications, showcasing its ability to be generalized across various domains.
 
 A 2x2 contingency table represents the intersection of activations of two cells. In this table, the rows define the activation status of one cell (labeled as "Activated" and "Not Activated"), and the columns represent the activation status of the other cell (same labels).
 
@@ -245,7 +246,7 @@ All the mentioned tests may offer different perspectives on the association betw
     \chi_a^{2'} = \frac{(p_a - E(p_a))^2}{E(p_a)}
 \end{equation}
 
-where:
+Where:
 
 \[
     p_a = \frac{a}{a+b+c+d}
@@ -260,7 +261,7 @@ where:
     E(p_a) &: \text{Expected value for the probability of both cells being active}
 \end{align*}
 
-Based on Pearson's chi-squared test, this new approach focuses on the "a" component: the pure agreeableness between two cells. Its value ranges from 0 to 1 (no "trust" to complete "trust"). Some of the most relevant tests previously presented, namely the $\phi$ coefficient, contingency coefficient, and Theil's U, are compared to this new method for comparison and validation in following experiments.
+Based on Pearson's chi-squared test, this new approach focuses on the "a" component: the pure agreeableness between two cells. Its value ranges from 0 to 1 (no "trust" to complete "trust"). Some of the most relevant tests previously presented, namely the $\phi$ coefficient, contingency coefficient, and Theil's U, are compared to this new method for comparison and validation in the following experiments.
 
 \subsubsection{Experiments}
 
@@ -286,7 +287,7 @@ $$
 \FloatBarrier
 
 
-In figure \ref{fig:trust_test_1_a}, we can observe that all measurements increase with $d$, with a slight reduction at the start, although attenuated on the new method. Theil's U's minimum is 0.5, while the expectation for having a lower $d$ (few deactivated intersecting periods) is a value closer to zero (as the other methods demonstrate). This scenario means that either both cells have no history similar to current inputs or their inputs' values have significant uncertainty (remember the time extraction process from \ref{subsec:tempsim}). Therefore, their "trust" should be minimal.
+In figure \ref{fig:trust_test_1_a}, we can observe that all measurements increase with $d$, with a slight reduction at the start, although attenuated on the new method. Theil's U's minimum is 0.5, while the expectation for having a lower $d$ (few deactivated intersecting periods) is a value closer to zero (as the other methods demonstrate). This scenario means either both cells have no history similar to current inputs or their inputs' values have significant uncertainty (remember the time extraction process from \ref{subsec:tempsim}). Therefore, their "trust" should be minimal.
 Not having a reduction in the first values of $d$, showcased by the new method, is the intended behavior. Having equal activated and deactivated intersections ($a$ and $d$) should not be significantly penalized versus having $a>>d$, justified by the above reasoning.
 
 \begin{figure}[h!]
@@ -297,9 +298,9 @@ Not having a reduction in the first values of $d$, showcased by the new method, 
 \end{figure}
 \FloatBarrier
 
-Figure \ref{fig:trust_test_1_b} extends the previous analysis, showcasing that all methods have asymptotical behavior, settling in a value greater than the start. All except Theil's U have asymptotes deemed acceptable for this test: since disagreement terms $b$ and $c$ are non-null and relatively close to $a$, we expect that the trust index doesn't reach a value near the max, remaining closer to a measure of "half trust".
+Figure \ref{fig:trust_test_1_b} extends the previous analysis, showcasing that all methods have asymptotical behavior, settling in a value greater than the start. All except Theil's U have asymptotes deemed acceptable for this test: since disagreement terms $b$ and $c$ are non-null and relatively close to $a$, we expect that the trust index does not reach a value near the max, remaining closer to a measure of "half trust".
 
-\paragraph{Experiment nº2} Now, we observe the impact of the disagreeing terms $b$ and $c$ in the same coefficients, by varying one while maintaining all other fixed. The expectation is that an increase in disagreement should lead to zero trust.
+\paragraph{Experiment nº2} Now, we observe the impact of the disagreeing terms $b$ and $c$ in the same coefficients by varying one while maintaining all others fixed. The expectation is that an increase in disagreement should lead to zero trust.
 
 $$
 \begin{bmatrix}
@@ -355,9 +356,9 @@ With the three experiments presented, we confirm that the proposed approach for 
 
 Mutual similarity extraction and trust calculation cannot occur in isolation. Therefore, connections are the essence of forming the CellTAN. These links can also have indicators for describing the cells' relationships, like the trust index, which is crucial for anomaly detection.
 
-Each cell has a unique identifier, generated upon creation and independent of the name attributed by the owner. This ID serves to register cells and better manage the network. Since interconnections require an agent to keep track of these IDs and correctly redirect traffic, we introduce the \textbf{Hub} component. For a cell, a connection is no more than the identifier of the neighbor, which the Hub can directly associate with a communication link. This central element provides global network visibility and makes connections easier to form and maintain.
+Each cell has a unique identifier, generated upon creation and independent of the name attributed by the owner. This ID serves to register cells and better manage the network. Since interconnections require an agent to keep track of these IDs and correctly redirect traffic, we introduce the \textbf{Hub} component. This central element provides global network visibility and makes connections easier to form and maintain. For a cell, a connection is no more than the identifier of the neighbor, which the hub can directly associate with a communication link.
 
-On cell deployment, the system expects the owner and the CellTAN manager to manually link cells together by assigning each connection. However, the plan is to develop a mechanism that proposes new connections based on the neighbor's neighbors through the Hub. This mechanism could function based on the strength of the relationship between cells and neighbors in common, recommending a direct link if both "trust" them similarly. As the last phrase hints, an indicator called "trust" is the criterion for evaluating these links. The following subsection defines the conception of this metric.
+On cell deployment, the system expects the owner and the CellTAN manager to manually link cells together by assigning each connection. However, the plan is to develop a mechanism that proposes new connections based on the neighbor's neighbors through the hub. This mechanism could function based on the strength of the relationship between cells and neighbors in common, recommending a direct link if both "trust" them similarly. As the last phrase hints, an indicator called "trust" is the criterion for evaluating these links. The following subsection defines the conception of this metric.
 
 \subsubsection{Communication Protocol}
 
@@ -373,21 +374,21 @@ The publish-subscribe model of MQTT facilitates decoupled communication between 
 
 \subsection{States}
 
-With the intention to summarize the results of cells' processes, we introduce a state system. The state represents a short view into intrinsic and extrinsic uncomformities occuring in the cell.
+We introduce a state system to summarize the results of cells' processes. The state represents a short view into intrinsic and extrinsic unconformities occuring in the cell.
 
 \subsection{Application Plugins}
 
 % ? Isto devia criar um capítulo inteiro só por sí não?
 
-The broad capabilities of the CellTAN make it less insightful when extracting specific information from the cells. Although its generalized design extends usability to different types of systems, it still requires additional processes to assess specific situations beyond neighborhood or internal unconformities. During the literature review process, the specificity of algorithms is noticeable, and most techniques do not attempt to diverge from the PV application when it comes to fault detection and classification. This standard approach yields excellent results and could boost CellTAN's capabilities.
+The broad capabilities of the CellTAN make it less insightful when extracting specific information from the cells. Although its generalized design extends usability to different types of systems, it still requires additional processes to assess particular situations beyond neighborhood or internal unconformities. During the literature review process, the specificity of algorithms is noticeable, and most techniques do not attempt to diverge from the PV application when it comes to fault detection and classification. This standard approach yields excellent results and could boost CellTAN's capabilities.
 
-To solve the presented issue and dwell on the PV application theme of this work, we present the concept of \textbf{plugins}. Plugins extend the cell's core functionality, introduced to leverage specific system logic to identify patterns in its variables, like classical algorithms. When binding them to a cell, they have a setup that checks if the required variables are present in its inputs. Then, after the intrinsic processes, they can run an algorithm that assesses what current situations the cell might be experiencing. This way, the CellTAN can still work with entities of different natures while these plugins work alongside them, accessing private data and reporting sensible insights to the owner. 
+To solve the presented issue and dwell on the PV application theme of this work, we introduce the concept of \textbf{plugins}. Plugins extend the cell's core functionality, introduced to leverage specific system logic to identify patterns in its variables, like classical algorithms. When binding them to a cell, they have a setup that checks if the required variables are present in its inputs. Then, after the intrinsic processes, they can run an algorithm that assesses what current situations the cell might be experiencing. This way, the CellTAN can still work with entities of different natures while these plugins work alongside them, accessing private data and reporting sensible insights to the owner. 
 
-To illustrate this feature, let us imagine setting up a PV inverter CellTAN representative of a solar farm. Although the tool does not "know" anything about inverters nor "cares" that the cells are of this type, the agent responsible for adding them to the network certainly does. Therefore, binding a PV-specific algorithm to assess particular inverter situations, such as malfunction, over(/under) voltage(/current), and performance degradation, is wise. This additional process makes the tool warn the owner of possible mismatches in neighboring inverters through the generalized cell procedures but also specific inverter faults (through the plugin).
+To illustrate this feature, let us imagine setting up a PV inverter CellTAN representative of a solar farm. Although the tool does not "know" anything about inverters nor "cares" that the cells are of this type, the agent responsible for adding them to the network certainly does. Therefore, binding a PV-specific algorithm to assess particular inverter situations, such as malfunction, over(/under) voltage(/current), and performance degradation, is wise. This additional process makes the tool warn the owner of specific inverter faults besides possible mismatches in neighboring inverters through the generalized cell procedures.
 
 \section{The Hub}
 
-The CellTAN tool is supposed to be easily accessible for different assets and owners in any given location. However, for privacy and security reasons, monitoring equipment and other smart devices (IoT, servers, etc.) in PV plants and the owner's database are usually protected from unwanted outside connections. Because of this, the CellTAN network owner can act as a proxy and be responsible for arranging the necessary connections between the equipment of different asset owners and the network. This way, all traffic is routed through its system, which solves the issues mentioned before but possibly introduces a bottleneck and affects availability. These downsides are inevitable for aggregating distributed systems and sharing information between otherwise reserved agents. Besides being a proxy, other responsibilities associated with the Hub are:
+The CellTAN tool is supposed to be easily accessible for different assets and owners in any given location. However, for privacy and security reasons, monitoring equipment and other smart devices (IoT, servers, etc.) in PV plants and the owner's database are usually protected from unwanted outside connections. Because of this, the CellTAN network owner can act as a proxy and be responsible for arranging the necessary connections between the equipment of different asset owners and the network. This way, all traffic is routed through its system, which solves the issues mentioned before but possibly introduces a bottleneck and affects availability. These downsides are inevitable for aggregating distributed systems and sharing information between otherwise reserved agents. Besides being a proxy, other responsibilities associated with the hub are:
 
 \begin{itemize}
     \item Provide network visibility: cells and connections;
@@ -401,13 +402,13 @@ Adding this component permits visualizing all the cells registered in the system
 
 \subsection{Code and Infraestructure}
 
-Materializing both the Cell and the Hub happened by coding Python modules. It was developed using a mix of the OOP (Object Oriented Programming) and FP (functional programming) paradigms and features a structure familiar with the descriptions in previous sections. Using Python for the implementation of the CellTAN comes with the following advantages:
+Materializing both the cell and the hub happened by coding Python modules. It was developed using a mix of the OOP (Object Oriented Programming) and FP (functional programming) paradigms and features a structure familiar with the descriptions in previous sections. Using Python for the implementation of the CellTAN comes with the following advantages:
 
 \begin{itemize}
     \item Easy to read and write code, requiring less syntax for complex operations compared to low-level languages;
     \item Extensive availability of libraries and tools;
-    \item Deployment ease: doesn't have to compile, only needing an interpreter and dependencies to run;
-    \item Big community support, with many resources publicly available online (e.g. documentation, tutorials, etc.). 
+    \item Deployment ease: does not have to compile, only needing an interpreter and dependencies to run;
+    \item Big community support, with many resources publicly available online (e.g., documentation, tutorials, etc.). 
 \end{itemize}
 
 % imagem com as tecnologias em anexos talvez
