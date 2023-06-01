@@ -104,6 +104,7 @@ Summing up, the following may characterize inputs and outputs:
 
 Classical sets have pros and cons: many operations become more efficient compared to the alternatives, but we lose density information. Filtering historical data becomes trivial: a value lies within the bounds of the interval (membership value of one) or does not (membership value of zero). This more accessible representation will benefit some cell processes, primarily in temporal similarity extraction (\ref{subsec:tempsim}).
 
+% ! devia ser subsubsec dos inputs/outputs
 \subsection{Time decay} \label{subsec:timedecay}
 
 In real-world dynamic systems that involve data acquisition, the certainty of the data collected tends to fade over time due to its dynamic nature. Typically, the most recent data is the most accurate representation of the system's current state, and as time elapses, the accuracy of previous data points decreases. As a result, it is crucial to consider the time dimension when analyzing dynamic systems and to develop methods that can account for the decay in data certainty over time.
@@ -136,8 +137,10 @@ The $age$ variable refers to the time difference between the present time and th
 Figure \ref{fig:timedecay} represents the expansion of the set throughout a period equal to the decay parameter (ten seconds). When $x$ reaches the age of ten seconds, its set represents complete uncertainty since its bounds become similar to the variable limits ($x_{min}$ and $x_{max}$). We can see that the decreasing difference between the bounds and maximum/minimum values causes attenuation in the decay curve, as it displays a non-linear behavior. This behavior seems appropriate according to the reality of systems: as a variable becomes more uncertain with time, there is less potential for its uncertainty to increase.
 
 
-\subsection{Temporal similarity extraction} \label{subsec:tempsim}
+% \subsection{Temporal similarity extraction} \label{subsec:tempsim}
+\subsection{Computing Activations} \label{subsec:tempsim}
 
+% TODO re-write
 Temporal similarity extraction is the process of identifying recurring patterns in time series data. It involves the identification of past instances where the current state is observed to extract useful information about the system's behavior over time. By identifying historical periods with similar conditions, temporal similarity extraction can help assess the current state or predict future trends. This technique is common in statistics for purposes such as estimation and forecasting.
 
 Using sets or probability distributions to filter historical data is one approach to simplify the process of temporal similarity extraction in multivariate time series data while also making it more robust against noisy or incomplete data. This approach assigns membership values to each data point in the time series based on the corresponding set (or distribution) generated from the current cell inputs. By eliminating samples past a certain threshold, we can form the outputs. The possibility of this process is one of the reasons for deciding to represent the inputs and outputs of the cell in a fuzzy manner. 
@@ -360,18 +363,6 @@ Each cell has a unique identifier, generated upon creation and independent of th
 
 On cell deployment, the system expects the owner and the CellTAN manager to manually link cells together by assigning each connection. However, the plan is to develop a mechanism that proposes new connections based on the neighbor's neighbors through the hub. This mechanism could function based on the strength of the relationship between cells and neighbors in common, recommending a direct link if both "trust" them similarly. As the last phrase hints, an indicator called "trust" is the criterion for evaluating these links. The following subsection defines the conception of this metric.
 
-\subsubsection{Communication Protocol}
-
-In the context of ensuring proper data sharing between cells, the choice of communication protocol is a crucial aspect of establishing connections. For this work, we implemented a local communication mode for cells running on the same machine or within the same process and a remote communication model intended for cells distributed across different servers. The local communication mode is straightforward, assuming direct links between cells within the program. However, multiple protocol options regarding remote communication exist, including HTTP, HTTPS, WebSocket, and MQTT (excluding protocols for wireless proximity communication, as the CellTAN system assumes cells may be in different geographical locations). Initially, we implemented HTTP/HTTPS for remote communications due to its accessibility and ease of implementation. However, given its synchronous operation (based on request and response), we soon realized there might be more appropriate and robust choices for a distributed asynchronous system. Consequently, as future work, we should refactor the remote interface to utilize MQTT.
-
-HTTP (Hypertext Transfer Protocol) and MQTT (Message Queuing Telemetry Transport) are communication protocols in different contexts. HTTP, a request-response protocol widely used in web applications, operates over TCP and follows a client-server model. It proves suitable when clients need to retrieve or send specific data to and from a server. HTTP is simple, widely supported, and compatible with browsers and standard web technologies. However, its stateless nature and lack of optimization for real-time communication can result in high overhead caused by frequent request-response cycles.
-
-% TODO referencias
-
-In contrast, MQTT is a lightweight publish-subscribe messaging protocol designed for efficient communication in distributed systems, especially within the Internet of Things (IoT). MQTT utilizes a broker-based architecture, where clients publish messages to topics and subscribe to receive messages from specific topics of interest. MQTT is highly scalable, bandwidth-efficient, and supports asynchronous messaging. It minimizes network and power consumption while providing reliable message delivery. However, implementing MQTT may require additional infrastructure, such as MQTT brokers.
-The publish-subscribe model of MQTT facilitates decoupled communication between system components, allowing for scalable and flexible systems. It is suitable for scenarios where devices or services exchange information in a distributed environment asynchronously. MQTT often outshines HTTP as the preferable choice for a distributed asynchronous system emphasizing real-time data exchange and efficient communication. Nevertheless, HTTP remains the more appropriate choice if the system primarily revolves around traditional web applications and request-response interactions. Ultimately, the scope of CellTAN requires the leverage of both protocols in different aspects of the tool: HTTP is more suitable for human-system interaction, and MQTT for system-system exchanges.
-
-
 \subsection{States}
 
 We introduce a state system to summarize the results of cells' processes. The state represents a short view into intrinsic and extrinsic unconformities occuring in the cell.
@@ -416,6 +407,19 @@ Materializing both the cell and the hub happened by coding Python modules. It wa
 Docker containers \cite{docker} are the infrastructure choice for deploying these modules (Cells and Hub). They allow running software as containerized applications, with all the necessary dependencies installed in an isolated environment. It acts as a separate system built for running the application instead of relying on the host's OS (Operating System) and running bare-metal. This execution strategy adds an isolation layer between the program and the host machine, increasing safety and making the "production" environment more predictable and stable. An overview of the technology stack utilized (and proposed) for the software products created in this work is pictured in appendix \ref{ap1:techstack}.
 
 % dockerfile em anexos?
+
+
+\subsection{Communication Protocol}
+
+In the context of ensuring proper data sharing between cells, the choice of communication protocol is a crucial aspect of establishing connections. For this work, we implemented a local communication mode for cells running on the same machine or within the same process and a remote communication model intended for cells distributed across different servers. The local communication mode is straightforward, assuming direct links between cells within the program. However, multiple protocol options regarding remote communication exist, including HTTP, HTTPS, WebSocket, and MQTT (excluding protocols for wireless proximity communication, as the CellTAN system assumes cells may be in different geographical locations). Initially, we implemented HTTP/HTTPS for remote communications due to its accessibility and ease of implementation. However, given its synchronous operation (based on request and response), we soon realized there might be more appropriate and robust choices for a distributed asynchronous system. Consequently, as future work, we should refactor the remote interface to utilize MQTT.
+
+HTTP (Hypertext Transfer Protocol) and MQTT (Message Queuing Telemetry Transport) are communication protocols in different contexts. HTTP, a request-response protocol widely used in web applications, operates over TCP and follows a client-server model. It proves suitable when clients need to retrieve or send specific data to and from a server. HTTP is simple, widely supported, and compatible with browsers and standard web technologies. However, its stateless nature and lack of optimization for real-time communication can result in high overhead caused by frequent request-response cycles.
+
+% TODO referencias
+
+In contrast, MQTT is a lightweight publish-subscribe messaging protocol designed for efficient communication in distributed systems, especially within the Internet of Things (IoT). MQTT utilizes a broker-based architecture, where clients publish messages to topics and subscribe to receive messages from specific topics of interest. MQTT is highly scalable, bandwidth-efficient, and supports asynchronous messaging. It minimizes network and power consumption while providing reliable message delivery. However, implementing MQTT may require additional infrastructure, such as MQTT brokers.
+The publish-subscribe model of MQTT facilitates decoupled communication between system components, allowing for scalable and flexible systems. It is suitable for scenarios where devices or services exchange information in a distributed environment asynchronously. MQTT often outshines HTTP as the preferable choice for a distributed asynchronous system emphasizing real-time data exchange and efficient communication. Nevertheless, HTTP remains the more appropriate choice if the system primarily revolves around traditional web applications and request-response interactions. Ultimately, the scope of CellTAN requires the leverage of both protocols in different aspects of the tool: HTTP is more suitable for human-system interaction, and MQTT for system-system exchanges.
+
 
 \subsection{Cell configuration and deployment}
 
