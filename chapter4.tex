@@ -29,11 +29,9 @@ Vast and scattered information across multiple agents is a common scenario faced
 
     \item \textbf{Activations}: Timestamps of past occurrences on a knowledge base with a non-zero membership value against a set of recent inputs.
 
-    \item \textbf{Events}: Occurrences that the cell reports back to the hub, usually triggered by exceeding parametrized thresholds.
+    \item \textbf{Trust}: A decimal number that represents how coherent two activations are with each other. Besides its instantaneous computed value, it can also come from a cumulative computation on a defined time window.
 
-    \item \textbf{trust}: A decimal number that represents how coherent two cells' activations are with each other. Besides its instantaneous computed value, it can also come from a cumulative computation on a defined time window.
-
-    \item \textbf{hub}: The central component of the cell network, which facilitates its visualization, management, and expansion. It acts as the proxy agent between the cell's communication.
+    \item \textbf{Hub}: The central component of the cell network, which facilitates its visualization, management, and expansion. It acts as the proxy agent between the cell's communication.
 
 \end{itemize}
 
@@ -54,36 +52,38 @@ A cell is an independent entity composed of \textbf{data} and \textbf{processes}
 \subsection{Processes and Data}
 
 
-The cell has a main process loop that executes a sequence of actions periodically: 
+The cell's core is essentially characterized by a main process loop that executes a sequence of actions periodically.
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=12cm]{figures/chapter4/cell/processes.pdf}
-    \caption{The cell's core sequence of processes (colored orange) and flow of data (colored blue).}
+    \includegraphics[width=\textwidth]{figures/chapter4/cell/processes.pdf}
+    \caption{The cell's core sequence of processes (colored orange) and flow of data (colored blue for private and green for public attributes).}
     \label{fig:cellprocesses}
 \end{figure}
 
-Figure \ref{fig:cellprocesses} showcases the cell's core procedures. It starts in a standby mode, which is only left when new information arrives or a predetermined amount of time has passed. This mode ensures no unnecessary computational burden of repeating all other computations: they provide the most valuable results when new data is available. Nonetheless, defining a maximum sleep time ensures the cell's activations are periodically updated to reflect the neighbors' state and intrinsic uncertainty.
+Figure \ref{fig:cellprocesses} showcases the cell's core procedures and data flow. It starts in standby mode, which is only left when new information arrives or a predetermined amount of time has passed. This mode ensures no unnecessary computational burden of repeating all processes without new data. Nonetheless, defining a maximum sleep time ensures the cell's activations are periodically updated to reflect contemporary neighbors' trust and intrinsic uncertainty.
 
-The process of computing activations relates to the temporal similarity extraction showcased in section \ref{subsec:tempsim}. It occurs twice because inputs only contain intrinsic information, while outputs aggregate intrinsic and extrinsic data (information from neighbors), and the latter is more worthy to the network. The cell makes this procedure's byproduct (Activations) publicly available, pictured in figure \ref{fig:celldata}.
+The process of computing activations relates to the temporal similarity extraction, presented in section \ref{subsec:tempsim}. It is associated with searching for similar behavior (of the inputs) in the cell's knowledge base, producing activations. This byproduct is made publicly available.
 
-Fetching neighbor's activations 
+Fetching neighbors' activations is an asynchronous process that uses the hub for communicating with other cells. This process only occurs after checking what neighboring cells have activations not older than an acceptable threshold (configured by the cell owner) and if their knowledge bases intersect with the cell's own. However, if a neighborhood of cells receives new inputs simultaneously, it would result in some trying to continue computations while others still do not have activations. Thus, this process checks for neighbors with updated activations up to three times, with a pause in-between, if the current amount does not reach a predefined threshold.
 
-\begin{figure}[h!]
-    \centering
-    \includegraphics[width=\linewidth]{figures/chapter4/cell/data.pdf}
-    \caption{The cell's public and private data attributes.}
-    \label{fig:celldata}
-\end{figure}
+The cell executes a trust computation neighbor-wise and variable-wise. In practice, this procedure generates a decimal value between zero and one for each input variable and neighbor, which describes how much that variable is coherent with the rest and how much a neighbor is coherent with the cell (respectively). We nicknamed it "trust" to have a friendlier term used throughout the development and reasoning that unrolls in \ref{subsec:trust}. This indicator is stored in the owner's database so that we can perform an aggregated analysis, which relates to the process of "checking historical trust".
 
-Figure \ref{fig:celldata} showcases the cell's public and private data attributes. The network may have access to its activations, knowledge base coverage, and neighbors' trust. Conversely, the cell extracts neighbors' activations from the network and gives its owner exclusive access to inputs, outputs, and knowledge base. The cell's knowledge base might only represent an interface with a private database (thus a bidirectional connection), not the data itself, since the owner might prefer a centralized storage server. The relationship between the owner and private cell data is bidirectional because it is his responsibility to update the inputs.
+Considering the color code, we can see that most of the cell's data is private. The network can access its activations, knowledge base coverage, and neighbors' trust. Conversely, the cell extracts neighbors' activations from the network and gives its owner exclusive access to inputs, outputs, and knowledge base. The relationship between the owner and private cell data is bidirectional since it is his responsibility to update the inputs. The cell's knowledge base might only represent an interface with a private database (thus a bidirectional connection), not the data itself, since the owner might prefer a centralized storage server instead of storing it with the cell.
 
+% \begin{figure}[h!]
+%     \centering
+%     \includegraphics[width=\linewidth]{figures/chapter4/cell/data.pdf}
+%     \caption{The cell's public and private data attributes.}
+%     \label{fig:celldata}
+% \end{figure}
 
 % TODO explicar processos da célula por alto
+% TODO explicar compactação das ativações
 
 \subsection{Inputs and Outputs}
 
-The cell has inputs and outputs. Both are a view of the values that define its variables at a given timestamp, which is continuously rolling. While inputs are directly associated with raw sampled data from the system (injected by the owner), outputs are a byproduct of internal processes. The latter should present more accurate information since it is based on internal and external data (ideally) and may be helpful for the cell's owner to assess its state.
+Inputs and outputs are a view of the values that define a cell's variables at a given timestamp, which is continuously rolling. While inputs are directly associated with raw sampled data from the system (injected by the owner), outputs are a byproduct of internal processes. The latter should present more accurate information since it is based on internal and external data (ideally) and may be helpful for the cell's owner to assess its state.
 
 Representing the cell's variables in a fuzzy (or probabilistic) manner can better capture the inherent uncertainty in time series data. For the cell's inner workings, we chose that inputs and outputs are not represented by crisp values but rather by classical sets. However, they are not limited to this representation, with fuzzy numbers or probability distributions as alternatives. Besides, they can be subject to a process called \textbf{time decay}, which ensures that the passage of time negatively affects uncertainty (more on section \ref{subsec:timedecay}). This mechanism increases the robustness of the cell by acknowledging the value of time in assessing its current state.
 
@@ -105,7 +105,7 @@ Summing up, the following may characterize inputs and outputs:
 Classical sets have pros and cons: many operations become more efficient compared to the alternatives, but we lose density information. Filtering historical data becomes trivial: a value lies within the bounds of the interval (membership value of one) or does not (membership value of zero). This more accessible representation will benefit some cell processes, primarily in temporal similarity extraction (\ref{subsec:tempsim}).
 
 % ! devia ser subsubsec dos inputs/outputs
-\subsection{Time decay} \label{subsec:timedecay}
+\subsubsection{Time decay} \label{subsec:timedecay}
 
 In real-world dynamic systems that involve data acquisition, the certainty of the data collected tends to fade over time due to its dynamic nature. Typically, the most recent data is the most accurate representation of the system's current state, and as time elapses, the accuracy of previous data points decreases. As a result, it is crucial to consider the time dimension when analyzing dynamic systems and to develop methods that can account for the decay in data certainty over time.
 
@@ -204,12 +204,14 @@ Although simple, this process has some tricky requirements, such as not allowing
 % Capacidade de estimação de estado intrínsica + extrínsica
 
 
-\subsection{Trust between Cells}  \label{subsec:trust}
+\subsection{Trust}  \label{subsec:trust}
 
 
-After recognizing the potential for time similarity extraction, we discovered an additional possibility with activations. Since these represent past cell instances that exhibit similar behavior to the current inputs, we can compare them between cells. This unique characteristic of the CellTAN enables its usage without data privacy issues and not requiring data normalization. However, the knowledge base must intersect for a time-based comparison to make sense, and it yields the best results if outliers are absent.
+After recognizing the potential for time similarity extraction, we discovered an additional possibility with activations. Since these represent past cell instances that exhibit similar behavior to the current inputs, we can compare them between cells, or even between variables. This unique characteristic of the CellTAN enables its usage without data privacy issues and not requiring data normalization. However, the knowledge base must intersect for a time-based comparison to make sense, and it yields the best results if outliers are absent.
 
 Time possesses inherent normalization properties, as all components equally experience its passage. This characteristic enables the network to compare systems without concerns about the specific variables involved. Consequently, the proposed tool can be effectively applied beyond PV applications, showcasing its ability to be generalized across various domains.
+
+\subsubsection{Trust between Cells}
 
 A 2x2 contingency table represents the intersection of activations of two cells. In this table, the rows define the activation status of one cell (labeled as "Activated" and "Not Activated"), and the columns represent the activation status of the other cell (same labels).
 
@@ -241,7 +243,7 @@ Considering that the desired outcome of activation comparison between cells is a
 The $\phi$ coefficient, also known as Matthews correlation coefficient, is a measure of association designed explicitly for 2x2 contingency tables, quite popular in machine learning for measuring the quality of binary classification. It ranges from -1 to 1, where 0 indicates no association, -1 represents a perfect negative association, and 1 represents a perfect positive association. The contingency coefficient extends this coefficient's usability, allowing its application in larger contingency tables, and ranges from 0 to 0.707 (no association to strong association).
 Finally, another relevant test is Theil's U . It accounts for the variables' mutual information and entropy based on information theory principles, providing a measure for the proportion of total entropy in one variable that the other can explain. It also ranges from 0 to 1.
 
-\subsubsection{Proposed trust measurement method}
+\subsubsection{Proposed trust measurement method for cells}
 
 All the mentioned tests may offer different perspectives on the association between the activations of two cells. However, none are considered adequate for our application, so we propose a new method, defined by \ref{eq:cdmchi}.
 
@@ -266,7 +268,7 @@ Where:
 
 Based on Pearson's chi-squared test, this new approach focuses on the "a" component: the pure agreeableness between two cells. Its value ranges from 0 to 1 (no "trust" to complete "trust"). Some of the most relevant tests previously presented, namely the $\phi$ coefficient, contingency coefficient, and Theil's U, are compared to this new method for comparison and validation in the following experiments.
 
-\subsubsection{Experiments}
+\subsubsection{Experiments and validation}
 
 \paragraph{Experiment nº1}
 
@@ -355,6 +357,16 @@ Figure \ref{fig:trust_test_3} shows that only the new method presents the previo
 
 With the three experiments presented, we confirm that the proposed approach for computing the trust index between cells is better suited, considering the requirements and assumptions.
 
+\subsubsection{Trust between variables}
+
+Variables defined in the inputs/outputs of the cell can also be subject to activation comparison. Accordingly, we suggest simplifying this process compared to the inter-cell trust \ref{eq:trustvars}. Given that a cell may possess many variables, we restrict this computation to one per each, comparing the activations of a single variable with the intersection of all others.
+
+\begin{equation} \label{eq:trustvars}
+    Trust = 1 - \frac{TA_{others, exclusive}}{TA_{self,others} + TA_{self, exclusive} + TA_{others, exclusive}}
+\end{equation}
+
+We utilize equation \ref{eq:trustvars} to calculate the trust indicator for variables. The resulting value will be normalized and transparent, reflecting how much a variable was inactive while others were active.
+
 \subsection{Connections}
 
 Mutual similarity extraction and trust calculation cannot occur in isolation. Therefore, connections are the essence of forming the CellTAN. These links can also have indicators for describing the cells' relationships, like the trust index, which is crucial for anomaly detection.
@@ -365,7 +377,8 @@ On cell deployment, the system expects the owner and the CellTAN manager to manu
 
 \subsection{States}
 
-We introduce a state system to summarize the results of cells' processes. The state represents a short view into intrinsic and extrinsic unconformities occuring in the cell.
+We introduce a state system to expose the resulting unconformities found during cells' processes. These unconformities are intrinsic and extrinsic, based on the historical check of trust in the variables and neighbors (respectively), and during output computation.
+
 
 \subsection{Application Plugins}
 
