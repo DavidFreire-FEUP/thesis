@@ -2,9 +2,10 @@
 
 % Academic and industrial setting and data source
 \section{Academic and Industrial Setting}
-The present work unrolls at Faculdade de Engenharia da Universidade do Porto by a student employee of SmartWatt \cite{SW}. One of the employer's requirements is that the formulation of the final algorithm shall be done in the Python programming language \cite{Python}. Therefore, academic and industrial standards are considered during the development of the proposed tool.
 
-Having the possibility of working with a company that provides projects for renewables, efficiency and artificial intelligence solutions for energy systems, there is the availability of PV asset data from various clients, mainly from the Iberian Peninsula and some other European countries. There will be a need to gather information from assets with historical significance and with the presence of faults. Although SmartWatt leases PV asset data for this work, it remains classified and will not be disclosed.
+The present work unrolls at Faculdade de Engenharia da Universidade do Porto by a student employee of Enlitia \cite{EL}. One of the employer's requirements is to formulate the final algorithm in the Python programming language \cite{Python}. Therefore, we consider academic and industrial standards during the development of the tool.
+
+Having the possibility of working with a company that provides artificial intelligence solutions for energy systems, there is ample availability of PV asset data from various clients, mainly from the Iberian Peninsula and other European countries. There will be a need to gather information from assets with historical significance and with the presence of faults. Although Enlitia leases PV asset data for this work, its origin will remain classified.
 
 % Work phases
 \section{Work timeline}
@@ -35,12 +36,11 @@ According to the predefined workflow, the following chapters of this document wi
 % Strategies
 \section{Development strategies}
 
-Data gathering will be accomplished by combining as many data sources for the same variables as possible, such as power meters and Scada measurements, local meteorological stations, and satellite data. Then, datasets will be organized into specific categories according to time resolution, acquisition method, availability, and accuracy. Geographical-based characterization might also be utilized to divide data even further. Data analysis, feature extraction, and clustering are essential in this step to harness valuable data from unlabeled samples. Complementary data from simulation might be considered to amplify the experimental dataset, with \textit{Matlab/Simulink} as the preferred software for that purpose.
+Data gathering will be accomplished by combining as many data sources for the same variables as possible, such as power meters and SCADA measurements, local meteorological stations, and satellite data. Then, datasets will be organized into specific categories according to time resolution, acquisition method, availability, and accuracy. Geographical-based characterization might also be utilized to divide data even further. Data analysis, feature extraction, and clustering are essential in this step to harness valuable data from unlabeled samples.
 
+To implement classical ML methodologies, as well as the proposed tool, Python libraries such as TensorFlow \cite{tensorflow}, Scikit-learn \cite{sklearn}, and SciPy \cite{scipy} are the finest selection. They facilitate the creation of neural networks and other learning structures, possessing many different implementations of scientific algorithms. Other utilities discovered during the development process will be referenced along.
 
-To implement classical ML methodologies, as well as the proposed tool, Python libraries such as TensorFlow \cite{tensorflow}, Scikit-learn \cite{sklearn}, and SciPy \cite{scipy} are the finest selection. They facilitate the creation of neural networks and other learning structures, possessing many different implementations of scientific algorithms. The Mlflow \cite{mlflow} Python library will be used for experiment tracking. It features metric tracking, parameter tracking, and artifact storage, which eases the development of multiple ML models associated with a specific experiment. Other utilities discovered during the development process will be referenced along.
-
-Software engineering guidelines will rule the software architecture of the final application, which should follow its well-studied organization patterns. Even though it is not a focus of this work, paying attention to code implementation should maximize the probability of expected application behavior, better scalability, and safety.
+Software engineering guidelines will rule the software architecture of the final application, which should follow its well-studied organization patterns. Even though it is not a focus of this work, paying attention to code implementation should result in a better application, scalability, and security.
 
 % Final product
 
