@@ -4,7 +4,7 @@ Distributed information systems characterized by time series data present variou
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=12cm]{figures/chapter4/cell/intro.pdf}
+    \includegraphics[width=0.9\textwidth]{figures/chapter4/cell/intro.pdf}
     \caption{Simples CellTAN Network of two cells cooperating.}
     \label{fig:celltanintro}
 \end{figure}
@@ -61,25 +61,23 @@ The cell's core is essentially characterized by a main process loop that execute
     \label{fig:cellprocesses}
 \end{figure}
 
-Figure \ref{fig:cellprocesses} showcases the cell's core procedures and data attributes. All the attributes with a symbol on the top right could be persisted on the owner's database. It starts in standby mode, which is only left when new information arrives or a predetermined amount of time has passed. This mode ensures no unnecessary computational burden of repeating all processes without new data. Nonetheless, defining a maximum sleep time ensures the cell's activations are periodically updated to reflect contemporary neighbors' trust and intrinsic uncertainty.
+Figure \ref{fig:cellprocesses} showcases the cell's core procedures and data attributes. The symbol on the top right of some attributes indicates that the cell should persist in its database. Regarding the color coding in figure \ref{fig:cellprocesses}, we can see that most of the cell's attributes are private. The network can access its activations, knowledge base coverage, and neighbors' trust. Conversely, the cell extracts neighbors' activations from the network and gives its owner exclusive access to inputs, outputs, knowledge base, and others. The relationship between the owner and private cell data is bidirectional since it is also his responsibility to update the inputs (hopefully with an autonomous process). The cell's knowledge base may only represent an interface with a private database (thus a bidirectional connection), not the data itself, since the owner might prefer a centralized storage server instead of storing it within the hardware of the cell.
+
+The cell starts in standby mode, which is only left when new information arrives or a predetermined amount of time has passed. This mode ensures no unnecessary computational burden of repeating all processes without new data. Nonetheless, defining a maximum sleep time ensures the cell's activations are periodically updated to reflect contemporary neighbors' trust and intrinsic uncertainty.
 
 The process of computing activations relates to temporal similarity extraction, presented in section \ref{subsec:tempsim}. It is associated with searching for similar behavior (of the inputs) in the cell's knowledge base, generating "time activations", which are the timestamps of similar occurences (this is made publicly available).
 
 Fetching neighbors' activations is an asynchronous process that uses the hub for communicating with other cells. This process only occurs after checking what neighboring cells have activations not older than an acceptable threshold (configured by the cell owner) and if their knowledge bases intersect with the cell's own. However, if a neighborhood of cells receives new inputs simultaneously, it would result in some trying to continue computations while others still do not have activations. Thus, this process checks for neighbors with updated activations up to three times, with a pause in-between, if the current amount does not reach a predefined threshold.
 
-The cell executes a trust computation neighbor-wise and variable-wise. In practice, this procedure generates a decimal value between zero and one for each input variable and neighbor, which describes how much that variable is coherent with the rest and how much a neighbor is coherent with the cell (respectively). We nicknamed it "trust" to have a friendlier term used throughout the development and reasoning that unrolls in \ref{subsec:trust}. This indicator is stored in the owner's database so that we can perform an aggregated analysis, which relates to the process of "checking historical trust".
+The cell executes a trust computation neighbor-wise and variable-wise. In practice, this procedure generates a decimal value between zero and one for each input variable and neighbor, which describes how much that variable is coherent with the rest and how much a neighbor is coherent with the cell (respectively). We nicknamed it "trust" to have a friendlier term used throughout the development and reasoning that unrolls in section \ref{subsec:trust}. This indicator is stored in the owner's database so that it can perform an aggregated analysis, which relates to the process of "checking historical trust".
 
-The "checking historical trust" procedure identifies unconformities in aggregated trust values during specific time windows and flags them when they fall below the owner's threshold. It records inconsistencies with information about the elements and time bins involved, raising the severity of unconformity accordingly.
+The "checking historical trust" procedure identifies unconformities in aggregated trust values during specific time windows and flags them when they fall below the owner's threshold. It records inconsistencies alongside information about the elements and time bins involved, raising the severity of unconformity accordingly.
 
-Output computation uses intrinsic and neighbor activations to filter the knowledge base and find the new variables' domain (a process detailed in \ref{subsec:inout}). This process also provides information about unconformity severity (see section \ref{sec:states}).
+For output computation, the cell uses intrinsic and neighbor activations to filter its knowledge base and find the new variables' domain (a process detailed in \ref{subsec:inout}). This process also provides information about unconformity severity, since certain unwanted situations might occur when intersecting variables' and neighbors' activations (see section \ref{sec:states}).
 
-During the "updating state" stage, the cell checks if its internal state has changed since the previous loop. It sends this information to the owner's database and the central hub if a change occurs.
+During the "updating state" stage, the cell checks if its internal state has changed since the previous loop. It sends this information to the owner's database and the central hub if a change does occur. This state is closely related to the possible unconformities (\ref{sec:states}).
 
-
-Considering the color code, we can see that most of the cell's data is private. The network can access its activations, knowledge base coverage, and neighbors' trust. Conversely, the cell extracts neighbors' activations from the network and gives its owner exclusive access to inputs, outputs, and knowledge base. The relationship between the owner and private cell data is bidirectional since it is his responsibility to update the inputs. The cell's knowledge base might only represent an interface with a private database (thus a bidirectional connection), not the data itself, since the owner might prefer a centralized storage server instead of storing it with the cell.
-
-
-% TODO explicar compactação das ativações
+In the end, the cell may run application-specific plugins. These are external additions that the owner might include for uncovering specific situations related to the cell's inputs. Further detailed in section \ref{subsec:plugins}, this mechanism binds system logic to the cell and takes advantage of its known physical properties and behavior.
 
 \subsection{Inputs and Outputs} \label{subsec:inout}
 
@@ -384,7 +382,7 @@ Cells rely on aggregated trust values to assess the integrity and coherence of i
 In addition to the assessment methodology mentioned above, intrinsic filtering and the intersection of neighbor's activations play a crucial role in determining the overall unconformity state of the cell. Specifically, suppose intrinsic filtering yields a null domain. In that case, it indicates that the cell has encountered total intrinsic unconformity, suggesting a fundamental breakdown or lack of coherence with its knowledge base. Similarly, suppose the intersection of the neighbor's activations yields a null domain. In that case, it signifies total extrinsic unconformity, implying that the cell lacks trust in its external environment. These higher states of unconformity, whether intrinsic or extrinsic, serve as valuable indicators called the "Unconformity severity info." Considering this additional information, the system can escalate the severity level set by the time bin unconformities, providing a more comprehensive understanding of the cell's overall integrity and the extent of the identified unconformities.
 
 
-\subsection{Application Plugins}
+\subsection{Application Plugins} \label{subsec:plugins}
 
 % ? Isto devia criar um capítulo inteiro só por sí não?
 
