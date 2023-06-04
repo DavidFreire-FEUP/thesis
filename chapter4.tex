@@ -102,7 +102,6 @@ Summing up, the following may characterize inputs and outputs:
 
 Classical sets have pros and cons: many operations become more efficient compared to the alternatives, but we lose density information. Filtering historical data becomes trivial: a value lies within the bounds of the interval (membership value of one) or does not (membership value of zero). This more accessible representation will benefit some cell processes, primarily in temporal similarity extraction (\ref{subsec:tempsim}).
 
-% ! devia ser subsubsec dos inputs/outputs
 \subsubsection{Time decay} \label{subsec:timedecay}
 
 In real-world dynamic systems that involve data acquisition, the certainty of the data collected tends to fade over time due to its dynamic nature. Typically, the most recent data is the most accurate representation of the system's current state, and as time elapses, the accuracy of previous data points decreases. As a result, it is crucial to consider the time dimension when analyzing dynamic systems and to develop methods that can account for the decay in data certainty over time.
@@ -402,7 +401,14 @@ The CellTAN tool is supposed to be easily accessible for different assets and ow
     \item Cell connection proposal.
 \end{itemize}
 
-Adding this component permits visualizing all the cells registered in the system and their public data. This 
+Adding this component permits visualizing all the cells registered in the system and their public data\dots
+
+\section{Expected behavior}
+
+% agora que já se entende o que cada coisa é, falar mais a fundo sobre o comportamento que as células devem ter quando se monta uma rede 
+
+In this section we can also notice how much the time decay mechanism of the inputs influences this process. If a cell is left unnatended for a large enough amount of time, filtering with highly uncertain inputs leads to activations that cover most (or all) of its knowledge base. When this happens, outputs are equally uncertain and 
+
 
 \section{Implementation}
 
@@ -437,7 +443,6 @@ The publish-subscribe model of MQTT facilitates decoupled communication between 
 
 
 \subsection{Cell configuration and deployment}
-
 
 Configuring cells can be done through configuration files (one per cell). They should contain the cell variables' definitions, database credentials, hub credentials, and all other parameters. Because of its simplicity, we chose the YAML serialization specification \cite{yaml} to parse these configurations. A walkthrough of the cell configuration and expected file structure is present in appendix \ref{ap1:config}
 
