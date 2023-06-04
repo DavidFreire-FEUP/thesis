@@ -81,11 +81,11 @@ In the end, the cell may run application-specific plugins. These are external ad
 
 \subsection{Inputs and Outputs} \label{subsec:inout}
 
-Inputs and outputs are a view of the values that define a cell's variables at a given timestamp, which is continuously rolling. While inputs are directly associated with raw sampled data from the system (injected by the owner), outputs are a byproduct of internal processes. The latter should present more accurate information since it is based on internal and external data (ideally) and may be helpful for the cell's owner to assess its state.
+Inputs and outputs are a view of the values that define a cell's variables at a given rolling timestamp. While inputs are directly associated with raw sampled data from the system (injected by the owner), outputs are a byproduct of internal processes. The latter should present more accurate information since it is based on internal and external data (ideally) and may be helpful for the cell's owner to assess its state.
 
-Representing the cell's variables in a fuzzy (or probabilistic) manner can better capture the inherent uncertainty in time series data. For the cell's inner workings, we chose that inputs and outputs are not represented by crisp values but rather by classical sets. However, they are not limited to this representation, with fuzzy numbers or probability distributions as alternatives. Besides, they can be subject to a process called \textbf{time decay}, which ensures that the passage of time negatively affects uncertainty (more on section \ref{subsec:timedecay}). This mechanism increases the robustness of the cell by acknowledging the value of time in assessing its current state.
+Representing the cell's variables in a fuzzy (or probabilistic) manner can better capture the inherent uncertainty in time series data. For the cell's inner workings, we chose that inputs and outputs are represented by classical sets instead of crisp values. However, they are not limited to this representation, with fuzzy numbers or probability distributions as alternatives. Besides, they can be subject to a process called \textbf{time decay}, which ensures that the passage of time negatively affects uncertainty (more on section \ref{subsec:timedecay}). This mechanism increases the robustness of the cell by acknowledging the value of time in assessing its current state.
 
-Summing up, the following may characterize inputs and outputs:
+Generalizing the concept of representing uncertainty, the following structures may characterize inputs and outputs:
 
 \begin{itemize}
     \item Classical set: simple uncertainty band (e.g., uncertainty up, down, relative, etc);
@@ -96,7 +96,7 @@ Summing up, the following may characterize inputs and outputs:
 \begin{figure}[h!]
     \centering
     \includegraphics[width=15cm]{figures/chapter4/cell/classic_fuzzy_gaussian.pdf}
-    \caption{Classical set, triangular fuzzy number, Gaussian distributions, and the associated membership function.}
+    \caption{Classical set, triangular fuzzy number, Gaussian distributions, represented as membership functions.}
     \label{fig:classicfuzzygaussian}
 \end{figure}
 
@@ -106,7 +106,7 @@ Classical sets have pros and cons: many operations become more efficient compare
 
 In real-world dynamic systems that involve data acquisition, the certainty of the data collected tends to fade over time due to its dynamic nature. Typically, the most recent data is the most accurate representation of the system's current state, and as time elapses, the accuracy of previous data points decreases. As a result, it is crucial to consider the time dimension when analyzing dynamic systems and to develop methods that can account for the decay in data certainty over time.
 
-As stated before, and towards considering the time dimension for the current state of a cell, we formulate a \textbf{time decay} method to ensure a more truthful and reliable assessment of the cell's current state. During the standby stage, this process ensures that the inputs and outputs suffer an increase in uncertainty.
+As stated before, and towards considering the time dimension for the current state of a cell, we formulate a \textbf{time decay} method to ensure a more truthful and reliable assessment of the cell's current state. During the standby stage, this process ensures that the inputs and outputs suffer an increase in uncertainty, leading to a totally uncertain cell when in steady state (without new data input).
 
 Consider the following example of converting a crisp value (5) and uncertainty ($\pm$1) to a classical set:
 
@@ -131,30 +131,28 @@ The $age$ variable refers to the time difference between the present time and th
     \label{fig:timedecay}
 \end{figure}
 
-Figure \ref{fig:timedecay} represents the expansion of the set throughout a period equal to the decay parameter (ten seconds). When $x$ reaches the age of ten seconds, its set represents complete uncertainty since its bounds become similar to the variable limits ($x_{min}$ and $x_{max}$). We can see that the decreasing difference between the bounds and maximum/minimum values causes attenuation in the decay curve, as it displays a non-linear behavior. This behavior seems appropriate according to the reality of systems: as a variable becomes more uncertain with time, there is less potential for its uncertainty to increase.
+Figure \ref{fig:timedecay} represents the expansion of the set throughout a period equal to the decay parameter (ten seconds). When the $x$ variable reaches the age of ten seconds, its set representation transmits complete uncertainty: the bounds become similar to the variable limits ($x_{min}$ and $x_{max}$). We can see that the decreasing difference between the bounds and maximum/minimum values causes attenuation in the decay curve, as it displays a non-linear behavior. This behavior seems appropriate according to the reality of systems: as a variable becomes more uncertain with time, there is less potential for its uncertainty to increase.
 
 
 % \subsection{Temporal similarity extraction} \label{subsec:tempsim}
 \subsection{Computing Activations} \label{subsec:tempsim}
 
-% TODO re-write
-Temporal similarity extraction is the process of identifying recurring patterns in time series data. It involves the identification of past instances where the current state is observed to extract useful information about the system's behavior over time. By identifying historical periods with similar conditions, temporal similarity extraction can help assess the current state or predict future trends. This technique is common in statistics for purposes such as estimation and forecasting.
+Earlier, we brought up the concept of temporal similarity extraction concerning computing activations without fully explaining it. This procedure involves identifying recurring patterns in a statistical base,i.e., finding past instances where we observe the current state to extract useful information about the system's behavior over time. By identifying historical periods with similar conditions, temporal similarity extraction can help assess the current state or predict future trends. This technique of historical search is not exclusive to this application, with demonstrations of use in other fields and for other purposes.
 
-Using sets or probability distributions to filter historical data is one approach to simplify the process of temporal similarity extraction in multivariate time series data while also making it more robust against noisy or incomplete data. This approach assigns membership values to each data point in the time series based on the corresponding set (or distribution) generated from the current cell inputs. By eliminating samples past a certain threshold, we can form the outputs. The possibility of this process is one of the reasons for deciding to represent the inputs and outputs of the cell in a fuzzy manner. 
+Using sets or probability distributions to filter historical data is one approach to simplify the process of temporal similarity extraction in multivariate time series data while also making it more robust against noisy or incomplete data. This approach assigns membership values to each data point in the time series based on the corresponding set (or distribution) generated from the current cell inputs. We form a set of similar past instances by eliminating samples past a certain threshold. This technique is one of the reasons for deciding to represent the inputs and outputs of the cell in a fuzzy manner.
 
-The proposal for similarity extraction in the cell consists of receiving new values (inputs) for the cell's variables from a data source (sensors or other data acquisition equipment, calculations, forecasting, etc.), generating a classical set, fuzzy number, or probability distribution from them, and then applying the bounds/membership function or probability density function to the knowledge base (see figure \ref{fig:solo_state_estimation}). When historical samples are associated with membership values, there may be a process for determining outputs by combining data and membership values.
+The proposal for similarity extraction in the cell consists of taking the newly received values (inputs) of the cell's variables (coming from sensors or other data acquisition equipment, calculations, forecasting, etc.), generating a classical set, fuzzy number, or probability distribution from them, and then applying the bounds/membership function or probability density function to the knowledge base (see figure \ref{fig:solo_state_estimation}). If historical samples are associated with membership values, there may be a process for determining outputs by combining data and membership values.
 
-The initial choice is to use classical sets since filtering history becomes trivial and efficient: restrict the knowledge base to samples where all variables belong to the corresponding interval. Generating outputs with these can be as simple as constructing new sets based on the bounds of filtered knowledge (samples with membership equal to one). When filtering historical data with two or more variables, there is a trend of narrowing down the resulting data's space due to the intersection of constraints. Therefore, this process should result in sets that are an equal or better assessment of the present state (than the sets generated by inputs). However, filtering might also result in zero samples (membership value of zero on all knowledge base's rows), which indicates not having "memory" of any similar occurrence. This zero-sample filter is an excellent indicator for potentially anomalous scenarios, primarily if we know that the knowledge base is statistically representative of the variables in the cell.
+The initial choice is to use classical sets since filtering history becomes trivial and efficient: restrict the knowledge base to samples where all variables belong to the corresponding interval. Generating outputs with these can be as simple as constructing a new set based on the bounds of filtered knowledge (samples with membership equal to one). When filtering historical data with two or more variables, there is a trend of narrowing down the resulting data's space due to the intersection of constraints. Therefore, this process should result in sets that are an equal or better assessment of the present state (than the sets generated by inputs). However, filtering might also result in zero samples (membership value of zero on all knowledge base's rows), which indicates not having "memory" of any similar occurrence. This zero-sample filter is an excellent indicator for potentially anomalous scenarios, primarily if we know that the knowledge base is statistically representative of the variables in the cell (its use is mentioned in \ref{sec:states}).
 
-This process also makes possible for simple forecasting. Considering an offset (arbitrary number of rows forward) in the activations, the temporal similarity extraction and computation of outputs results in future values. So, cells may either compute outputs related to the present or future. Nonetheless, this temporal shift might be difficult to achieve if data samples arrive at randomly spaced intervals of time, thus would only be straightforward for systems with time-consistent data acquisition.
+This process also enables simple forecasting. Considering an offset (arbitrary number of rows/time forward) in the activations, the temporal similarity extraction and computation of outputs results in future values. So, cells may compute outputs related to the present or future. Nonetheless, this temporal shift might be difficult to achieve if data samples arrive at randomly spaced intervals of time, thus would only be straightforward for systems with time-consistent data acquisition.
 
-The following examples consider that $t=0$ is associated with the present, and $\mu$ represents membership functions.
+Up next are practical examples of the temporal similarity extraction methodology. We consider that $t=0$ is associated with the present, and $\mu$ represents membership functions.
 
 \paragraph{Self-similarity}
 
-With a knowledge base and input variables, the cell can perform intrinsic temporal similarity extraction.
-Consider a cell characterized by two variables that are a function of time: $x(t)$ and $y(t)$,
-let us assume that, at a given instant, these are the new inputs:
+The cell can perform intrinsic temporal similarity extraction with its knowledge base and input variables. Consider a cell characterized by two variables that are a function of time: $x(t)$ and $y(t)$.
+Let us assume that, at a given instant, these are the cell's new inputs:
 
 \begin{equation}
     x(0) = 1.0 \rightarrow \mu_{x(0)}(x) =
@@ -172,7 +170,7 @@ let us assume that, at a given instant, these are the new inputs:
     \end{cases}
 \end{equation}
 
-The membership functions $\mu$ are generated considering that $x$ and $y$ are characterized by uniform and symmetrical uncertainty and that the received samples of $x(0)$ and $y(0)$ represent their median.
+The membership functions $\mu$ are generated considering that $x$ and $y$ are characterized by uniform and symmetrical uncertainty and that the received samples of $x(0)$ and $y(0)$ represent their median (classical set representation).
 
 \begin{figure}[h!]
     \centering
@@ -192,21 +190,27 @@ With the knowledge base represented in figure \ref{fig:solo_state_estimation}, t
     y'(0) \in [1.80, 2.20]
 \end{equation}
 
-These results confirm that we achieve outputs with less uncertainty only depending on intrinsic processes and private data.
+These results confirm that we achieve outputs with less uncertainty only depending on this intrinsic process and private data.
 
 \paragraph{Mutual Similarity}
 
-Extending similarity extraction to multiple cells is a relatively trivial process. Suppose a cell has access to another's activations at the same rolling timestamp and for a historical window that intersects its knowledge base. In that case, it can use that information to refine the intrinsic temporal similarity extraction result. Using sets, this can occur by joining intrinsic and extrinsic membership values by aggregation (e.g., sum, multiplication, average, etc).
-Although simple, this process has some tricky requirements, such as not allowing a time difference between the computation of membership values of different cells to avoid joining incoherent information, and 
+Extending similarity extraction to multiple cells is a relatively trivial process. Suppose a cell has access to another's activations at the same rolling timestamp and for a historical window that intersects its knowledge base. In that case, it can use that information to refine the intrinsic temporal similarity extraction result. Using sets, this can occur with a simple interval intersection of bounds. Although simple, this process has some tricky requirements, such as not allowing a time difference between the computation of membership values of different cells to avoid joining incoherent information and being able to intersect the activations of cells with different data acquisition periods.
+
+% TODO figura sobre algoritmo de compressão
+
+When analyzing the resulting activations of the previous example, we noticed that using the timestamp of each activated row could be simultaneously more efficient and avoid synchronization issues. Firstly, representing activations by an interval of timestamps instead of the individual rows allows compressing consecutive samples into a single interval.
+This new representation may or may not improve efficiency since a knowledge base that filters into alternating activations doubles the memory requirement for this representation. However, an interval representation is suitable if inputs are uncertain and result in a large filter.
+
+
 % Capacidade de estimação de estado intrínsica + extrínsica
 
 
 \subsection{Trust}  \label{subsec:trust}
 
 
-After recognizing the potential for time similarity extraction, we discovered an additional possibility with activations. Since these represent past cell instances that exhibit similar behavior to the current inputs, we can compare them between cells, or even between variables. This unique characteristic of the CellTAN enables its usage without data privacy issues and not requiring data normalization. However, the knowledge base must intersect for a time-based comparison to make sense, and it yields the best results if outliers are absent.
+After recognizing the potential for mutual time similarity extraction, we formulate a mechanism for understanding coherence between cells before mindlessly intersecting their activations. This unique characteristic of the CellTAN enables its usage without data privacy issues and not requiring data normalization. However, as seen before, the knowledge base must intersect for a time-based comparison to make sense, and it also yields the best results if outliers are absent (for anomaly detection). Besides cell comparison, activations also allow comparing variables by performing similarity extraction with a subset.
 
-Time possesses inherent normalization properties, as all components equally experience its passage. This characteristic enables the network to compare systems without concerns about the specific variables involved. Consequently, the proposed tool can be effectively applied beyond PV applications, showcasing its ability to be generalized across various domains.
+Time possesses inherent normalization properties, as all components equally experience it. This characteristic enables the network to compare systems without concerns about the specific variables involved. Consequently, this is why the proposed tool could be effectively applied beyond PV applications, showcasing its ability to generalize across various domains.
 
 \subsubsection{Trust between Cells}
 
@@ -227,7 +231,9 @@ A 2x2 contingency table represents the intersection of activations of two cells.
     }
 \end{table}
 
-Each element of the matrix represented in Table \ref{tab:cellactivationsintersection} ($a$,$b$,$c$, and $d$) corresponds to a specific combination of activations, such as "Activated-Activated," "Activated-Not Activated," "Not Activated-Activated," and "Not Activated-Not Activated". They represent the frequency or count of observations falling into that specific combination. The main diagonal relates to the cells' agreeableness, while the secondary diagonal is the opposite: disagreeableness. For the application at hand, the 'second' is utilized, meaning that, for example, $a$ is the total amount of seconds both cells are active.
+Each element of the matrix represented in Table \ref{tab:cellactivationsintersection} ($a$,$b$,$c$, and $d$) corresponds to a specific combination of activations, such as "Activated-Activated," "Activated-Not Activated," "Not Activated-Activated," and "Not Activated-Not Activated". They represent the frequency or count of observations falling into that specific combination. The main diagonal relates to the cells' agreeableness, while the secondary diagonal is the opposite. For this work, we decided to use the 'second' as the terms' unit, meaning that, for example, $a$ is the total amount of seconds both cells are active.
+
+The matrix representation of the activation intersection metrics resembles the statistical results of sampling a population with two binary categories. Therefore, a statistical test could be appropriate to calculate the association between these categories. The following section develops this topic.
 
 \subsubsection{Statistical tests for measuring association}
 
@@ -378,18 +384,30 @@ We introduce a state system to expose the resulting unconformities found during 
 
 Cells rely on aggregated trust values to assess the integrity and coherence of information. During specific time windows, these systems employ a verification process to identify unconformities in the aggregated trust values. Unconformities are flagged when the aggregated trust values fall below a certain threshold, which the owner predetermines. To establish a framework for this assessment, the owner specifies time bins upon cell creation, which define intervals evaluated from the current rolling timestamp to the past. Consequently, when inconsistencies are detected, detailed information is recorded to identify the elements that exhibit incoherence and the corresponding time bin in which the discrepancies occur. This approach allows for the characterization and analysis of "Intrinsic/Extrinsic time bin unconformities," thereby enabling the system to escalate the severity of unconformities from none to partial or total if some or all elements within a time bin exhibit incoherence.
 
+\begin{figure}[h!]
+\centering
+    \includegraphics[width=0.9\textwidth]{figures/chapter4/cell/states.pdf}
+    \caption{Algorithm for deciding unconformity severity (intrinsic and extrinsic).}
+    \label{fig:severity}
+\end{figure}
+
 In addition to the assessment methodology mentioned above, intrinsic filtering and the intersection of neighbor's activations play a crucial role in determining the overall unconformity state of the cell. Specifically, suppose intrinsic filtering yields a null domain. In that case, it indicates that the cell has encountered total intrinsic unconformity, suggesting a fundamental breakdown or lack of coherence with its knowledge base. Similarly, suppose the intersection of the neighbor's activations yields a null domain. In that case, it signifies total extrinsic unconformity, implying that the cell lacks trust in its external environment. These higher states of unconformity, whether intrinsic or extrinsic, serve as valuable indicators called the "Unconformity severity info." Considering this additional information, the system can escalate the severity level set by the time bin unconformities, providing a more comprehensive understanding of the cell's overall integrity and the extent of the identified unconformities.
 
+Figure \ref{fig:severity} sums up the algorithm of choosing unconformity severity. The severity level is associated with each type of unconformity since incoherence between neighbors and variables is not necessarily related. The first transition happens during output computation and the time bin unconformities is found during a historical trust assessment (processs seen in figure \ref{fig:cellprocesses}).
+
+Though informative, the meaning of the unconformities and their severities is relatively broad, causing the cell to overlook specific situations related to its physical behavior. The following section addresses this, suggesting an application-oriented approach to extend observability.
 
 \subsection{Application Plugins} \label{subsec:plugins}
 
 % ? Isto devia criar um capítulo inteiro só por sí não?
 
-The broad capabilities of the CellTAN make it less insightful when extracting specific information from the cells. Although its generalized design extends usability to different types of systems, it still requires additional processes to assess particular situations beyond neighborhood or internal unconformities. During the literature review process, the specificity of algorithms is noticeable, and most techniques do not attempt to diverge from the PV application when it comes to fault detection and classification. This standard approach yields excellent results and could boost CellTAN's capabilities.
+The broad capabilities of the CellTAN make it less insightful when extracting specific information from the cells. Although its generalized design extends usability to different types of systems, it still requires additional processes to assess particular situations beyond what the state provides. During the literature review process, the specificity of algorithms is noticeable, and most techniques do not attempt to diverge from the PV application when it comes to fault detection and classification. This standard approach yields excellent results and could boost CellTAN's capabilities.
 
-To solve the presented issue and dwell on the PV application theme of this work, we introduce the concept of \textbf{plugins}. Plugins extend the cell's core functionality, introduced to leverage specific system logic to identify patterns in its variables, like classical algorithms. When binding them to a cell, they have a setup that checks if the required variables are present in its inputs. Then, after the intrinsic processes, they can run an algorithm that assesses what current situations the cell might be experiencing. This way, the CellTAN can still work with entities of different natures while these plugins work alongside them, accessing private data and reporting sensible insights to the owner. 
+To solve the presented issue and dwell on the PV application theme of this work, we introduce the concept of \textbf{plugins}. Plugins extend the cell's core functionality, introduced to leverage specific system logic to identify patterns in its variables, just like classical algorithms. When binding them to a cell, they have a setup that checks if the required variables are present in its inputs. Then, after the intrinsic processes, they can run an algorithm that assesses what current situation the cell might be experiencing. This way, the CellTAN can still work with entities of different natures while these plugins work alongside, accessing private data and reporting sensible insights to the owner. Nonetheless, they are confined to the cell's scope since permitting access to other cells' variables violates the privacy principle.
 
-To illustrate this feature, let us imagine setting up a PV inverter CellTAN representative of a solar farm. Although the tool does not "know" anything about inverters nor "cares" that the cells are of this type, the agent responsible for adding them to the network certainly does. Therefore, binding a PV-specific algorithm to assess particular inverter situations, such as malfunction, over(/under) voltage(/current), and performance degradation, is wise. This additional process makes the tool warn the owner of specific inverter faults besides possible mismatches in neighboring inverters through the generalized cell procedures.
+To illustrate this feature, let us imagine setting up a CellTAN representative of a solar farm with PV inverter cells. Although the tool does not "know" anything about inverters nor "cares" that the cells are of this type, the agent responsible for adding them to the network certainly does. Therefore, binding a PV-specific algorithm to assess particular inverter situations, such as malfunction, over(/under) voltage(/current), and performance degradation, is wise. This additional process makes the tool warn the owner of specific inverter faults besides possible mismatches in neighboring inverters and variables through the generalized cell procedures. The formulation of a PV plugin, used in a real case study of the CellTAN, happens in chapter \ref{chap:chap5}.
+
+% TODO desenvolvimento do plugin de solar...
 
 \section{The Hub}
 
@@ -403,7 +421,7 @@ The CellTAN tool is supposed to be easily accessible for different assets and ow
 
 Adding this component permits visualizing all the cells registered in the system and their public data\dots
 
-\section{Expected behavior}
+\section{Expected Network Behavior}
 
 % agora que já se entende o que cada coisa é, falar mais a fundo sobre o comportamento que as células devem ter quando se monta uma rede 
 
