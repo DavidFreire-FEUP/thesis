@@ -75,7 +75,7 @@ The "checking historical trust" procedure identifies unconformities in aggregate
 
 For output computation, the cell uses intrinsic and neighbor activations to filter its knowledge base and find the new variables' domain (a process detailed in \ref{subsec:inout}). This process also provides information about unconformity severity, since certain unwanted situations might occur when intersecting variables' and neighbors' activations (see section \ref{sec:states}).
 
-During the "updating state" stage, the cell checks if its internal state has changed since the previous loop. It sends this information to the owner's database and the central hub if a change does occur. This state is closely related to the possible unconformities (\ref{sec:states}).
+During the "updating state" stage, the cell checks if its internal state has changed since the previous loop. This state is closely related to the possible unconformities (\ref{sec:states}). It sends this information to the owner's database and the central hub if a change does occur.
 
 In the end, the cell may run application-specific plugins. These are external additions that the owner might include for uncovering specific situations related to the cell's inputs. Further detailed in section \ref{subsec:plugins}, this mechanism binds system logic to the cell and takes advantage of its known physical properties and behavior.
 
@@ -83,7 +83,7 @@ In the end, the cell may run application-specific plugins. These are external ad
 
 Inputs and outputs are a view of the values that define a cell's variables at a given rolling timestamp. While inputs are directly associated with raw sampled data from the system (injected by the owner), outputs are a byproduct of internal processes. The latter should present more accurate information since it is based on internal and external data (ideally) and may be helpful for the cell's owner to assess its state.
 
-Representing the cell's variables in a fuzzy (or probabilistic) manner can better capture the inherent uncertainty in time series data. For the cell's inner workings, we chose that inputs and outputs are represented by classical sets instead of crisp values. However, they are not limited to this representation, with fuzzy numbers or probability distributions as alternatives. Besides, they can be subject to a process called \textbf{time decay}, which ensures that the passage of time negatively affects uncertainty (more on section \ref{subsec:timedecay}). This mechanism increases the robustness of the cell by acknowledging the value of time in assessing its current state.
+We defined inputs and outputs using classical sets instead of crisp values, which will be crucial for the cell's inner workings. Representing the cell's variables in a fuzzy (or probabilistic) manner can better capture the inherent uncertainty in time series data. However, they are not limited to this representation, with fuzzy numbers or probability distributions as alternatives. Besides, they can be subject to a process called \textbf{time decay}, which ensures that the passage of time negatively affects uncertainty (more on section \ref{subsec:timedecay}). This mechanism increases the robustness of the cell by acknowledging the value of time in assessing its current state.
 
 Generalizing the concept of representing uncertainty, the following structures may characterize inputs and outputs:
 
@@ -100,13 +100,13 @@ Generalizing the concept of representing uncertainty, the following structures m
     \label{fig:classicfuzzygaussian}
 \end{figure}
 
-Classical sets have pros and cons: many operations become more efficient compared to the alternatives, but we lose density information. Filtering historical data becomes trivial: a value lies within the bounds of the interval (membership value of one) or does not (membership value of zero). This more accessible representation will benefit some cell processes, primarily in temporal similarity extraction (\ref{subsec:tempsim}).
+Classical sets have pros and cons: many operations become more efficient than the alternatives, but we lose density information. Filtering historical data becomes trivial: a value lies within the bounds of the interval (membership value of one) or does not (membership value of zero). This more accessible representation will benefit some cell processes, primarily in temporal similarity extraction (\ref{subsec:tempsim}).
 
 \subsubsection{Time decay} \label{subsec:timedecay}
 
 In real-world dynamic systems that involve data acquisition, the certainty of the data collected tends to fade over time due to its dynamic nature. Typically, the most recent data is the most accurate representation of the system's current state, and as time elapses, the accuracy of previous data points decreases. As a result, it is crucial to consider the time dimension when analyzing dynamic systems and to develop methods that can account for the decay in data certainty over time.
 
-As stated before, and towards considering the time dimension for the current state of a cell, we formulate a \textbf{time decay} method to ensure a more truthful and reliable assessment of the cell's current state. During the standby stage, this process ensures that the inputs and outputs suffer an increase in uncertainty, leading to a totally uncertain cell when in steady state (without new data input).
+As stated before, and towards considering the time dimension for the current state of a cell, we formulate a \textbf{time decay} method to ensure a more truthful and reliable assessment of the cell's current state. During the standby stage, this process ensures that the inputs and outputs suffer an increase in uncertainty, leading to an uncertain cell in a steady state (without new data input).
 
 Consider the following example of converting a crisp value (5) and uncertainty ($\pm$1) to a classical set:
 
@@ -139,7 +139,7 @@ Figure \ref{fig:timedecay} represents the expansion of the set throughout a peri
 
 Earlier, we brought up the concept of temporal similarity extraction concerning computing activations without fully explaining it. This procedure involves identifying recurring patterns in a statistical base,i.e., finding past instances where we observe the current state to extract useful information about the system's behavior over time. By identifying historical periods with similar conditions, temporal similarity extraction can help assess the current state or predict future trends. This technique of historical search is not exclusive to this application, with demonstrations of use in other fields and for other purposes.
 
-Using sets or probability distributions to filter historical data is one approach to simplify the process of temporal similarity extraction in multivariate time series data while also making it more robust against noisy or incomplete data. This approach assigns membership values to each data point in the time series based on the corresponding set (or distribution) generated from the current cell inputs. We form a set of similar past instances by eliminating samples past a certain threshold. This technique is one of the reasons for deciding to represent the inputs and outputs of the cell in a fuzzy manner.
+Using sets or probability distributions to filter historical data is one approach to simplify the process of temporal similarity extraction in multivariate time series data while also making it more robust against noisy or incomplete data. This approach assigns membership values to each data point in the time series based on the corresponding set (or distribution) generated from the current cell inputs. We form a group of similar past instances by eliminating samples past a certain threshold. This technique is one of the reasons for deciding to represent the inputs and outputs of the cell in a fuzzy manner.
 
 The proposal for similarity extraction in the cell consists of taking the newly received values (inputs) of the cell's variables (coming from sensors or other data acquisition equipment, calculations, forecasting, etc.), generating a classical set, fuzzy number, or probability distribution from them, and then applying the bounds/membership function or probability density function to the knowledge base (see figure \ref{fig:solo_state_estimation}). If historical samples are associated with membership values, there may be a process for determining outputs by combining data and membership values.
 
