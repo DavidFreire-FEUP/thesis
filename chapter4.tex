@@ -13,7 +13,7 @@ This chapter proposes a novel tool entitled CellTAN (Cellular Time Activation Ne
 
 Instead of tackling fault detection and classification in a classical centralized manner, which is already extensively showcased throughout the literature, this tool approaches this problem with a paradigm change: a distributed and asynchronous data coherence system. By having a virtual representation closely related to the physical form of sparse systems, we can leverage the relationships between components to assess their correct (or incorrect) operation. While initially designed for photovoltaic (PV) systems, the concepts of cells, connections, neighbors, time series, and uncertainty are universal and applicable to other fields such as biology, physics, and more. Thus, the potential for generic applicability sparks the interest to not bake specifics of PV systems directly into this tool, allowing its usage for other subjects. Figure \ref{fig:celltanintro} represents a minimal scenario for a network: only two cells. It showcases some terms specific to this tool that might be difficult to grasp initially, such as trust, events, and activations. Consequently, the glossary in \ref{sec:glossary} and detailed explanations throughout this chapter serve to clarify them.
 
-Vast and scattered information across multiple agents is a common scenario faced by the industry of AI for energy systems, which cannot be aggregated due to privacy and confidentiality reasons. Nevertheless, its conjunction could have a lot of added value, given the similarity of certain assets: PV plants (as well as wind farms) from different owners in neighboring geographical regions. This information-sharing potential for AI algorithms motivates the development of a mechanism that communicates information between differently owned assets without any of the compromises above. However, as stated before, data acquisition in PV scenarios is scarcely synchronous and might only occur in equal time resolutions for some of the different components. The CellTAN addresses these issues with an instrument called \textbf{Time activations}. It proposes a new way of communication that decouples from the needs of units, sampling rate, and synchronization, avoiding resampling, normalization, or even obfuscation (to protect privacy). This mechanism is a core feature of the tool since it will be the means that will allow connecting different stakeholders' data, and section \ref{sec:thecell} develops this matter thoroughly. Likewise, succeeding sections formulate the working of the \textbf{cell} and its interactions within the network. Since it is the core component, understanding its behavior is crucial for a complete understanding of the tool.
+Vast and scattered information across multiple agents is a common scenario faced by the industry of AI for energy systems, which cannot be aggregated due to privacy and confidentiality reasons. Nevertheless, its conjunction could have a lot of added value, given the similarity of certain assets: PV plants (as well as wind farms) from different owners in neighboring geographical regions. This information-sharing potential for AI algorithms motivates the development of a mechanism that communicates information between differently owned assets without any of the compromises above. However, as stated before, data acquisition in PV scenarios is scarcely synchronous and might only occur in equal time resolutions for some of the different components. The CellTAN addresses these issues with an instrument called \textbf{Activations}. It proposes a new way of communication that decouples from the needs of units, sampling rate, and synchronization, avoiding resampling, normalization, or even obfuscation (to protect privacy), by only transmitting time values. This mechanism is a core feature of the tool since it will be the means that will allow connecting different stakeholders' data, and section \ref{sec:thecell} develops this matter thoroughly. Likewise, succeeding sections formulate the working of the cell and its interactions within the network. Since it is the core component, understanding its behavior is crucial for a complete understanding of the tool.
 
 \section{Glossary} \label{sec:glossary}
 
@@ -29,7 +29,7 @@ Vast and scattered information across multiple agents is a common scenario faced
 
     \item \textbf{Activations}: Timestamps of past occurrences on a knowledge base with a non-zero membership value against a set of recent inputs.
 
-    \item \textbf{Trust}: A decimal number that represents how coherent two activations are with each other. Besides its instantaneous computed value, it can also come from a cumulative computation on a defined time window.
+    \item \textbf{Trust}: A decimal number that represents how coherent two activations are with each other.
 
     \item \textbf{Hub}: The central component of the cell network, which facilitates its visualization, management, and expansion. It acts as the proxy agent between the cell's communication.
 
@@ -61,27 +61,27 @@ The cell's core is essentially characterized by a main process loop that execute
     \label{fig:cellprocesses}
 \end{figure}
 
-Figure \ref{fig:cellprocesses} showcases the cell's core procedures and data flow. It starts in standby mode, which is only left when new information arrives or a predetermined amount of time has passed. This mode ensures no unnecessary computational burden of repeating all processes without new data. Nonetheless, defining a maximum sleep time ensures the cell's activations are periodically updated to reflect contemporary neighbors' trust and intrinsic uncertainty.
+Figure \ref{fig:cellprocesses} showcases the cell's core procedures and data attributes. All the attributes with a symbol on the top right could be persisted on the owner's database. It starts in standby mode, which is only left when new information arrives or a predetermined amount of time has passed. This mode ensures no unnecessary computational burden of repeating all processes without new data. Nonetheless, defining a maximum sleep time ensures the cell's activations are periodically updated to reflect contemporary neighbors' trust and intrinsic uncertainty.
 
-The process of computing activations relates to the temporal similarity extraction, presented in section \ref{subsec:tempsim}. It is associated with searching for similar behavior (of the inputs) in the cell's knowledge base, producing activations. This byproduct is made publicly available.
+The process of computing activations relates to temporal similarity extraction, presented in section \ref{subsec:tempsim}. It is associated with searching for similar behavior (of the inputs) in the cell's knowledge base, generating "time activations", which are the timestamps of similar occurences (this is made publicly available).
 
 Fetching neighbors' activations is an asynchronous process that uses the hub for communicating with other cells. This process only occurs after checking what neighboring cells have activations not older than an acceptable threshold (configured by the cell owner) and if their knowledge bases intersect with the cell's own. However, if a neighborhood of cells receives new inputs simultaneously, it would result in some trying to continue computations while others still do not have activations. Thus, this process checks for neighbors with updated activations up to three times, with a pause in-between, if the current amount does not reach a predefined threshold.
 
 The cell executes a trust computation neighbor-wise and variable-wise. In practice, this procedure generates a decimal value between zero and one for each input variable and neighbor, which describes how much that variable is coherent with the rest and how much a neighbor is coherent with the cell (respectively). We nicknamed it "trust" to have a friendlier term used throughout the development and reasoning that unrolls in \ref{subsec:trust}. This indicator is stored in the owner's database so that we can perform an aggregated analysis, which relates to the process of "checking historical trust".
 
+The "checking historical trust" procedure identifies unconformities in aggregated trust values during specific time windows and flags them when they fall below the owner's threshold. It records inconsistencies with information about the elements and time bins involved, raising the severity of unconformity accordingly.
+
+Output computation uses intrinsic and neighbor activations to filter the knowledge base and find the new variables' domain (a process detailed in \ref{subsec:inout}). This process also provides information about unconformity severity (see section \ref{sec:states}).
+
+During the "updating state" stage, the cell checks if its internal state has changed since the previous loop. It sends this information to the owner's database and the central hub if a change occurs.
+
+
 Considering the color code, we can see that most of the cell's data is private. The network can access its activations, knowledge base coverage, and neighbors' trust. Conversely, the cell extracts neighbors' activations from the network and gives its owner exclusive access to inputs, outputs, and knowledge base. The relationship between the owner and private cell data is bidirectional since it is his responsibility to update the inputs. The cell's knowledge base might only represent an interface with a private database (thus a bidirectional connection), not the data itself, since the owner might prefer a centralized storage server instead of storing it with the cell.
 
-% \begin{figure}[h!]
-%     \centering
-%     \includegraphics[width=\linewidth]{figures/chapter4/cell/data.pdf}
-%     \caption{The cell's public and private data attributes.}
-%     \label{fig:celldata}
-% \end{figure}
 
-% TODO explicar processos da célula por alto
 % TODO explicar compactação das ativações
 
-\subsection{Inputs and Outputs}
+\subsection{Inputs and Outputs} \label{subsec:inout}
 
 Inputs and outputs are a view of the values that define a cell's variables at a given timestamp, which is continuously rolling. While inputs are directly associated with raw sampled data from the system (injected by the owner), outputs are a byproduct of internal processes. The latter should present more accurate information since it is based on internal and external data (ideally) and may be helpful for the cell's owner to assess its state.
 
@@ -323,7 +323,7 @@ $$
 \end{figure}
 \FloatBarrier
 
-In figure \ref{fig:trust_test_2_a}, it is clear that, for all methods, an increase in $b$ leads to lower coefficients. All except the new algorithm tend towards similar asymptotes, near a value of 0.3. The expected behavior is precisely met by the new method.
+In figure \ref{fig:trust_test_2_a}, it is clear that, for all methods, an increase in $b$ leads to lower coefficients. All except the new algorithm tend towards similar asymptotes, near a value of 0.3. The new method meets the expected behavior.
 
 $$
 \begin{bmatrix}
@@ -375,9 +375,13 @@ Each cell has a unique identifier, generated upon creation and independent of th
 
 On cell deployment, the system expects the owner and the CellTAN manager to manually link cells together by assigning each connection. However, the plan is to develop a mechanism that proposes new connections based on the neighbor's neighbors through the hub. This mechanism could function based on the strength of the relationship between cells and neighbors in common, recommending a direct link if both "trust" them similarly. As the last phrase hints, an indicator called "trust" is the criterion for evaluating these links. The following subsection defines the conception of this metric.
 
-\subsection{States}
+\subsection{Unconformities and State} \label{sec:states}
 
-We introduce a state system to expose the resulting unconformities found during cells' processes. These unconformities can categorized into intrinsic and extrinsic, based on the historical check of trust in the variables and neighbors (respectively), and during output computation.
+We introduce a state system to expose the resulting unconformities found during cells' processes. These unconformities can categorized into intrinsic and extrinsic, based on the historical check of trust in the variables and neighbors, respectively, and during output computation.
+
+Cells rely on aggregated trust values to assess the integrity and coherence of information. During specific time windows, these systems employ a verification process to identify unconformities in the aggregated trust values. Unconformities are flagged when the aggregated trust values fall below a certain threshold, which the owner predetermines. To establish a framework for this assessment, the owner specifies time bins upon cell creation, which define intervals evaluated from the current rolling timestamp to the past. Consequently, when inconsistencies are detected, detailed information is recorded to identify the elements that exhibit incoherence and the corresponding time bin in which the discrepancies occur. This approach allows for the characterization and analysis of "Intrinsic/Extrinsic time bin unconformities," thereby enabling the system to escalate the severity of unconformities from none to partial or total if some or all elements within a time bin exhibit incoherence.
+
+In addition to the assessment methodology mentioned above, intrinsic filtering and the intersection of neighbor's activations play a crucial role in determining the overall unconformity state of the cell. Specifically, suppose intrinsic filtering yields a null domain. In that case, it indicates that the cell has encountered total intrinsic unconformity, suggesting a fundamental breakdown or lack of coherence with its knowledge base. Similarly, suppose the intersection of the neighbor's activations yields a null domain. In that case, it signifies total extrinsic unconformity, implying that the cell lacks trust in its external environment. These higher states of unconformity, whether intrinsic or extrinsic, serve as valuable indicators called the "Unconformity severity info." Considering this additional information, the system can escalate the severity level set by the time bin unconformities, providing a more comprehensive understanding of the cell's overall integrity and the extent of the identified unconformities.
 
 
 \subsection{Application Plugins}
