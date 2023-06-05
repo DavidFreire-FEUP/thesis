@@ -301,7 +301,7 @@ Not having a reduction in the first values of $d$, showcased by the new method, 
 \begin{figure}[h!]
 \centering
     \includegraphics[width=0.8\textwidth]{figures/chapter4/cell/trust_tests/1_b.pdf}
-    \caption{test 1 b}
+    \caption{Trust measurement evolution for different methods with $a=30, b=10, c=10, d \in [0, 3000]$.}
     \label{fig:trust_test_1_b}
 \end{figure}
 \FloatBarrier
@@ -321,7 +321,7 @@ $$
 \begin{figure}[h!]
 \centering
     \includegraphics[width=0.8\textwidth]{figures/chapter4/cell/trust_tests/2_a.pdf}
-    \caption{test 2 a}
+    \caption{Trust measurement evolution for different methods with $a=30, c=10, d=10, b \in [0, 1000]$.}
     \label{fig:trust_test_2_a}
 \end{figure}
 \FloatBarrier
@@ -339,7 +339,7 @@ $$
 \begin{figure}[h!]
 \centering
     \includegraphics[width=0.8\textwidth]{figures/chapter4/cell/trust_tests/2_b.pdf}
-    \caption{test 2 b}
+    \caption{Trust measurement evolution for different methods with $a=30, b=10, d=10, c \in [0, 1000]$.}
     \label{fig:trust_test_2_b}
 \end{figure}
 \FloatBarrier
@@ -348,10 +348,19 @@ With figure \ref{fig:trust_test_2_b}, we can observe the asymmetry of Theil's U 
 
 \paragraph{Experiment nº3} This last experiment showcases the effect of changing term $a$. When the cells share an increasing amount of activated time, assuming their trust should increase is trivial. However, reasoning that having a disproportionally ample activated time means there is more uncertainty on their current state, then trust should lower. The expectation is that, as $a$ increases, there is also an increase in trust until a specific peak. It should decrease after reaching a global maximum and have an asymptote at zero.
 
+$$
+\begin{bmatrix}
+    a & 10 \\ 10 & 500
+\end{bmatrix}
+$$
+$$
+a \in [0, 1000]
+$$
+
 \begin{figure}[h!]
 \centering
     \includegraphics[width=0.8\textwidth]{figures/chapter4/cell/trust_tests/3.pdf}
-    \caption{test 3}
+    \caption{Trust measurement evolution for different methods with $b=30, c=10, d=10, a \in [0, 1000]$.}
     \label{fig:trust_test_3}
 \end{figure}
 \FloatBarrier
