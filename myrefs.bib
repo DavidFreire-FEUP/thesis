@@ -644,3 +644,65 @@ volume = {15},
 journal = {Energies},
 doi = {10.3390/en15114151}
 }
+
+@misc{sklearn_example,
+   title = {Comparing anomaly detection algorithms for outlier detection on toy datasets — scikit-learn 1.2.2 documentation},
+   howpublished = {\url{https://scikit-learn.org/stable/auto_examples/miscellaneous/plot_anomaly_comparison.html#sphx-glr-auto-examples-miscellaneous-plot-anomaly-comparison-py}},
+   note = {Accessed: 2023-06-06}
+}
+
+@article{Rousseeuw1999,
+   abstract = {The minimum covariance determinant (MCD) method of Rousseeuw is a highly robust estimator of multivariate location and scatter. Its objective is to find h observations (out of n) whose covariance matrix has the lowest determinant. Until now, applications of the MCD were hampered by the computation time of existing algorithms, which were limited to a few hundred objects in a few dimensions. We discuss two important applications of larger size, one about a production process at Philips with n = 677 objects and p = 9 variables, and a dataset from astronomy with n = 137,256 objects and p = 27 variables. To deal with such problems we have developed a new algorithm for the MCD, called FAST-MCD. The basic ideas are an inequality involving order statistics and determinants, and techniques which we call “selective iteration” and “nested extensions.” For small datasets, FAST-MCD typically finds the exact MCD, whereas for larger datasets it gives more accurate results than existing algorithms and is faster by orders of magnitude. Moreover, FASTMCD is able to detect an exact fit—that is, a hyperplane containing h or more observations. The new algorithm makes the MCD method available as a routine tool for analyzing multivariate data. We also propose the distance-distance plot (D-D plot), which displays MCD-based robust distances versus Mahalanobis distances, and illustrate it with some examples. © 1999 Taylor & Francis Group, LLC.},
+   author = {Peter J. Rousseeuw and Katrien Van Driessen},
+   doi = {10.1080/00401706.1999.10485670},
+   issn = {15372723},
+   issue = {3},
+   journal = {Technometrics},
+   keywords = {Breakdown value,Multivariate location and scatter,Outlier detection,Regression,Robust estimation},
+   pages = {212-223},
+   title = {A fast algorithm for the minimum covariance determinant estimator},
+   volume = {41},
+   year = {1999},
+}
+
+@inproceedings{Liu2008,
+   abstract = {Most existing model-based approaches to anomaly detection construct a profile of normal instances, then identify instances that do not conform to the normal profile as anomalies. This paper proposes a fundamentally different model-based method that explicitly isolates anomalies instead of profiles normal points. To our best knowledge, the concept of isolation has not been explored in current literature. The use of isolation enables the proposed method, iForest, to exploit sub-sampling to an extent that is not feasible in existing methods, creating an algorithm which has a linear time complexity with a low constant and a low memory requirement. Our empirical evaluation shows that iForest performs favourably to ORCA, a near-linear time complexity distance-based method, LOF and Random Forests in terms of AUC and processing time, and especially in large data sets. iForest also works well in high dimensional problems which have a large number of irrelevant attributes, and in situations where training set does not contain any anomalies. © 2008 IEEE.},
+   author = {Fei Tony Liu and Kai Ming Ting and Zhi Hua Zhou},
+   doi = {10.1109/ICDM.2008.17},
+   isbn = {9780769535029},
+   issn = {15504786},
+   journal = {Proceedings - IEEE International Conference on Data Mining, ICDM},
+   pages = {413-422},
+   title = {Isolation forest},
+   year = {2008},
+}
+
+@article{Liu2012,
+   abstract = {Anomalies are data points that are few and different. As a result of these properties, we show that, anomalies are susceptible to a mechanism called isolation. This article proposes a method called Isolation Forest (iForest), which detects anomalies purely based on the concept of isolation without employing any distance or density measure-fundamentally different from all existing methods. As a result, iForest is able to exploit subsampling (i) to achieve a low linear time-complexity and a small memory-requirement and (ii) to deal with the effects of swamping and masking effectively. Our empirical evaluation shows that iForest outperforms ORCA, one-class SVM, LOF and Random Forests in terms of AUC, processing time, and it is robust against masking and swamping effects. iForest also works well in high dimensional problems containing a large number of irrelevant attributes, and when anomalies are not available in training sample. © 2012 ACM 1556-4681/2012/03-ART3 $10.00.},
+   author = {Fei Tony Liu and Kai Ming Ting and Zhi Hua Zhou},
+   doi = {10.1145/2133360.2133363},
+   issn = {1556-4681},
+   issue = {1},
+   journal = {ACM Transactions on Knowledge Discovery from Data (TKDD)},
+   keywords = {Algorithms,Design,Experimentation},
+   month = {3},
+   pages = {1},
+   publisher = {Association for Computing Machinery},
+   title = {Isolation-Based Anomaly Detection},
+   volume = {6},
+   url = {http://www.deepdyve.com/lp/association-for-computing-machinery/isolation-based-anomaly-detection-HKobR3S2KA https://www.deepdyve.com/lp/association-for-computing-machinery/isolation-based-anomaly-detection-HKobR3S2KA},
+   year = {2012},
+}
+
+@article{Breunig2000,
+   abstract = {For many KDD applications, such as detecting criminal activities in E-commerce, finding the rare instances or the outliers, can be more interesting than finding the common patterns. Existing work in outlier detection regards being an outlier as a binary property. In this paper, we contend that for many scenarios, it is more meaningful to assign to each object a degree of being an outlier. This degree is called the local outlier factor (LOF) of an object. It is local in that the degree depends on how isolated the object is with respect to the surrounding neighborhood. We give a detailed formal analysis showing that LOF enjoys many desirable properties. Using real-world datasets, we demonstrate that LOF can be used to find outliers which appear to be meaningful, but can otherwise not be identified with existing approaches. Finally, a careful performance evaluation of our algorithm confirms we show that our approach of finding local outliers can be practical.},
+   author = {Markus M. Breunig and Hans Peter Kriegel and Raymond T. Ng and Jörg Sander},
+   doi = {10.1145/342009.335388},
+   isbn = {9781581132175},
+   journal = {SIGMOD 2000 - Proceedings of the 2000 ACM SIGMOD International Conference on Management of Data},
+   keywords = {Database Mining,Outlier Detection},
+   pages = {93-104},
+   publisher = {Association for Computing Machinery, Inc},
+   title = {LOF: Identifying Density-Based Local Outliers},
+   year = {2000},
+}

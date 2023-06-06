@@ -123,20 +123,55 @@ Regarding the rest of the meteorological variables (cloud coverage and temperatu
 
 \subsection{Data Cleaning}
 
+Now, we take our previous analysis and start the data-cleaning process. We used the Scikit-Learn Python Library and tried out some anomaly detection algorithms for outlier identification on our dataset: Robust Covariance \cite{Rousseeuw1999}, Isolation Forest \cite{Liu2008} \cite{Liu2012}, and Local Outlier Factor \cite{Breunig2000}. The code used for our plotting derived from an example made by Alexandre Gramfort, available on the Scikit-Learn website \cite{sklearn_example}.
+
 \subsubsection{Power}
 
-% analise e limpeza de dados. Que cenários queremos detetar, o que é que podem ser
-\dots
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\textwidth]{figures/chapter5/cleaning/20_cleaning_power.pdf}
+    \caption{Inliers (orange), outliers (blue) and decision boundaries (black) using three different anomaly detection algorithms on the AC Power from both inverters.}
+    \label{fig:clean_power}
+\end{figure}
 
 \subsubsection{Satellite}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\textwidth]{figures/chapter5/cleaning/21_cleaning_tilted_irrad.pdf}
+    \caption{Inliers (orange), outliers (blue) and decision boundaries (black) using three different anomaly detection algorithms on the AC Power from both inverters.}
+    \label{fig:clean_tilted_irrad}
+\end{figure}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\textwidth]{figures/chapter5/cleaning/22_cleaning_horizontal_irrad.pdf}
+    \caption{Inliers (orange), outliers (blue) and decision boundaries (black) using three different anomaly detection algorithms on the AC Power from both inverters.}
+    \label{fig:clean_horizontal_irrad}
+\end{figure}
+
 
 \dots
 
 \subsubsection{Voltage and Current}
 
-\dots
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\textwidth]{figures/chapter5/cleaning/23_cleaning_volt_curr.pdf}
+    \caption{Inliers (orange), outliers (blue) and decision boundaries (black) using three different anomaly detection algorithms on the AC Power from both inverters.}
+    \label{fig:clean_volt_curr}
+\end{figure}
 
 \subsection{Photovoltaic Plugin}
+
+% flow chart de algoritmo para definição da fronteira de decisão
+% fazer um diagrama super fixe com os passos do algoritmo ilustrados em desenho
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\textwidth]{figures/chapter5/algorithm/30_boundary.pdf}
+    \caption{\dots}
+    \label{fig:anomaly_decision_boundary}
+\end{figure}
 
 % formulação do algoritmo para deteçao de falhas em inversores
 \dots
