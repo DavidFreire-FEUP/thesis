@@ -65,13 +65,13 @@ Figure \ref{fig:eda_power_test} represents the power profile on the portion of d
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=\textwidth]{figures/chapter5/analysis/02_power_pairplots_kb.pdf}
+    \includegraphics[width=\textwidth,trim={0 5.5cm 0cm 5.5cm},clip]{figures/chapter5/analysis/02_power_pairplots_kb_annotated.pdf}
     \caption{Pair plot of AC power from both inverters (2020 to 2022), using scatter (left) and KDE (Kernel Density Estimation) (right).}
     \label{fig:eda_power_kb_pair}
 \end{figure}
 
-% escrever sobre fig. Falar do que as zonas acima e abaixo da linha de tendencia central representam zonas de sub desempenho de um dos inversores, e mencionar as linhas de tendencia secundárias. Este pdf devia levar umas setas vermelhas ou algo do género a apontar às outras linhas de tendência.
-% meter em anexos o pairplot de teste
+Figure \ref{fig:eda_power_kb_pair} lets us better understand the relationship between the two inverters. As expected, since they are neighboring, they have a strong trend line, leading them to a high Pearson coefficient: 0.97753. However, the noise from outliers is noticeable in the scatter. We define Zone A as the zone where inverter two underperforms compared to one and Zone B as the opposite. The black arrows in the graph display secondary trend lines in Zone B, indicating scenarios of inverter one performing consistently less than expected. Another arrow also points out a cloud in Zone A (right under the trend line) of the opposite scenario. Furthermore, the red rectangles highlight instances where one inverter was functioning while the other was not. CellTAN must flag these situations, so we should remove them from the knowledge base.
+The KDE visualization confirms that most samples lie close to the primary trend.
 
 \begin{figure}[h!]
     \centering
@@ -80,46 +80,46 @@ Figure \ref{fig:eda_power_test} represents the power profile on the portion of d
     \label{fig:eda_power_test_pair}
 \end{figure}
 
+From \ref{fig:eda_power_test_pair}, it is clear that test data has fewer outliers than the previous. Nonetheless, there are many occurrences of inverter one being inoperational. Besides, there are also a considerable amount of samples below the trend line, meaning the underperformance of inverter two.
+
 % dizer que tem menos outliers, mas várias situações com o inversor 1 inoperacional
 
 \subsubsection{Voltage and Current}
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=\textwidth]{figures/chapter5/analysis/04_voltage_current_pairplot_kb_1.pdf}
-    \caption{\dots}
+    \includegraphics[width=\textwidth,trim={0 5.5cm 0cm 5.5cm},clip]{figures/chapter5/analysis/04_voltage_current_pairplot_kb_1_annotated.pdf}
+    \caption{Pair plot of DC side voltage and current from inverter one (2020-2022), using scatter (left) and KDE (Kernel Density Estimation) (right).}
     \label{fig:eda_volt_curr_pair_kb_1}
 \end{figure}
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=\textwidth]{figures/chapter5/analysis/06_voltage_current_pairplot_kb_2.pdf}
-    \caption{\dots}
+    \includegraphics[width=\textwidth,trim={0 5.5cm 0cm 5.5cm},clip]{figures/chapter5/analysis/06_voltage_current_pairplot_kb_2_annotated.pdf}
+    \caption{Pair plot of DC side voltage and current from inverter two (2020-2022), using scatter (left) and KDE (Kernel Density Estimation) (right).}
     \label{fig:eda_volt_curr_pair_kb_2}
 \end{figure}
 
-% colocar as figuras disto mas do dataset de teste nos anexos
+Regarding DC side voltage and current, figures \ref{fig:eda_volt_curr_pair_kb_1} and \ref{fig:eda_volt_curr_pair_kb_2} demonstrate the operating range of the inverter's MPPT. Both kickstart production at around 400 V and operate until close to 600 V. Between this range, the central column of samples represents voltage-current points relative to the knee of the strings' I-V curve (see figure \ref{fig:mpptcurve}). Some instances are outside this normal operation range (outliers), especially in the zone marked by the black arrow. This zone has particular interest given that it represents scenarios of underperformance, which could mean the occurrence of faults. It is denser in figure \ref{fig:eda_volt_curr_pair_kb_2}, meaning that inverter two has more underperforming situations, which was not completely clear from the previous analysis (figure \ref{fig:eda_power_kb_pair}).
 
-\dots
+We added to appendix \ref{ap2:eda} these same plots but for test data (figures \ref{fig:eda_voltage_current_test_1} and \ref{fig:eda_voltage_current_test_2}).
 
 \subsubsection{Satellite}
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=\textwidth]{figures/chapter5/analysis/08_power_irrad_pairplot_scatter_kb.pdf}
-    \caption{\dots}
+    \includegraphics[width=0.8\textwidth]{figures/chapter5/analysis/08_power_irrad_pairplot_scatter_kb.pdf}
+    \caption{Scatter pair plot of the AC power, tilted and horizontal global irradiance for both inverters (2020 to 2022).}
     \label{fig:eda_power_irrad_pair_kb}
 \end{figure}
-% colocar 09,10,11 nos anexos e mencionar
 
-\begin{figure}[h!]
-    \centering
-    \includegraphics[width=\textwidth]{figures/chapter5/analysis/12_power_meteo_pairplot_kb.pdf}
-    \caption{\dots}
-    \label{fig:eda_irrelevant_meteo}
-\end{figure}
+Figure \ref{fig:eda_power_irrad_pair_kb} shows the relationship between irradiance and AC power. We expected a positive correlation, and it exhibits such. However, the large radius around the central trend line demonstrates cycles around it that resemble some kind of hysteresis (especially with horizontal irradiance). By adding a color that displays the hour in each sample, we can affirm that these paths occur due to the fixed nature of the installed PV panels, having a characteristic curve from low to high irradiance in the sunrise and another from high to low during the sunset. Because they produce more with less sunlight in the morning, we can infer that they are oriented slightly towards the east.
 
-\dots
+Although most instances appear inside the sunrise-sunset paths, there are some outliers. The most notable are the ones of non-zero irradiance with zero production. Either error in satellite data or some anomaly in the inverters causes these odd scenarios, so we target them for cleaning the knowledge base.
+
+Regarding the rest of the meteorological variables (cloud coverage and temperature), we deemed them unnecessary since they do not demonstrate a direct relationship with inverter behavior (see figure \ref{fig:eda_irrelevant_meteo}). We added KDE visualizations and plots for the test period in appendix \ref{ap2:eda}.
+
+% TODO colocar 09,10,11 nos anexos e mencionar
 
 \subsection{Data Cleaning}
 
