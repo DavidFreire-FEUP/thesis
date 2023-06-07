@@ -162,12 +162,12 @@ Once again, figures \ref{fig:clean_tilted_irrad} and \ref{fig:clean_horizontal_i
 
 \subsubsection{Voltage and Current}
 
-Cleaning voltage and current data were the most challenging thus far. The peculiar data distribution was an issue for all of the tested algorithms, and we combined them all to obtain the best inlier-outlier separation.
+Cleaning voltage and current data were the most challenging thus far. The peculiar data distribution was an issue for all tested algorithms, and the isolation forest performed particularly poorly. We combined the Robust Covariance, and Local Outlier Factor results to obtain the best inlier-outlier separation. The aggregation performed was a logical "OR" considering the inliers.
 
 \begin{figure}[h!]
     \centering
     \includegraphics[width=\textwidth]{figures/chapter5/cleaning/23_cleaning_volt_curr.pdf}
-    \caption{Inliers (orange), outliers (blue), and decision boundaries (black) using three different anomaly detection algorithms and their combination on the DC side voltage and current from both inverters.}
+    \caption{Inliers (orange), outliers (blue), and decision boundaries (black) using two different anomaly detection algorithms and their combination on the DC side voltage and current from both inverters.}
     \label{fig:clean_volt_curr}
 \end{figure}
 
@@ -178,14 +178,14 @@ The charts in figure \ref{fig:clean_volt_curr} illustrates how the algorithms ha
 According to the CellTAN formulation, cells cannot share their variables' data directly to maintain privacy. As a result, this limits plugins to work with only the information available in the cell they are running in. Therefore, inverter underperformance is the only situation considered for the PV plugin, based on the analysis from section \ref{subsubsec:eda_volt_curr}. Access to both the inverter's data and satellite data allows the owner to employ other algorithms that leverage this knowledge for better situational and fault discernment, but this falls back to the "classical" centralized algorithms, which is not the scope of this work.
 
 
-
+% ! TODO
 % flow chart de algoritmo para definição da fronteira de decisão
 % fazer um diagrama super fixe com os passos do algoritmo ilustrados em desenho
 To define the minimum operational boundary, we use the current and voltage samples resulting from the cleaning process to define inverter underperformance. Figure ref shows the proposed algorithm, which consists of the following steps:
 
 \begin{itemize}
 	\item Clean I-V data;
-	\item Find the boundary points of lowest voltage;
+	\item Find the boundary points corresponding to the lowest voltage in the entire operating range;
 	\item Fit a logarithmic function (\ref{eq:decayinglog}) to these points;
 	\item Consider all points below the curve as situations of inverter underperformance.
 \end{itemize}
@@ -202,7 +202,7 @@ where:
 \begin{align*}
     V & : \text{Voltage (V)} \\
     I & : \text{Current (A)} \\
-    a,b,c,d,e & : \text{Unknown curve parameters}
+    a,b,c,d,e & : \text{Unknown constant parameters}
 \end{align*}
 
 \begin{figure}[h!]
@@ -216,16 +216,17 @@ Figure \ref{fig:anomaly_decision_boundary} illustrates the outcome of using the 
 The fitted logarithmic curves are:
 
 $$
-    V_{inverter1} = 19.2 \times log(170.7 \times I_{inverter1} - 37.0) - 2.5 \times I_{inverter1} + 269.5
+    V_{inverter1} = 19.3 \times ln(169.2 \times I_{inverter1} - 35.2) - 2.8 \times I_{inverter1} + 276.1
 $$
 
 $$
-    V_{inverter2} = 20.8 \times log(169.8 \times I_{inverter2} - 41.8) - 2.6 \times I_{inverter2} + 288.2 
+    V_{inverter2} = 20.6 \times ln(148.3 \times I_{inverter2} - 35.6) - 2.9 \times I_{inverter2} + 299.5 
 $$
 
 \subsection{CellTAN Configuration}
 
 % config das células, como vai correr, como se simula o tempo
+% meter as thresholds todas
 \dots
 
 \subsection{Simulation and Results} \label{subsec:results}
