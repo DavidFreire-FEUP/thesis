@@ -7,8 +7,8 @@
 The experiments validating CellTAN's behavior incorporate two neighboring grid-tied string inverters from the same PV farm with common satellite data. Their only known characteristics are:
 
 \begin{itemize}
-    \item Inverter one: 12.5kW nominal power, 14.4kW peak power. Installed January 1st, 2013.
-    \item Inverter two: 15kW nominal power, 15.84kW peak power. Installed January 1st, 2013.
+    \item Inverter one: 12.5kW nominal power; 14.4kW peak power; fixed tilt and azimuth; installed January 1st, 2013.
+    \item Inverter two: 15kW nominal power; 15.84kW peak power; fixed tilt and azimuth; installed January 1st, 2013.
 \end{itemize}
 
 \begin{table}[h!]
@@ -24,17 +24,17 @@ AC side voltage                         & Inverter (1 \& 2)                    &
 DC side power                           & Inverter (1 \& 2)                    & W                                  & dc\_power                           \\ \hline
 DC side current                         & Inverter (1 \& 2)                    & A                                  & dc\_current                         \\ \hline
 DC side voltage                         & Inverter (1 \& 2)                    & V                                  & dc\_voltage                         \\ \hline
-Global tilted irradiance                & Satellite                            & W/m\textasciicircum{}2             & global\_tilted\_irradiance          \\ \hline
-Global horizontal irradiance            & Satellite                            & W/m\textasciicircum{}2             & global\_horizontal\_irradiance      \\ \hline
+Global tilted irradiance                & Satellite                            & W/m\textsuperscript{2}             & global\_tilted\_irradiance          \\ \hline
+Global horizontal irradiance            & Satellite                            & W/m\textsuperscript{2}             & global\_horizontal\_irradiance      \\ \hline
 Cloud coverage                          & Satellite                            & \%                                 & cloud\_coverage                     \\ \hline
 Air temperature                         & Satellite                            & ºC                                 & temperature                         \\ \hline
 \end{tabular}%
 }
 \end{table}
 
-Table \ref{tab:availablevariables} represents the available variables and corresponding labels used to identify them in the cell's inputs and graphs. These variables are sampled every 10 minutes from May 31, 2020, at 5:00 am to April 30, 2023, at 7:30 pm (although having some gaps). We utilized data from 2020 until the end of 2022 for the cells' knowledge base, and any information from 2023 onwards is considered new and used for testing. Since there is no production at night, the database does not store values for this period. Not accounting for the night as missing samples, we have around 98\% of data availability.
+Table \ref{tab:availablevariables} represents the available variables and corresponding labels used to identify them in the cell's inputs and graphs. These variables are sampled every 10 minutes from May 31, 2020, at 5:00 am to April 30, 2023, at 7:30 pm (with gaps). We utilized data from 2020 until the end of 2022 for the cells' knowledge base, and any information from 2023 onwards is considered new and used for testing. Since there is no production at night, the data's original database does not store values for this period. Not accounting for the night as missing samples, we have around 98\% of data availability.
 
-Analyzing and cleaning raw inverter and satellite data is essential to take full benefit of CellTAN's capabilities. As seen in its development, having a clean knowledge base contributes to correctly identifying anomalous situations. Therefore, the following sections focus on these two steps, contributing to understanding the anomalies' domain and frequency of occurrence.
+Analyzing and cleaning raw inverter and satellite data is essential to take full benefit of CellTAN's capabilities. As seen in its formulation stage, having a clean knowledge base contributes to correctly identifying anomalous situations. Therefore, the following sections focus on these two steps, contributing to understanding the anomalies' domain and frequency of occurrence.
 
 \subsection{Data analysis}
 
@@ -84,7 +84,9 @@ From \ref{fig:eda_power_test_pair}, it is clear that test data has fewer outlier
 
 % dizer que tem menos outliers, mas várias situações com o inversor 1 inoperacional
 
-\subsubsection{Voltage and Current}
+\subsubsection{Voltage and Current} \label{subsubsec:eda_volt_curr}
+
+Both inverters are equipped with MPPTs to maximize the power output from their strings. As a result of this power converter, the current and voltage readings should fall within the optimal range of the I-V curve.
 
 \begin{figure}[h!]
     \centering
@@ -100,11 +102,11 @@ From \ref{fig:eda_power_test_pair}, it is clear that test data has fewer outlier
     \label{fig:eda_volt_curr_pair_kb_2}
 \end{figure}
 
-Regarding DC side voltage and current, figures \ref{fig:eda_volt_curr_pair_kb_1} and \ref{fig:eda_volt_curr_pair_kb_2} demonstrate the operating range of the inverter's MPPT. Both kickstart production at around 400 V and operate until close to 600 V. Between this range, the central column of samples represents voltage-current points relative to the knee of the strings' I-V curve (see figure \ref{fig:mpptcurve}). Some instances are outside this normal operation range (outliers), especially in the zone marked by the black arrow. This zone has particular interest given that it represents scenarios of underperformance, which could mean the occurrence of faults. It is denser in figure \ref{fig:eda_volt_curr_pair_kb_2}, meaning that inverter two has more underperforming situations, which was not completely clear from the previous analysis (figure \ref{fig:eda_power_kb_pair}).
+Regarding DC side voltage and current, figures \ref{fig:eda_volt_curr_pair_kb_1} and \ref{fig:eda_volt_curr_pair_kb_2} demonstrate the operating range of the inverter's MPPT. Both kickstart production at around 400 V and operate until close to 600 V. Between this range, the central column of samples represents voltage-current points relative to the knee of the strings' I-V curve (see figure \ref{fig:mpptcurve}), with irradiance generally increasing along its height. Some instances are outside this normal operation range (outliers), especially in the zone marked by the black arrow. This zone has particular interest given that it represents scenarios of underperformance, which could mean the occurrence of faults. It is denser in figure \ref{fig:eda_volt_curr_pair_kb_2}, meaning that inverter two has more underperforming situations, which was not completely clear from the previous analysis (figure \ref{fig:eda_power_kb_pair}). Appendix \ref{ap2:eda} presents the same charts, but for test data (figures \ref{fig:eda_voltage_current_test_1} and \ref{fig:eda_voltage_current_test_2}).
 
-We added to appendix \ref{ap2:eda} these same plots but for test data (figures \ref{fig:eda_voltage_current_test_1} and \ref{fig:eda_voltage_current_test_2}).
+\subsubsection{Satellite} \label{subsubsec:eda_sat}
 
-\subsubsection{Satellite}
+Irradiance should be the satellite variable most related to inverters' power. Therefore, we scatter both tilted and horizontal irradiance against AC power from inverters one and two.
 
 \begin{figure}[h!]
     \centering
@@ -127,54 +129,99 @@ Now, we take our previous analysis and start the data-cleaning process. We used 
 
 \subsubsection{Power}
 
+Based on the geographical proximity of the inverters, we have determined that the area around the trendline shown in figure \ref{fig:eda_power_kb} indicates standard operating points. Therefore, we must remove any samples deviating from this reference to clean the knowledge base.
+
 \begin{figure}[h!]
     \centering
     \includegraphics[width=\textwidth]{figures/chapter5/cleaning/20_cleaning_power.pdf}
-    \caption{Inliers (orange), outliers (blue) and decision boundaries (black) using three different anomaly detection algorithms on the AC Power from both inverters.}
+    \caption{Inliers (orange), outliers (blue), and decision boundaries (black) using three different anomaly detection algorithms on the AC Power from both inverters.}
     \label{fig:clean_power}
 \end{figure}
 
+In Figure \ref{fig:clean_power}, we can see a visual representation of various anomaly detection algorithms' inliers, outliers, decision boundaries, and their computation time (bottom right). These algorithms are fine-tuned for approximately 14\% of outlier contamination. Based on the results, we determined that the Robust Covariance algorithm was the most effective since it extracted the region around the trend line without issues. We selected it to clean our knowledge base.
+
 \subsubsection{Satellite}
+
+In section \ref{subsubsec:eda_sat}, we discovered that the inverters follow a standard production pattern based on the irradiance and hour of the day. The specific area within the paths is considered the central region of standard operation. To clean up the data, we will remove all other instances.
 
 \begin{figure}[h!]
     \centering
     \includegraphics[width=\textwidth]{figures/chapter5/cleaning/21_cleaning_tilted_irrad.pdf}
-    \caption{Inliers (orange), outliers (blue) and decision boundaries (black) using three different anomaly detection algorithms on the AC Power from both inverters.}
+    \caption{Inliers (orange), outliers (blue), and decision boundaries (black) using three different anomaly detection algorithms on the tilted irradiance and AC Power from both inverters.}
     \label{fig:clean_tilted_irrad}
 \end{figure}
 
 \begin{figure}[h!]
     \centering
     \includegraphics[width=\textwidth]{figures/chapter5/cleaning/22_cleaning_horizontal_irrad.pdf}
-    \caption{Inliers (orange), outliers (blue) and decision boundaries (black) using three different anomaly detection algorithms on the AC Power from both inverters.}
+    \caption{Inliers (orange), outliers (blue), and decision boundaries (black) using three different anomaly detection algorithms on the horizontal irradiance and AC Power from both inverters.}
     \label{fig:clean_horizontal_irrad}
 \end{figure}
 
-
-\dots
+Once again, figures \ref{fig:clean_tilted_irrad} and \ref{fig:clean_horizontal_irrad} demonstrate the effectiveness of the first algorithm, now for irradiance and power data. It is, once again, the chosen one for cleaning the knowledge base.
 
 \subsubsection{Voltage and Current}
+
+Cleaning voltage and current data were the most challenging thus far. The peculiar data distribution was an issue for all of the tested algorithms, and we combined them all to obtain the best inlier-outlier separation.
 
 \begin{figure}[h!]
     \centering
     \includegraphics[width=\textwidth]{figures/chapter5/cleaning/23_cleaning_volt_curr.pdf}
-    \caption{Inliers (orange), outliers (blue) and decision boundaries (black) using three different anomaly detection algorithms on the AC Power from both inverters.}
+    \caption{Inliers (orange), outliers (blue), and decision boundaries (black) using three different anomaly detection algorithms and their combination on the DC side voltage and current from both inverters.}
     \label{fig:clean_volt_curr}
 \end{figure}
 
+The charts in figure \ref{fig:clean_volt_curr} illustrates how the algorithms have difficulty keeping up with the data's distribution and preserving the densely populated areas. Neither algorithm effectively identifies the outliers separately, but their combination proved much more effective.
+
 \subsection{Photovoltaic Plugin}
+
+According to the CellTAN formulation, cells cannot share their variables' data directly to maintain privacy. As a result, this limits plugins to work with only the information available in the cell they are running in. Therefore, inverter underperformance is the only situation considered for the PV plugin, based on the analysis from section \ref{subsubsec:eda_volt_curr}. Access to both the inverter's data and satellite data allows the owner to employ other algorithms that leverage this knowledge for better situational and fault discernment, but this falls back to the "classical" centralized algorithms, which is not the scope of this work.
+
+
 
 % flow chart de algoritmo para definição da fronteira de decisão
 % fazer um diagrama super fixe com os passos do algoritmo ilustrados em desenho
+To define the minimum operational boundary, we use the current and voltage samples resulting from the cleaning process to define inverter underperformance. Figure ref shows the proposed algorithm, which consists of the following steps:
+
+\begin{itemize}
+	\item Clean I-V data;
+	\item Find the boundary points of lowest voltage;
+	\item Fit a logarithmic function (\ref{eq:decayinglog}) to these points;
+	\item Consider all points below the curve as situations of inverter underperformance.
+\end{itemize}
+
+
+Since data cleaning is already covered, we describe ways of determining the boundary points.
+To begin, we establish bins for the current samples with a size of 1 A. Next, we examine each bin and determine the minimum voltage for that particular region via either the absolute minimum or a quantile. Once we have selected the reference minimum voltage, we record the bin's median current and minimum voltage as a boundary point.
+After registering all boundary points, we use a curve-fitting algorithm to apply a decaying logarithmic function to them (equation \ref{eq:decayinglog}).
+
+\begin{equation} \label{eq:decayinglog}
+    V = a \times log(b \times I + c) + d \times I + e 
+\end{equation}
+where:
+\begin{align*}
+    V & : \text{Voltage (V)} \\
+    I & : \text{Current (A)} \\
+    a,b,c,d,e & : \text{Unknown curve parameters}
+\end{align*}
+
 \begin{figure}[h!]
     \centering
     \includegraphics[width=\textwidth]{figures/chapter5/algorithm/30_boundary.pdf}
-    \caption{\dots}
+    \caption{Inverter underperformance region based on the lowest boundary of current-voltage inliers.}
     \label{fig:anomaly_decision_boundary}
 \end{figure}
 
-% formulação do algoritmo para deteçao de falhas em inversores
-\dots
+Figure \ref{fig:anomaly_decision_boundary} illustrates the outcome of using the described algorithm on our case study inverters. With the fitted curve's parameters, the PV plugin can analyze a new sample and determine if it falls under the underperformance category—whenever it does, the plugin flags that situation and reports back to the cell.
+The fitted logarithmic curves are:
+
+$$
+    V_{inverter1} = 19.2 \times log(170.7 \times I_{inverter1} - 37.0) - 2.5 \times I_{inverter1} + 269.5
+$$
+
+$$
+    V_{inverter2} = 20.8 \times log(169.8 \times I_{inverter2} - 41.8) - 2.6 \times I_{inverter2} + 288.2 
+$$
 
 \subsection{CellTAN Configuration}
 
@@ -182,6 +229,16 @@ Now, we take our previous analysis and start the data-cleaning process. We used 
 \dots
 
 \subsection{Simulation and Results} \label{subsec:results}
+
+\subsubsection{Inverter-Inverter mismatch}
+
+\dots
+
+\subsection{Inverters-Satellite mismatch}
+
+\dots
+
+\subsection{Inverter underperformance}
 
 \dots
 
