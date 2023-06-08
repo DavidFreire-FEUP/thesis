@@ -1,7 +1,7 @@
 \chapter{CellTAN Application} \label{chap:chap5}
 
 
-\section{Case study}
+\section{Case Study}
 
 
 The experiments validating CellTAN's behavior incorporate two neighboring grid-tied string inverters from the same PV farm with common satellite data. Their only known characteristics are:
@@ -36,7 +36,7 @@ Table \ref{tab:availablevariables} represents the available variables and corres
 
 Analyzing and cleaning raw inverter and satellite data is essential to take full benefit of CellTAN's capabilities. As seen in its formulation stage, having a clean knowledge base contributes to correctly identifying anomalous situations. Therefore, the following sections focus on these two steps, contributing to understanding the anomalies' domain and frequency of occurrence.
 
-\subsection{Data analysis}
+\subsection{Data Analysis}
 
 Before data visualization, and regarding the variables in table \ref{tab:availablevariables}, we eliminate those that will not benefit the CellTAN. We determined that AC side voltage is insignificant since the grid mandates it in a grid-tied inverter. We have decided to only use the measure of power instead of using the AC side current measure since, in conjunction with voltage, it provides the same information. To simplify things further, we do not need to consider the power on the DC if considering both the DC side current and voltage measures.
 
@@ -231,19 +231,27 @@ $$
 
 \subsection{Simulation and Results} \label{subsec:results}
 
-\subsubsection{Inverter-Inverter mismatch}
+\subsubsection{Typical Clear Sky Day}
 
 \dots
 
-\subsection{Inverters-Satellite mismatch}
+\subsubsection{Typical Cloudy Day}
 
 \dots
 
-\subsection{Inverter underperformance}
+\subsubsection{Inverter-Inverter Mismatch}
 
 \dots
 
-\subsection{Scaling up}
+\subsection{Inverters-Satellite Mismatch}
+
+\dots
+
+\subsection{Inverter Underperformance}
+
+\dots
+
+\subsection{Scaling Up}
 
 \dots
 
