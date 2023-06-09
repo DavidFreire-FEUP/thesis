@@ -70,8 +70,7 @@ Figure \ref{fig:eda_power_test} represents the power profile on the portion of d
     \label{fig:eda_power_kb_pair}
 \end{figure}
 
-Figure \ref{fig:eda_power_kb_pair} lets us better understand the relationship between the two inverters. As expected, since they are neighboring, they have a strong trend line, leading them to a high Pearson coefficient: 0.97753. However, the noise from outliers is noticeable in the scatter. We define Zone A as the zone where inverter two underperforms compared to one and Zone B as the opposite. The black arrows in the graph display secondary trend lines in Zone B, indicating scenarios of inverter one performing consistently less than expected. Another arrow also points out a cloud in Zone A (right under the trend line) of the opposite scenario. Furthermore, the red rectangles highlight instances where one inverter was functioning while the other was not. CellTAN must flag these situations, so we should remove them from the knowledge base.
-The KDE visualization confirms that most samples lie close to the primary trend.
+Figure \ref{fig:eda_power_kb_pair} lets us better understand the relationship between the two inverters. As expected, since they are neighboring, this data presents a strong trend line, loading to a high Pearson coefficient: 0.97753. However, the noise from outliers is noticeable in the scatter. We define Zone A as the zone where inverter two underperforms compared to one and Zone B as the opposite. The black arrows \textcircled{\raisebox{-0.9pt}{1}} in the graph display secondary trend lines, indicating scenarios of inverter one performing consistently less than expected. Another arrow \textcircled{\raisebox{-0.9pt}{2}} also points out a cloud in Zone A (right under the trend line) of the opposite scenario. Furthermore, the red rectangles \textcircled{\raisebox{-0.9pt}{3}}\textcircled{\raisebox{-0.9pt}{4}} highlight instances where one inverter was functioning while the other was not. CellTAN must flag these situations, so we should remove them from the knowledge base. The KDE visualization confirms that most samples lie close to the primary trend.
 
 \begin{figure}[h!]
     \centering
@@ -102,7 +101,7 @@ Both inverters are equipped with MPPTs to maximize the power output from their s
     \label{fig:eda_volt_curr_pair_kb_2}
 \end{figure}
 
-Regarding DC side voltage and current, figures \ref{fig:eda_volt_curr_pair_kb_1} and \ref{fig:eda_volt_curr_pair_kb_2} demonstrate the operating range of the inverter's MPPT. Both kickstart production at around 400 V and operate until close to 600 V. Between this range, the central column of samples represents voltage-current points relative to the knee of the strings' I-V curve (see figure \ref{fig:mpptcurve}), with irradiance generally increasing along its height. Some instances are outside this normal operation range (outliers), especially in the zone marked by the black arrow. This zone has particular interest given that it represents scenarios of underperformance, which could mean the occurrence of faults. It is denser in figure \ref{fig:eda_volt_curr_pair_kb_2}, meaning that inverter two has more underperforming situations, which was not completely clear from the previous analysis (figure \ref{fig:eda_power_kb_pair}). Appendix \ref{ap2:eda} presents the same charts, but for test data (figures \ref{fig:eda_voltage_current_test_1} and \ref{fig:eda_voltage_current_test_2}).
+Regarding DC side voltage and current, figures \ref{fig:eda_volt_curr_pair_kb_1} and \ref{fig:eda_volt_curr_pair_kb_2} demonstrate the operating range of the inverter's MPPT. Both kickstart production at around 400 V and operate until close to 600 V. Between this range, the central column of samples represents voltage-current points relative to the knee of the strings' I-V curve (see figure \ref{fig:mpptcurve}), with irradiance generally increasing along its height. Some instances are outside this normal operation range (outliers), especially in the zone marked by the black arrow \textcircled{\raisebox{-0.9pt}{5}}\textcircled{\raisebox{-0.9pt}{6}}. These zones are critical because they represent inverter underperformance scenarios, which could be associated with some faults. It is denser in figure \ref{fig:eda_volt_curr_pair_kb_2}, meaning that inverter two has more underperforming situations; this was not completely clear from the previous analysis (figure \ref{fig:eda_power_kb_pair}). Appendix \ref{ap2:eda} presents the same charts, but for test data (figures \ref{fig:eda_voltage_current_test_1} and \ref{fig:eda_voltage_current_test_2}).
 
 \subsubsection{Satellite} \label{subsubsec:eda_sat}
 
@@ -121,8 +120,6 @@ Although most instances appear inside the sunrise-sunset paths, there are some o
 
 Regarding the rest of the meteorological variables (cloud coverage and temperature), we deemed them unnecessary since they do not demonstrate a direct relationship with inverter behavior (see figure \ref{fig:eda_irrelevant_meteo}). We added KDE visualizations and plots for the test period in appendix \ref{ap2:eda}.
 
-% TODO colocar 09,10,11 nos anexos e mencionar
-
 \subsection{Data Cleaning}
 
 Now, we take our previous analysis and start the data-cleaning process. We used the Scikit-Learn Python Library and tried out some anomaly detection algorithms for outlier identification on our dataset: Robust Covariance \cite{Rousseeuw1999}, Isolation Forest \cite{Liu2008} \cite{Liu2012}, and Local Outlier Factor \cite{Breunig2000}. The code used for our plotting derived from an example made by Alexandre Gramfort, available on the Scikit-Learn website \cite{sklearn_example}.
@@ -138,7 +135,7 @@ Based on the geographical proximity of the inverters, we have determined that th
     \label{fig:clean_power}
 \end{figure}
 
-In Figure \ref{fig:clean_power}, we can see a visual representation of various anomaly detection algorithms' inliers, outliers, decision boundaries, and their computation time (bottom right). These algorithms are fine-tuned for approximately 14\% of outlier contamination. Based on the results, we determined that the Robust Covariance algorithm was the most effective since it extracted the region around the trend line without issues. We selected it to clean our knowledge base.
+In Figure \ref{fig:clean_power}, we can see a visual representation of various anomaly detection algorithms' inliers, outliers, decision boundaries, and their computation time (bottom right). The algorithms are fine-tuned for approximately 14\% of outlier contamination. Based on the results, we determined that the Robust Covariance algorithm was the most effective since it extracted the region around the trend line without issues. We selected it to clean our knowledge base.
 
 \subsubsection{Satellite}
 
@@ -176,7 +173,6 @@ The charts in figure \ref{fig:clean_volt_curr} illustrates how the algorithms ha
 \subsection{Photovoltaic Plugin}
 
 According to the CellTAN formulation, cells cannot share their variables' data directly to maintain privacy. As a result, this limits plugins to work with only the information available in the cell they are running in. Therefore, inverter underperformance is the only situation considered for the PV plugin, based on the analysis from section \ref{subsubsec:eda_volt_curr}. Access to both the inverter's data and satellite data allows the owner to employ other algorithms that leverage this knowledge for better situational and fault discernment, but this falls back to the "classical" centralized algorithms, which is not the scope of this work.
-
 
 % ! TODO
 % flow chart de algoritmo para definição da fronteira de decisão
@@ -224,6 +220,7 @@ $$
 $$
 
 \subsection{CellTAN Configuration}
+
 
 % config das células, como vai correr, como se simula o tempo
 % meter as thresholds todas
