@@ -10,7 +10,6 @@
 
 \section{Data analysis} \label{ap2:eda}
 
-
 \begin{figure}[h]
     \centering
     \includegraphics[width=\textwidth]{figures/appendix/b_analysis/05_voltage_current_pairplot_test_1.pdf}
@@ -32,3 +31,82 @@
     \label{fig:eda_irrelevant_meteo}
 \end{figure}
 
+\section{Photovoltaic Plugin}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.8\textwidth]{figures/chapter5/algorithm/plugin_steps.pdf}
+    \caption{Proposed steps for obtaining inverter underperformance region.}
+    \label{fig:pluginsteps}
+\end{figure}
+
+\FloatBarrier
+
+\section{Cell Configuration}  \label{ap2:cellconfig}
+
+\subsection{Inverters}
+
+\begin{lstlisting}[style=yaml]
+    name: inverter_1 # same for inverter_2
+    value_metadata:
+    - id: ac_power
+        uncertainty_up: 50.0
+        uncertainty_down: 50.0
+        minimum: 0.0
+        maximum: 13000.0
+        time_decay: 900.0
+    - id: dc_voltage
+        uncertainty_up: 10.0
+        uncertainty_down: 10.0
+        minimum: 0.0
+        maximum: 600.0
+        time_decay: 900.0
+    - id: dc_current
+        uncertainty_up: 5.0
+        uncertainty_down: 5.0
+        minimum: 0.0
+        maximum: 40.0
+        time_decay: 900.0
+    thresholds:
+        min_knowledge_for_raising_new_experience: P365DT0H0M0.000000S
+        min_trust_for_filtering: 0.3
+        min_trust_for_uncomformity: 0.1
+        goal_neighbors_frac_for_activations: 1.0
+        rolling_timestamp_offset: P0DT0H0M0.000000S
+        trust_comparison_bins:
+        - P0DT3H0M0.000000S
+        - P0DT6H0M0.000000S
+        - P0DT12H0M0.000000S
+        - P1DT0H0M0.000000S
+        max_knowledge_time_diff: P0DT0H15M0.000000S
+        min_loop_sleep: 0.01
+        max_loop_sleep: 999.0
+    append_knowledge_base: false
+\end{lstlisting}
+
+\subsection{Satellite}
+
+\begin{lstlisting}[style=yaml]
+    name: satellite
+    value_metadata:
+    - id: global_tilted_irradiance
+        uncertainty_up: 50.0
+        uncertainty_down: 50.0
+        minimum: 0.0
+        maximum: 1200.0
+        time_decay: 900.0
+    - id: global_horizontal_irradiance
+        uncertainty_up: 50.0
+        uncertainty_down: 50.0
+        minimum: 0.0
+        maximum: 1200.0
+        time_decay: 900.0
+    thresholds:
+      min_knowledge_for_raising_new_experience: P365DT0H0M0.000000S
+      rolling_timestamp_offset: P0DT0H0M0.000000S
+      trust_comparison_bins: []
+      max_knowledge_time_diff: P0DT0H5M0.000000S
+      min_loop_sleep: 0.01
+      max_loop_sleep: 999.0
+    append_knowledge_base: false
+\end{lstlisting}

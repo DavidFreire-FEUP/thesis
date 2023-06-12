@@ -120,7 +120,7 @@ Although most instances appear inside the sunrise-sunset paths, there are some o
 
 Regarding the rest of the meteorological variables (cloud coverage and temperature), we deemed them unnecessary since they do not demonstrate a direct relationship with inverter behavior (see figure \ref{fig:eda_irrelevant_meteo}). We added KDE visualizations and plots for the test period in appendix \ref{ap2:eda}.
 
-\subsection{Data Cleaning}
+\section{Data Cleaning}
 
 Now, we take our previous analysis and start the data-cleaning process. We used the Scikit-Learn Python Library and tried out some anomaly detection algorithms for outlier identification on our dataset: Robust Covariance \cite{Rousseeuw1999}, Isolation Forest \cite{Liu2008} \cite{Liu2012}, and Local Outlier Factor \cite{Breunig2000}. The code used for our plotting derived from an example made by Alexandre Gramfort, available on the Scikit-Learn website \cite{sklearn_example}.
 
@@ -170,14 +170,11 @@ Cleaning voltage and current data were the most challenging thus far. The peculi
 
 The charts in figure \ref{fig:clean_volt_curr} illustrates how the algorithms have difficulty keeping up with the data's distribution and preserving the densely populated areas. Neither algorithm effectively identifies the outliers separately, but their combination proved much more effective.
 
-\subsection{Photovoltaic Plugin}
+\section{Photovoltaic Plugin}
 
 According to the CellTAN formulation, cells cannot share their variables' data directly to maintain privacy. As a result, this limits plugins to work with only the information available in the cell they are running in. Therefore, inverter underperformance is the only situation considered for the PV plugin, based on the analysis from section \ref{subsubsec:eda_volt_curr}. Access to both the inverter's data and satellite data allows the owner to employ other algorithms that leverage this knowledge for better situational and fault discernment, but this falls back to the "classical" centralized algorithms, which is not the scope of this work.
 
-% ! TODO
-% flow chart de algoritmo para definição da fronteira de decisão
-% fazer um diagrama super fixe com os passos do algoritmo ilustrados em desenho
-To define the minimum operational boundary, we use the current and voltage samples resulting from the cleaning process to define inverter underperformance. Figure ref shows the proposed algorithm, which consists of the following steps:
+We use the current and voltage samples resulting from the cleaning process to define the minimum operational boundary. Figure \ref{fig:pluginsteps} shows the proposed algorithm, which consists of the following steps:
 
 \begin{itemize}
 	\item Clean I-V data;
@@ -219,14 +216,36 @@ $$
     V_{inverter2} = 20.6 \times ln(148.3 \times I_{inverter2} - 35.6) - 2.9 \times I_{inverter2} + 299.5 
 $$
 
-\subsection{CellTAN Configuration}
+\section{CellTAN Configuration}
+
+The actual implementation of CellTAN requires a lot of time and resources to gather significant results. Therefore, we created a virtual scenario to simulate all test data and collect results quickly. The simulation involves cells using a fake in-memory implementation of some objects, such as its interface and repository. The interface is a cell dependency for communicating with other cells, and an in-memory implementation allows cells in the same host to share information directly. The repository is where the cell keeps its knowledge base and stores any persistent attributes (e.g. trust with neighbors). An in-memory repository eliminates the need to set up a database for experimentation.
+
+To maintain time fidelity, which is crucial for this tool, we have the cells use a custom rolling timestamp generator that follows the time of each sample passed to the inputs. Effectively, all the mechanisms of the cell function without modification since their current time is always correct relative to the inputs. This timestamp method allows feeding inputs as fast as the cells perform their main process loop.
+
+Selecting cell parameters can be difficult due to the complexness of variable uncertainties and thresholds (ref). However, we noticed that some parameter variations do not have a significant influence on making the CellTAN not function properly. We selected AC power, DC side current, and voltage for the inverters' inputs, considering uncertainties of $\pm50W$, $\pm10V$, and $\pm5A$, respectively.
+
+The complete cell configuration is available in appendix \ref{ap2:cellconfig}.
+
+\section{Simulation and Results} \label{subsec:results}
+
+\subsection{Two Inverters Cloned}
+
+To validate the CellTAN core mechanisms with a barebones scenario, we simulate a network of just two cells (two inverters) with the same knowledge base (of inverter one). This way, we have a clean slate for introducing anomalies and watching the corresponding behavior. Translating to a real case, this would be most similar to two equal inverters with the same PV configuration installed in the same place.
+
+\subsubsection{Simulation Without Anomalies}
+
+The first validation is with an anomaly-free scenario. Here we simulate 72 samples of a clear day from 2023-03-02 06:30:00 to 2023-03-02 18:30:00.
 
 
-% config das células, como vai correr, como se simula o tempo
-% meter as thresholds todas
+\subsubsection{Simulation With Inverter Mismatch Anomaly}
+
 \dots
 
-\subsection{Simulation and Results} \label{subsec:results}
+\subsubsection{Simulation With Voltage and Current Anomaly}
+
+\dots
+
+\subsection{Two Neighboring Inverters and One Satellite}
 
 \subsubsection{Typical Clear Sky Day}
 
