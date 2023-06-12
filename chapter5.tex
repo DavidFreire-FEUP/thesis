@@ -222,30 +222,46 @@ The actual implementation of CellTAN requires a lot of time and resources to gat
 
 To maintain time fidelity, which is crucial for this tool, we have the cells use a custom rolling timestamp generator that follows the time of each sample passed to the inputs. Effectively, all the mechanisms of the cell function without modification since their current time is always correct relative to the inputs. This timestamp method allows feeding inputs as fast as the cells perform their main process loop.
 
-Selecting cell parameters can be difficult due to the complexness of variable uncertainties and thresholds (ref). However, we noticed that some parameter variations do not have a significant influence on making the CellTAN not function properly. We selected AC power, DC side current, and voltage for the inverters' inputs, considering uncertainties of $\pm50W$, $\pm10V$, and $\pm5A$, respectively.
+Selecting cell parameters can be difficult due to the complexness of variable uncertainties and thresholds (ref). However, we noticed that some parameter variations do not have a significant influence on making the CellTAN not function properly. We selected AC power, DC side current, and voltage for the inverters' inputs, considering 5\% uncertainty on all variables.
 
 The complete cell configuration is available in appendix \ref{ap2:cellconfig}.
 
 \section{Simulation and Results} \label{subsec:results}
 
-\subsection{Two Inverters Cloned}
+\subsection{Artificial Scenario}
 
-To validate the CellTAN core mechanisms with a barebones scenario, we simulate a network of just two cells (two inverters) with the same knowledge base (of inverter one). This way, we have a clean slate for introducing anomalies and watching the corresponding behavior. Translating to a real case, this would be most similar to two equal inverters with the same PV configuration installed in the same place.
+To validate the CellTAN core mechanisms with a controlled scenario, we simulate a network of just two cells (two inverters) with the same knowledge base (of inverter one). This way, we have a clean slate for introducing anomalies and watching the corresponding behavior. Translating to a real case, this would be most similar to two equal inverters with the same PV configuration installed in the same place.
 
 \subsubsection{Simulation Without Anomalies}
 
 The first validation is with an anomaly-free scenario. Here we simulate 72 samples of a clear day from 2023-03-02 06:30:00 to 2023-03-02 18:30:00.
 
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\textwidth]{figures/chapter5/results/artificial/40_test_clone_01.pdf}
+    \caption{Power, current and voltage profiles and scatter of simulation data for artificial scenario without anomalies.}
+    \label{fig:artificial_01_piv}
+\end{figure}
 
-\subsubsection{Simulation With Inverter Mismatch Anomaly}
+We will use figures like \ref{fig:artificial_01_piv} to present data that was used in the CellTAN to facilitate output interpretation. In it, K.B. refers to Knowledge Base, and the scatters allow us to better understand the region of the inputs against it.
 
-\dots
+\subsubsection{Simulation With Anomalies}
 
-\subsubsection{Simulation With Voltage and Current Anomaly}
+To assess all of the CellTAN's core mechanism, we simulate inverter mismatch and underperformance, which should influence the cells' trust and trigger the plugin into warning the situation.
 
-\dots
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\textwidth]{figures/chapter5/results/artificial/41_test_clone_02.pdf}
+    \caption{Power, current and voltage profiles and scatter of simulation data for artificial scenario with anomalies.}
+    \label{fig:artificial_02_piv}
+\end{figure}
 
-\subsection{Two Neighboring Inverters and One Satellite}
+Figure \ref{fig:artificial_02_piv} shows the introduced anomalies from 9h to 12h. Regarding the scatter plots, we see that the AC Power strays into a region found during the analysis of the knowledge base (figure \ref{fig:eda_power_kb_pair} \textcircled{\raisebox{-0.9pt}{2}}), making it a relatively realistic setting. The voltage anomaly introduced is not as typical but still represents instances in the region mapped as underperformance in the PV plugin.
+
+
+\subsection{Real Scenario}
+
+Now, we use the test data from both inverters and satellite to run the CellTAN. By using 4 months' worth of data, it's possible to statistically evaluate the tool's outputs. However, it becomes challenging to select which specific portions to showcase in the following sections. Yet, this is also needed to understand real-time behavior, so the presented results will be hand-picked sections with relevancy.
 
 \subsubsection{Typical Clear Sky Day}
 
