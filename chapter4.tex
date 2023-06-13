@@ -11,7 +11,7 @@ Distributed information systems characterized by time series data present variou
 
 This chapter proposes a novel tool entitled CellTAN (Cellular Time Activation Network) that undertakes those challenges. CellTAN represents sparse yet interconnected components that function independently, cooperatively, and asynchronously. Inspired by other effective mechanisms like GNNs, CXNs, and Weighted Cross-Connection Networks (WCCNs), CellTAN uses a graph-like structure to represent a network of components with nodes and connections. Following the introductory chapters, its primary purpose is to detect abnormal scenarios on PV systems. However, its generalized formulation introduces other valuable features which come naturally from fulfilling this goal. Such are state estimation, forecasting, and capturing the value in data from different PV asset owners without violating their privacy. For briefness' sake, we will unfold details about its benefits during the rest of this chapter.
 
-Instead of tackling fault detection and classification in a classical centralized manner, which is already extensively showcased throughout the literature, this tool approaches this problem with a paradigm change: a distributed and asynchronous data coherence system. By having a virtual representation closely related to the physical form of sparse systems, we can leverage the relationships between components to assess their correct (or incorrect) operation. While initially designed for photovoltaic (PV) systems, the concepts of cells, connections, neighbors, time series, and uncertainty are universal and applicable to other fields such as biology, physics, and more. Thus, the potential for generic applicability sparks the interest to not bake specifics of PV systems directly into this tool, allowing its usage for other subjects. Figure \ref{fig:celltanintro} represents a minimal scenario for a network: only two cells. It showcases some terms specific to this tool that might be difficult to grasp initially, such as trust, events, and activations. Consequently, the glossary in \ref{sec:glossary} and detailed explanations throughout this chapter serve to clarify them.
+Instead of tackling fault detection and classification in a classical centralized manner, which is already extensively showcased throughout the literature, this tool approaches this problem with a paradigm change: a distributed and asynchronous data coherence system. By having a virtual representation closely related to the physical form of sparse systems, we can leverage the relationships between components to assess their correct (or incorrect) operation. While initially designed for photovoltaic (PV) systems, the concepts of cells, connections, neighbors, time series, and uncertainty are universal and applicable to other fields such as biology, physics, and more. Thus, the potential for generic applicability sparks the interest to not bake specifics of PV systems directly into this tool, allowing its usage for other subjects. Figure \ref{fig:celltanintro} represents a minimal scenario for a network: only two cells. It showcases some terms specific to this tool that might be difficult to grasp initially, such as trust, events, and activations. Consequently, detailed explanations throughout this chapter serve to clarify them.
 
 Vast and scattered information across multiple agents is a common scenario faced by the industry of AI for energy systems, which cannot be aggregated due to privacy and confidentiality reasons. Nevertheless, its conjunction could have a lot of added value, given the similarity of certain assets: PV plants (as well as wind farms) from different owners in neighboring geographical regions. This information-sharing potential for AI algorithms motivates the development of a mechanism that communicates information between differently owned assets without any of the compromises above. However, as stated before, data acquisition in PV scenarios is scarcely synchronous and might only occur in equal time resolutions for some of the different components. The CellTAN addresses these issues with an instrument called \textbf{Activations}. It proposes a new way of communication that decouples from the needs of units, sampling rate, and synchronization, avoiding resampling, normalization, or even obfuscation (to protect privacy), by only transmitting time values. This mechanism is a core feature of the tool since it will be the means that will allow connecting different stakeholders' data, and section \ref{sec:thecell} develops this matter thoroughly. Likewise, succeeding sections formulate the working of the cell and its interactions within the network. Since it is the core component, understanding its behavior is crucial for a complete understanding of the tool.
 
@@ -327,7 +327,7 @@ $$
 \begin{figure}[h!]
 \centering
     \includegraphics[width=0.8\textwidth]{figures/chapter4/cell/trust_tests/2_a.pdf}
-    \caption{Trust measurement evolution for different methods with $a=30, c=10, d=10, b \in [0, 1000]$.}
+    \caption{Trust measurement evolution for different methods with $a=30, c=10, d=500, b \in [0, 1000]$.}
     \label{fig:trust_test_2_a}
 \end{figure}
 \FloatBarrier
@@ -345,7 +345,7 @@ $$
 \begin{figure}[h!]
 \centering
     \includegraphics[width=0.8\textwidth]{figures/chapter4/cell/trust_tests/2_b.pdf}
-    \caption{Trust measurement evolution for different methods with $a=30, b=10, d=10, c \in [0, 1000]$.}
+    \caption{Trust measurement evolution for different methods with $a=30, b=10, d=500, c \in [0, 1000]$.}
     \label{fig:trust_test_2_b}
 \end{figure}
 \FloatBarrier
@@ -366,7 +366,7 @@ $$
 \begin{figure}[h!]
 \centering
     \includegraphics[width=0.8\textwidth]{figures/chapter4/cell/trust_tests/3.pdf}
-    \caption{Trust measurement evolution for different methods with $b=30, c=10, d=10, a \in [0, 1000]$.}
+    \caption{Trust measurement evolution for different methods with $b=30, c=10, d=500, a \in [0, 1000]$.}
     \label{fig:trust_test_3}
 \end{figure}
 \FloatBarrier
