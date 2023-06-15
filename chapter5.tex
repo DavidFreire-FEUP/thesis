@@ -36,7 +36,7 @@ Table \ref{tab:availablevariables} represents the available variables and corres
 
 Analyzing and cleaning raw inverter and satellite data is essential to take full benefit of CellTAN's capabilities. As seen in its formulation stage, having a clean knowledge base contributes to correctly identifying anomalous situations. Therefore, the following sections focus on these two steps, contributing to understanding the anomalies' domain and frequency of occurrence.
 
-\subsection{Data Analysis}
+\subsection{Data Analysis}  \label{subsec:eda}
 
 Before data visualization, and regarding the variables in table \ref{tab:availablevariables}, we eliminate those that will not benefit the CellTAN. We determined that AC side voltage is insignificant since the grid mandates it in a grid-tied inverter. We have decided to only use the measure of power instead of using the AC side current measure since, in conjunction with voltage, it provides the same information. To simplify things further, we do not need to consider the power on the DC if considering both the DC side current and voltage measures.
 
@@ -85,7 +85,7 @@ From \ref{fig:eda_power_test_pair}, it is clear that test data has fewer outlier
 
 \subsubsection{Voltage and Current} \label{subsubsec:eda_volt_curr}
 
-Both inverters are equipped with MPPTs to maximize the power output from their strings. As a result of this power converter, the current and voltage readings should fall within the optimal range of the I-V curve.
+Both inverters are equipped with MPPTs to maximize the power output from their strings. As a result of this power converter, the current and voltage readings should fall within the optimal range of the I-V (current and voltage) curve.
 
 \begin{figure}[h!]
     \centering
@@ -228,17 +228,17 @@ Selecting cell parameters can be difficult due to the complexness of variable un
 
 \section{Simulation and Results} \label{subsec:results}
 
-\subsection{Artificial Scenario}
+\subsection{Artificial Setting}
 
 To validate the CellTAN core mechanisms with a controlled scenario, we simulate a network of just two cells (two inverters) with the same knowledge base (of inverter one). This way, we have a clean slate for introducing anomalies and watching the corresponding behavior. Translating to a real case, this would be most similar to two equal inverters with the same PV configuration installed in the same place.
 
-\subsubsection{Simulation Without Anomalies}
+\subsubsection{Simulation Without Anomalies}  \label{subsubsec:simnoanom}
 
-The first validation is with an anomaly-free scenario. Here we simulate 73 samples of a clear day from 2023-03-02 06:30:00 to 2023-03-02 18:30:00.
+We are conducting our initial validation using a scenario without any anomalies. To achieve this, we will simulate 73 instances of a clear day, starting from 06:30:00 on March 2nd, 2023, and ending at 18:30:00 on the same day.
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=\textwidth]{figures/chapter5/results/artificial/40_test_clone_01.pdf}
+    \includegraphics[width=0.9\textwidth]{figures/chapter5/results/artificial/40_test_clone_01.pdf}
     \caption{Power, current, voltage profiles, and scatter of simulation data for the artificial scenario without anomalies.}
     \label{fig:artificial_01_piv}
 \end{figure}
@@ -268,7 +268,7 @@ To assess the CellTAN's anomaly detection capability, we simulate inverter misma
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=\textwidth]{figures/chapter5/results/artificial/41_test_clone_02.pdf}
+    \includegraphics[width=0.9\textwidth]{figures/chapter5/results/artificial/41_test_clone_02.pdf}
     \caption{Power, current, voltage profiles, and scatter of simulation data for the artificial scenario with anomalies.}
     \label{fig:artificial_02_piv}
 \end{figure}
@@ -285,9 +285,9 @@ We expect CellTAN's cell trust mechanism and the PV plugin to catch this situati
 
 Figure \ref{fig:artificial_results_02} shows that the trust between cells drops to (practically) zero while the anomaly occurs. The indicator staying fixed at zero for the entire duration perfectly aligns with the historical trust comparison process (using a moving average to consider unconformities, given a threshold). This way, if the cell owner configures it to have a three-hour trust bin comparison and an appropriate threshold, this situation would be flagged at hour 13.
 
-One major issue with the symmetry of trust is that we need further assessment to understand which cell is faulty. Variables' trust indicators and plugins come to support this necessity. In this specific scenario, variables' trust indicated a momentary drop of trust in DC side voltage, but not significant enough to distinguish from the ones in the sunrise and sunset transitions. However, as anticipated, the PV plugin caught the situation, indicating that the power was around 80\% of the expected minimum throughout the anomaly (figure \ref{fig:artificial_results_02}, top right). This indicator is enough, in this context, to distinguish which is the failing inverter.
+One major issue with the symmetry of trust is that we need further assessment to understand which cell is faulty. Variables' trust indicators and plugins come to support this necessity. In this specific scenario, variables' trust indicated a momentary drop of trust in DC side voltage, but not significant enough to distinguish from the ones in the sunrise and sunset transitions. However, the PV plugin flagged inverter two's underperformance, indicating that the power was around 80\% of the expected minimum throughout the anomaly (figure \ref{fig:artificial_results_02}, top right chart). This indicator is enough, in this context, to distinguish the faulty cell.
 
-\subsection{Real Scenario}
+\subsection{Real Setting}
 
 Although artificial scenarios have their place for conceptual validation, data from a physical cell network is valuable for assessing the usefulness of our fault detection tool. In the following sections, we use the test data from both inverters and satellite reviewed in \ref{sec:case_study} to run the CellTAN.
 
@@ -295,12 +295,86 @@ Using four months' data allows for statistically evaluating the tool's outputs, 
 
 The CellTAN contains a lot of valuable attributes for assessing the cell's state, such as its variables' fuzzy outputs, cell/variables trust indicators, extrinsic/intrinsic unconformity severity (with incoherent element information), and situations detected by plugins. However, we minimize overloading our findings with all this data and focus on the most objective indicators: outputs, trust indicators, variables' inputs, and the underperformance estimation from the PV plugin. The state data and unconformity information depend on the arbitrary time bins and threshold. Since it derives from the instantaneous trust values, and the cell owner controls such parameters, we omit these state attributes.
 
-\subsubsection{Results Overview}
+\subsubsection{Trust Indicators Overview}
 
-% \subsubsection{Anomalies}
+After gathering results, visualizing the relation between inverter trust and outlier regions defined in section \ref{subsec:eda} gives a direct view of CellTAN's anomaly detection capabilities.
 
-% \subsubsection{Days With }
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\textwidth]{figures/chapter5/results/real/52_scatter_with_trust.pdf}
+    \caption{Scatter of inverter AC power (1st) and inverter variables (2nd and 3rd), colored with the trust value between inverters.}
+    \label{fig:real_sim_trust_scatter}
+\end{figure}
 
+Figure \ref{fig:real_sim_trust_scatter} confirms that the tool consistently assigns low trust values to instances in outlier regions, denoted by the darker tone. We expected this performance since the knowledge base utilized by the cells had gone through a cleaning phase, making the temporal similarity extraction process and cell activations prone to capture what we predefined as correct behavior.
+
+Regarding the distribution of trust indicators in figure \ref{fig:cell_trust_hist}, the trust between inverters shows that most samples have high trust values, with most above 0.7. Although the threshold for anomaly detection is arbitrary, one could point out that the most indicative region is in the first bin, with values very close to zero. Considering the first bin as anomalies results in approximately 500 samples out of the 4464 (11.2\%).
+
+Unfortunately, the distributions of trust between inverters and satellite indicate that these connections did not benefit the tool. These results suggest that the trust calculation system is less versatile than thought and requires modification for leveraging these links. Earlier, we aligned the uncertainty of the satellite variables with that of the inverters while configuring the cells, hoping to match their time similarity extraction. However, remembering the trust calculation method, we conclude that systems can have different time extraction characteristics, leading to lower trust when this leads to significant differences in the cells' total activation time.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\textwidth]{figures/chapter5/results/real/50_hist_trust_cells.pdf}
+    \caption{Cells' trust measurement histogram.}
+    \label{fig:cell_trust_hist}
+\end{figure}
+
+Analyzing the variables' trust indicators in figure \ref{fig:var_trust_hist} lets us confirm the strong relationship between AC power and DC side current. The DC side voltage trust presents a region of lower values apart from the highest frequency bin. These instances relate to the DC voltage behavior during sunrise and sunset, already reviewed in section \ref{subsubsec:simnoanom}.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\textwidth]{figures/chapter5/results/real/51_hist_trust_vars.pdf}
+    \caption{Cell variables' trust measurement histogram.}
+    \label{fig:var_trust_hist}
+\end{figure}
+
+Based on the information presented in figures \ref{fig:cell_trust_hist} and \ref{fig:var_trust_hist}, we can conclude that the inverter cell trust indicator is the most valuable feature of CellTAN for our particular network scenario. This indicator will be one of the primary analysis topics in the upcoming sections.
+
+\subsubsection{Inverter Underperformance Detection}
+
+The PV plugin successfully identified situations of underperformance when DC side measurements fell in the mapped region (figure \ref{fig:anomaly_decision_boundary}). Figure \ref{fig:plugin_detections} represents all the flagged samples from test data. The reason for missing samples closer to the column of typical MPPT operation is that we added a 5\% tolerance for identifying these situations. This tolerance is because we should not overwhelm the PV farm owner with all cases of underperformance and filter out the less severe. Nonetheless, this constant is parametrizable by the owner when setting up the CellTAN.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.9\textwidth]{figures/chapter5/results/real/53_pv_plugin_detections.pdf}
+    \caption{I-V scatter of test data (both inverters) with detected underperformance instances colored red (top) and histogram based on the hour of detection (bottom).}
+    \label{fig:plugin_detections}
+\end{figure}
+
+With the histogram in figure \ref{fig:plugin_detections}, we can assess that underperformance mostly happens during sunrise and sunset (see appendix \ref{ap3:undereperfdet}). The underperformance behavior affects inverter cells' trust, which reflects in this measurement dropping a lot during sunrise and sunset hours (see \ref{ap3:alltimeseries}). 
+
+\FloatBarrier
+\subsubsection{Day-by-day analysis}
+
+Reviewing the time series data of inverter AC power and trust between cells made us notice recurring patterns and situations throughout the test data. Figure \ref{fig:interesting_days} showcases the three main categories of days that stood out in the trust measurement profile. Looking at the scatter charts, we can identify the outlier regions seen in figure \ref{fig:real_sim_trust_scatter}.
+
+There are 19 days where the inverters demonstrate production profiles highly correlated throughout their cycle. Curiously, this only happens on cloudy days, making us question if their exposure to direct irradiance slightly varies due to different shading obstructions. We can see no outliers when checking out the I-V scatter for these days, which helps confirm the high trust value and no underperformance detections from the plugin.
+
+On the 85 days of power mismatches, the most recurring pattern is sunrise-sunset and midday trust drops. Analyzing the I-V variables shows that some samples lie in the underperformance region during these periods. The PV plugin ends up detecting the majority of underperformance cases on these types of days, mainly in the morning and evening. Inverter two dropping performance during peak sun hours could happen due to minor faults in the strings, temporary increases in inverter efficiency losses, or partial shading. It is good that the tool recognizes this type of nuanced situation, as it could help technical teams diagnose the problem and prevent it from aggravating (if a fault is the root cause).
+
+To satisfy the curiosity of observing the inverter cells' trust profile throughout the test dataset, we made it available in appendix \ref{ap3:alltimeseries}.
+
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.75\textwidth,trim={0cm 2cm 0cm 2cm},clip]{figures/chapter5/results/real/situations_freq_pie.pdf}
+    \caption{Frequency of days with identified scenarios based on trust measurement.}
+    \label{fig:interesting_days_freq}
+\end{figure}
+
+
+Figure \ref{fig:interesting_days_freq} showcases the frequency of each trust-based category. We can conclude that mild mismatches were very common, with a significantly larger frequency than the days of correlated production. The "Other" label refers to situations with slight power mismatches or voltage variations that change the trust measure enough not to be characterized as a highly correlated or power mismatch day.
+The percentage of days where inverter one is not operating occurs when it either turns on after the beginning of sun hours (which happens most often) or remains off for the entire day (which only happened on January 8th, 2023).
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.9\textwidth]{figures/chapter5/results/real/type_of_days.pdf}
+    \caption{Example days of inverters' highly correlated power (top), power mismatches (middle), and inverter one inoperational (bottom).}
+    \label{fig:interesting_days}
+\end{figure}
+
+
+% \subsubsection{Fuzzy Inputs and Outputs} % todo meter em anexos
 
 % \subsection{Scaling Up}
 

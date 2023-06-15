@@ -99,6 +99,16 @@ By generalizing the concept of representing uncertainty, the following structure
 
 Classical sets have pros and cons: many operations become more efficient than the alternatives, but we lose density information. Filtering historical data becomes trivial: a value lies within the bounds of the interval (membership value of one) or does not (membership value of zero). This more accessible representation will benefit some cell processes, primarily in temporal similarity extraction (\ref{subsec:tempsim}).
 
+Figure \ref{fig:exampleset} depicts an example of the inputs and outputs of a cell that represents a PV inverter. It showcases the expectation that outputs are less uncertain than inputs due to the cell processes (clarified in \ref{subsec:tempsim}).
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.7\textwidth]{figures/chapter4/cell/example_fuzzy.pdf}
+    \caption{Example of applying a set to the AC power of an inverter.}
+    \label{fig:exampleset}
+\end{figure}
+
+
 \subsubsection{Time decay} \label{subsec:timedecay}
 
 In real-world dynamic systems that involve data acquisition, the certainty of the data collected tends to fade over time due to its dynamic nature. Typically, the most recent data is the most accurate representation of the system's current state, and as time elapses, the accuracy of previous data points decreases. As a result, it is crucial to consider the time dimension when analyzing dynamic systems and to develop methods that can account for the decay in data certainty over time.
@@ -289,36 +299,35 @@ $$
 \end{bmatrix}
 $$
 $$
-d \in [0, 100], d \in [0, 3000]
+d \in [10, 100], d \in [10, 3000]
 $$
 
 \begin{figure}[h!]
 \centering
     \includegraphics[width=0.8\textwidth]{figures/chapter4/cell/trust_tests/1_a.pdf}
-    \caption{Trust measurement evolution for different methods with $a=30, b=10, c=10, d \in [0, 100]$.}
+    \caption{Trust measurement evolution for different methods with $a=30, b=10, c=10, d \in [10, 100]$.}
     \label{fig:trust_test_1_a}
 \end{figure}
 \FloatBarrier
 
 
-In figure \ref{fig:trust_test_1_a}, we can observe that all measurements increase with $d$, with a slight reduction at the start, although attenuated on the new method. Theil's U's minimum is 0.5, while the expectation for having a lower $d$ (few deactivated intersecting periods) is a value closer to zero (as the other methods demonstrate). This scenario means either both cells have no history similar to current inputs or their inputs' values have significant uncertainty (remember the time extraction process from \ref{subsec:tempsim}). Therefore, their "trust" should be minimal.
-Not having a reduction in the first values of $d$, showcased by the new method, is the intended behavior. Having equal activated and deactivated intersections ($a$ and $d$) should not be significantly penalized versus having $a>>d$, justified by the above reasoning.
+In figure \ref{fig:trust_test_1_a}, we can observe that all measurements increase with $d$. Phi and Contingency coefficients' minimums are relatively high, and the expectation for a lower $d$ (few deactivated intersecting periods) is closer to zero (as the other methods demonstrate). This scenario means either both cells have no history similar to current inputs or their inputs' values have significant uncertainty (remember the time extraction process from \ref{subsec:tempsim}). Therefore, their "trust" should be minimal. While all tend to an attenuated exponential, the new method showcases linear behavior in this window.
 
 \begin{figure}[h!]
 \centering
     \includegraphics[width=0.8\textwidth]{figures/chapter4/cell/trust_tests/1_b.pdf}
-    \caption{Trust measurement evolution for different methods with $a=30, b=10, c=10, d \in [0, 3000]$.}
+    \caption{Trust measurement evolution for different methods with $a=30, b=10, c=10, d \in [10, 3000]$.}
     \label{fig:trust_test_1_b}
 \end{figure}
 \FloatBarrier
 
-Figure \ref{fig:trust_test_1_b} extends the previous analysis, showcasing that all methods have asymptotical behavior, settling in a value greater than the start. All except Theil's U have asymptotes deemed acceptable for this test: since disagreement terms $b$ and $c$ are non-null and relatively close to $a$, we expect that the trust index does not reach a value near the max, remaining closer to a measure of "half trust".
+Figure \ref{fig:trust_test_1_b} extends the previous analysis, showcasing that all methods have asymptotical behavior, settling in a value greater than the start. Theil's U and the new method have settling values more acceptable for our application. Since disagreement terms $b$ and $c$ are non-null and relatively close to $a$, we expect that the trust index does not reach a high value, remaining closer to a measure of "half trust".
 
 \paragraph{Experiment nº2} Now, we observe the impact of the disagreeing terms $b$ and $c$ in the same coefficients by varying one while maintaining all others fixed. The expectation is that an increase in disagreement should lead to zero trust.
 
 $$
 \begin{bmatrix}
-    30 & b \\ 10 & 10
+    30 & b \\ 10 & 500
 \end{bmatrix}
 $$
 $$
@@ -332,11 +341,11 @@ $$
 \end{figure}
 \FloatBarrier
 
-In figure \ref{fig:trust_test_2_a}, it is clear that, for all methods, an increase in $b$ leads to lower coefficients. All except the new algorithm tend towards similar asymptotes, near a value of 0.3. The new method meets the expected behavior.
+In figure \ref{fig:trust_test_2_a}, it is clear that, for all methods, an increase in $b$ leads to lower coefficients. All tend towards zero, which is our desired behavior for trust measurement.
 
 $$
 \begin{bmatrix}
-    30 & 10 \\ c & 10
+    30 & 10 \\ c & 500
 \end{bmatrix}
 $$
 $$
@@ -350,7 +359,7 @@ $$
 \end{figure}
 \FloatBarrier
 
-With figure \ref{fig:trust_test_2_b}, we can observe the asymmetry of Theil's U coefficient, opposing to what figure \ref{fig:trust_test_2_a} showed. It does not represent the trust between cell nº1 and cell nº2, but the trust of cell nº1 \textbf{in} cell nº2. The rest of the methods have symmetrical coefficients, thus presenting the same results.
+Figure \ref{fig:trust_test_2_b} that only Theil's U coefficient changed since the previous test. It does not represent the trust between cell nº1 and cell nº2, but the trust of cell nº1 \textbf{in} cell nº2. The rest of the methods have symmetrical coefficients, thus presenting the same results.
 
 \paragraph{Experiment nº3} This last experiment showcases the effect of changing term $a$. When the cells share an increasing amount of activated time, assuming their trust should increase is trivial. However, reasoning that having a disproportionally ample activated time means there is more uncertainty on their current state, then trust should lower. The expectation is that, as $a$ increases, there is also an increase in trust until a specific peak. It should decrease after reaching a global maximum and have an asymptote at zero.
 
