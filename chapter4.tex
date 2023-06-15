@@ -423,7 +423,6 @@ Though informative, the meaning of the unconformities and their severities is re
 
 \subsection{Application Plugins} \label{subsec:plugins}
 
-% ? Isto devia criar um capítulo inteiro só por sí não?
 
 The broad capabilities of the CellTAN make it less insightful when extracting specific information from the cells. Although its generalized design extends usability to different types of systems, it still requires additional processes to assess particular situations beyond what the state provides. During the literature review process, the specificity of algorithms is noticeable, and most techniques do not attempt to diverge from the PV application when it comes to fault detection and classification. This standard approach yields excellent results and could boost CellTAN's capabilities.
 
@@ -477,8 +476,8 @@ The publish-subscribe model of MQTT facilitates decoupled communication between 
 
 \subsection{Cell configuration and deployment} \label{subsec:cellconfig}
 
-Configuring cells can be done through configuration files (one per cell). They should contain the cell variables' definitions, database credentials, hub credentials, and all other parameters. Because of its simplicity, we chose the YAML serialization specification \cite{yaml} to parse these configurations. A walkthrough of the cell configuration and expected file structure is present in appendix \ref{ap1:config}
+Configuring cells can be done through configuration files (one per cell). They should contain the cell variables' definitions, database credentials, hub credentials, and all other parameters. Because of its simplicity, we chose the YAML serialization specification \cite{yaml} to parse these configurations. A walkthrough of the cell configuration and expected file structure is present in appendix \ref{ap1:config}, with example configurations for cells used in chapter \ref{chap:chap5} present in appendix \ref{ap2:cellconfig}
 
-% TODO thresholds
+% TODO thresholds nos anexos
 
 % meter anexo para explicação das configs com screenshot de configuração exemplo
