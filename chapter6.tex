@@ -1,27 +1,39 @@
 \chapter{Conclusion and Future Work} \label{chap:concl}
 
-\dots
-
-% 1. resumo do que foi feito
+In this work, we emphasized the need to develop practical fault detection algorithms for the increasing amount of PV assets installed worldwide. During the literature review, we noticed that numerous proposals do not fit the context of industrial-scale PV. Most methodologies rely on classical centralized algorithms, often requiring data that PV operators do not sample in larger systems.
+With the premise of needing a practical approach, we develop the CellTAN. Inspired by graph theory and some creative approaches in the literature, its methodology presented a novel approach to anomaly detection in large interconnected systems. Considering real implementation challenges, it tackles issues such as data privacy, distributed computing, and high availability needs.
+During the simulation phase of this tool, we validated its core behavior when used with similar components (two solar inverters) during normal and anomalous scenarios. Using data from a real PV farm, the simulation of four months of operation and a statistical history of about two years allowed us to arrive at further conclusions. Although there were shortcomings in terms of the inverter-satellite connection and variables' trust, we proved that our cell trust mechanism successfully identified inverter anomalies in all the pinpointed cases. Ultimately, we achieved a tool already capable of deploying for currently installed PV assets, with valuable features and insights for the farm operators.
 
 \section{Addressing the research questions}
-\dots
-% 2. respostas às questões de investigação
+
+
+Throughout this work, we found the answers to the initially proposed research questions. Regarding faults in PV systems, the literature showed that failure rates are usually around 3\% on the utility scale, with our case study showing 7.5\% of unwanted occurrences (not necessarily faults). We identified that panel degradation was the primary reason for these faults. Aiming to identify these occurrences, we found an entire ecosystem of algorithms using varied techniques, from statistics to signal processing, machine learning, and deep learning. Most of the studied proposals are in the machine learning category, probably due to this field's popularity and successes. Most algorithms rely on centralized data of PV panels, strings, MPPTs, and inverters with synchronized samples, and their computational cost is varied. Deep learning and some machine learning models are the most computationally intense due to the training phase, while statistical and signal processing methods are relatively lighter. Nonetheless, there is the associated cost of agglomerating and treating all the necessary data for all the centralized approaches.
+Assessing the effectiveness of different approaches was challenging because some used high-frequency, simulated, or uncontaminated datasets. In contrast, others used low-frequency, real, or contaminated (noisy) datasets. Given the broadness of the data used for testing these methodologies, we could not be sure about all the observed metrics. However, we estimate that the most realistic reviewed works achieve 70-90\% classification accuracy under online implementation.
+In reality, many methods fall short regarding their practical implementation for large PV portfolios ranging from MW to GW. This is mainly due to their centralized structure and the need for extensive data analysis and ETL (extract, transform, load) on vast amounts of data. Additionally, some methods rely on unrealistic model inputs or labeled data that commercial systems and PV operators cannot provide. Consequently, these methods require adjustments and may not perform as well as the literature suggests.
 
 \section{Objectives reached}
-% 3. satisfação dos objectivos
 
-The CellTAN ended up becoming a framework for operationalizing fault detection and classification algorithms in more than one type of system. 
-
-\dots
+In this work, we have successfully achieved the objectives set out to accomplish. Firstly, we identified and extensively studied existing fault detection tools for photovoltaic power systems. We conducted a thorough literature review to understand the latest methods and tools used in this field. This study helped build a strong foundation for further research.
+Building upon the existing knowledge, we developed a novel approach for fault detection in photovoltaic systems. Integrating innovative techniques, we crafted a unique methodology not exclusively tailored for PV systems. This novel approach introduced fresh perspectives and potential advancements in anomaly detection.
+To evaluate the practical applicability and effectiveness of the developed methodology, we conducted experiments using real-world case study photovoltaic assets. We collected data and analyzed the results by applying the new tool to these assets. This process gave valuable insights into the tool's performance, strengths, and limitations. The validation of the developed methodology was a critical component of this research. However, we did not compare the obtained results with literature benchmarks due to the core differences and variations of the validation scenarios. Nonetheless, we showed the methodology's effectiveness in detecting anomalies within photovoltaic systems, bolstering its credibility and contributing to its acceptance in the field.
+In conclusion, we met the objectives by identifying and studying existing fault detection tools, developing a novel approach, applying and testing the tool in real case study PV assets, and validating the methodology through rigorous analysis. This research has expanded the existing knowledge base and contributed to the advancement of fault detection techniques in photovoltaic power systems.
 
 \section{Potential applications}
-\dots
 
 % 4. potenciais aplicações e utilidade do que foi desenvolvido (qual o valor, vantagens, quem pode usar)
 
+We established that the core algorithms and attributes of the cells do not bind any specifics about the system they represent. Because of this, the CellTAN became a framework for operationalizing anomaly detection in potentially more than one type of system. Although its core procedures do not include classification algorithms, we can add this or other functionalities through plugins. This feature allows incrementing cell functionality without interfering with predefined processes, making it better suited for specific applications.
+
+This tool is most effective when used on systems with multiple interconnected components that produce continuous signals. In the case of photovoltaics, inverters of the same farm share a common energy source (the sun) and roughly the same climate conditions, making their production measurements highly related. Similarly, wind farms where turbines are affected by the same wind patterns could also benefit from this tool, e.g., by having turbine and wind sensor cells. Furthermore, we could apply it to an electrical grid using a network of transformers, busbars, and line cells.
+
+After reviewing the previous examples, it is clear that this tool has a wide range of applications and can be tested in multiple ways, demonstrating its versatility. The benefits of using this tool also make it a desirable choice for industries that face challenges with traditional algorithms due to data volume, processing capacity, or communication limitations. Combining the ability to detect anomalies with a classical algorithm would also be mutually beneficial. If a PV system has a computationally intensive algorithm that cannot run for each new data entry, a lighter detection system can activate it only when necessary (upon anomaly detection), making it a feasible option that would be impossible otherwise.
+
 \section{Future work}
 
-%   - future work no fim
+The connection between different components (inverter and satellite) could have been more effective than what we achieved between two inverters. This issue made us rethink how the cells perform trust measurement, and we believe that a future version of CellTAN should consider the neighboring cells' uncertainty/filtering characteristics in this calculation to compensate for the inevitable mismatches in the total activation time. Besides, the variables' trust measurement also has room for improvement, and trying other statistical approaches could improve its value.
 
-\dots
+Unfortunately, cell plugins were bound to intrinsic variables due to the restrictions in inter-cell communication. Therefore, it would be beneficial if CellTAN allowed "sub-networks" where cells of the same ownership freely communicate. Eliminating this barrier would increase the plugins' usefulness, permitting more complex algorithms that directly compare inputs of neighboring elements.
+
+Another proposal for increasing this tool's robustness is the MQTT communication protocol for cell-to-cell and cell-to-hub communication. Regarding the hub component, it has the potential to become a web application in which CellTAN users manage cells, view the network, get cell connection proposals, and have the possibility of linking cells through this system. Besides, it could also agglomerate different plugins ready to apply for cells of diverse types, such as the PV plugin, a Wind Farm plugin, and others. This type of webpage would increase this tool's value significatively, providing numerous possibilities for the stakeholders.
+
+% TODO falta qualquer coisinha?

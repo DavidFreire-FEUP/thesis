@@ -106,4 +106,35 @@ H(x|y) = -\sum_{i=1}^{n} \sum_{j=1}^{m} p(x_i, y_j) \log\left(\frac{p(x_i, y_j)}
 
 \section{Cell configuration} \label{ap1:config}
  
-% TODO overview da configuração da célula e ficheiro de configuração
+The idea for configuring cells before deployment is to have a text file with every necessary parameter. As mentioned in \ref{subsec:cellconfig}, we chose the YAML format for laying out our cell information, coupled with a Pydantic \cite{pydantic} model that mirrors the file entries with attributes of the correct types in Python.
+
+The following fields define input variables:
+\begin{itemize}
+    \item id: Variable identifier, e.g. "dc\_voltage".
+    \item uncertainty: The percentage uncertainty of the variable relative to its range (maximum value - minimum value).
+    \item minimum: The minimum possible value for the variable.
+    \item maximum: The maximum possible value for the variable.
+    \item time\_decay: The time it takes for the variable to reach full uncertainty.
+\end{itemize}
+
+The cell has the following thresholds:
+
+\begin{itemize}
+	\item min\_knowledge\_for\_raising\_new\_experience: Minimum time window that the knowledge base needs to have for the cell to flag new experiences.
+
+    \item min\_trust\_for\_filtering: Minimum value required of the instantaneous trust measurement with a neighbor for the cell to use its activations for output computation.
+	
+    \item min\_trust\_for\_uncomformity: The trust threshold used to detect extrinsic unconformity.
+	
+    \item goal\_neighbors\_frac\_for\_activations: Goal fraction of neighbors with recent activations, used for retrying the process of activation fetching.
+	
+    \item rolling\_timestamp\_offset: The time offset between the present and time associated with the inputs' values. Allows using cells with forecast values.
+	
+    \item trust\_comparison\_bins: List of time windows for which the cell compares historical trust measures for neighbors' and variables' trust. 
+	
+    \item max\_knowledge\_time\_diff: Maximum time difference between two pieces of knowledge to consider or discard such. For example, if neighbors' activations were calculated longer ago than this value, the cell does not consider them.
+	
+    \item min\_loop\_sleep: Minimum time the cell must remain in stand-by mode between each cycle. It avoids computational overload if overwhelmed with high-frequency inputs update.
+	
+    \item max\_loop\_sleep: Maximum time the cell may remain in standby mode. This ensures that if no inputs arrive, it will periodically update its attributes to reflect the increased uncertainty of its inputs (due to the time decay process).
+\end{itemize}
