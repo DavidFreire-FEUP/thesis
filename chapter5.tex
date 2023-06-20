@@ -7,8 +7,8 @@
 The experiments validating CellTAN's behavior incorporate two neighboring grid-tied string inverters from the same PV farm with common satellite data. Their only known characteristics are:
 
 \begin{itemize}
-    \item Inverter one: 12.5kW nominal power; 14.4kW peak power; fixed tilt and azimuth; installed January 1st, 2013.
-    \item Inverter two: 15kW nominal power; 15.84kW peak power; fixed tilt and azimuth; installed January 1st, 2013.
+    \item Inverter one: 12.5kW nominal power; 14.4kW peak power; fixed tilt and azimuth; installed January 7th, 2013.
+    \item Inverter two: 15kW nominal power; 15.84kW peak power; fixed tilt and azimuth; installed January 7th, 2013.
 \end{itemize}
 
 \begin{table}[h!]
@@ -70,7 +70,7 @@ Figure \ref{fig:eda_power_test} represents the power profile on the portion of d
     \label{fig:eda_power_kb_pair}
 \end{figure}
 
-Figure \ref{fig:eda_power_kb_pair} lets us better understand the relationship between the two inverters. As expected, since they are neighboring, this data presents a strong trend line, loading to a high Pearson coefficient: 0.97753. However, the noise from outliers is noticeable in the scatter. We define Zone A as the zone where inverter two underperforms compared to one and Zone B as the opposite. The black arrows \textcircled{\raisebox{-0.9pt}{1}} in the graph display secondary trend lines, indicating scenarios of inverter one performing consistently less than expected. Another arrow \textcircled{\raisebox{-0.9pt}{2}} also points out a cloud in Zone A (right under the trend line) of the opposite scenario. Furthermore, the red rectangles \textcircled{\raisebox{-0.9pt}{3}}\textcircled{\raisebox{-0.9pt}{4}} highlight instances where one inverter was functioning while the other was not. CellTAN must flag these situations, so we should remove them from the knowledge base. The KDE visualization confirms that most samples lie close to the primary trend.
+Figure \ref{fig:eda_power_kb_pair} lets us better understand the relationship between the two inverters. As expected, since they are neighboring, this data presents a strong trend line, leading to a high Pearson coefficient: 0.97753. However, the noise from outliers is noticeable in the scatter. We define Zone A as the zone where inverter two underperforms compared to one and Zone B as the opposite. The black arrows \textcircled{\raisebox{-0.9pt}{1}} in the graph display secondary trend lines, indicating scenarios of inverter one performing consistently less than expected. Another arrow \textcircled{\raisebox{-0.9pt}{2}} also points out a cloud in Zone A (right under the trend line) of the opposite scenario. Furthermore, the red rectangles \textcircled{\raisebox{-0.9pt}{3}}\textcircled{\raisebox{-0.9pt}{4}} highlight instances where one inverter was functioning while the other was not. CellTAN must flag these situations, so we should remove them from the knowledge base. The KDE visualization confirms that most samples lie close to the primary trend.
 
 \begin{figure}[h!]
     \centering
@@ -358,9 +358,9 @@ Reviewing the time series data of inverter AC power and trust between cells made
 Figure \ref{fig:interesting_days_freq} showcases the frequency of each trust-based category. We can conclude that mild mismatches were very common, with a significantly larger frequency than the days of correlated production. The "Other" label refers to situations with slight power mismatches or voltage variations that change the trust measure enough not to be characterized as a highly correlated or power mismatch day.
 The percentage of days where inverter one is not operating occurs when it either turns on after the beginning of sun hours (which happens most often) or remains off for the entire day (which only happened on January 8th, 2023).
 
-There are nineteen days where the inverters demonstrate production profiles highly correlated throughout their daily cycle. Curiously, this only happens on cloudy days, making us question if their exposure to direct irradiance slightly varies due to different shading obstructions. We can see no outliers when checking out the I-V scatter for these days, which helps confirm the high trust value and no underperformance detections from the plugin.
+During nineteen days, the inverters demonstrate highly correlated production profiles throughout their daily cycle. Curiously, this only happens on cloudy days, making us question if their exposure to direct irradiance slightly varies due to different shading obstructions. We can see no outliers when checking out the I-V scatter for these days, which helps confirm the high trust value and no underperformance detections from the plugin.
 
-On the eighty four days we found significant power mismatches, the most recurring pattern is sunrise-sunset and midday trust value dropping (between the two inverter cells). Analyzing the I-V variables shows that some samples lie in the underperformance region during these periods. The PV plugin detects most underperformance cases on these days, mainly in the morning and evening, as seen in figure \ref{fig:plugin_detections}. Inverter two dropping performance during peak sun hours could happen due to partial shading, inverter losses, or even string faults. It is helpful that the tool can identify these nuanced situations because it can assist technical teams in diagnosing the issue and preventing it from worsening if it stems from a fault.
+On the eighty-four days, we found significant power mismatches. The most recurring pattern is sunrise-sunset and midday trust values dropping (between the two inverter cells). Analyzing the I-V variables shows that some samples lie in the underperformance region during these periods. The PV plugin detects most underperformance cases for these days, mainly in the morning and evening, as seen in figure \ref{fig:plugin_detections}. Inverter two dropping performance during peak sun hours could happen due to partial shading, inverter losses, or even string faults. It is helpful that the tool can identify these nuanced situations because it can assist technical teams in diagnosing the issue and preventing it from worsening if it stems from a fault.
 
 On nine days, we found that inverter one did not produce energy during some sun hours (eight days) or was completely off (one day). There could be different reasons for this problem, but we would need labeled data to determine if it was equipment faults or planned maintenance shutdowns. This lack of identification is why this work does not present any classification steps besides the broad underperformance detection.
 
@@ -371,7 +371,7 @@ On nine days, we found that inverter one did not produce energy during some sun 
     \label{fig:interesting_days_freq}
 \end{figure}
 
-The cell trust measurement's high variability is noticeable in figure \ref{fig:interesting_days}. When interpreting this value as a continuous signal, this characteristic supports the incorporation of moving average analysis for deciding anomaly occurrence. For example, if we configure the inverter cells to use a time bin as small as 10 minutes and a threshold of 0.2, the cell would flag anomalies for all the mismatches shown in \ref{fig:interesting_days} (middle). However, if we raise the window to a couple of hours, only the scenarios of inverter one inoperational would be identified. 
+The cell trust measurement's high variability is noticeable in figure \ref{fig:interesting_days}. When interpreting this value as a continuous signal, this characteristic supports the incorporation of moving average analysis for deciding anomaly occurrence. For example, if we configure the inverter cells to use a time bin as small as 10 minutes and a threshold of 0.2, the cell would flag anomalies for all the mismatches shown in \ref{fig:interesting_days} (middle). However, if we raise the window to a couple of hours, it only identifies the scenarios of inverter one inoperational.
 We can also verify the constant value displayed during nighttime. It is low because the cells find many night instances on their knowledge base when receiving related inputs. Increasing the total activation time decreases the trust measure (see \ref{subsec:trust}).
 
 %todo mostrar moving averages?
@@ -391,7 +391,7 @@ Following this interest, we simulate the same test data with the same CellTAN co
     \label{fig:dirty_scatter}
 \end{figure}
 
-To our surprise, the trust indicator between the two inverter cells barely changed its behavior, confirmed by the scatter of the two in figure \ref{fig:dirty_scatter}. Still, there were some deviations, with the new trust measure being lower than the previous (on average) and some samples straying from the main trend line (contained in the black ellipse). We could identify these outlier instances alongside a very peculiar behavior by filtering the occurrences where the deviation was more than 0.2. What had happened was that both inverters shut off during sun hours on the days when these deviations occurred. The trust measurement with the clean knowledge base did not detect this anomaly, but it was very noticeable with the contaminated version.
+To our surprise, the trust indicator between the two inverter cells barely changed its behavior, confirmed by the scatter of the two in figure \ref{fig:dirty_scatter}. Still, there were some deviations, with the new trust measure being lower than the previous (on average) and some samples straying from the main trend line (contained in the black ellipse). We could identify these outlier instances as peculiar behavior by filtering the occurrences where the deviation was more than 0.2. What had happened was that both inverters shut off during sun hours on the days when these deviations occurred. The trust measurement with the clean knowledge base did not detect this anomaly, but it was very noticeable with the contaminated version.
 
 \begin{figure}[h!]
     \centering
@@ -399,6 +399,13 @@ To our surprise, the trust indicator between the two inverter cells barely chang
     \caption{Days when the difference between trust of inverter cells with and without knowledge base is greater than 0.2.}
     \label{fig:dirty_interesting}
 \end{figure}
+
+When filtering the clean knowledge base with zero values, the cells only find samples corresponding to nighttime since we also removed anomalies of both inverters not producing during the day. However, the original knowledge base features this scenario, although rare (both inverters inoperational occurred in 19 days), and cases of one of the inverters being off while the other is producing. Therefore, the cells filter all these niche situations alongside nighttime values, and given the discrepancy of activations corresponding to individual faults, the trust measurement is lower. This behavior shows the advantage of using untreated data in the CellTAN as long as any one type of anomaly is not particularly recurrent.
+
+\subsubsection{Final notes}
+
+
+
 
 % \subsection{Scaling Up}
 

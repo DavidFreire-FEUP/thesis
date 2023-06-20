@@ -186,7 +186,7 @@ Let us assume that, at a given instant, these are the cell's new inputs:
     \end{cases}
 \end{equation}
 
-The membership functions $\mu$ are generated considering that $x$ and $y$ are characterized by uniform and symmetrical uncertainty and that the received samples of $x(0)$ and $y(0)$ represent their median (classical set representation).
+The membership functions $\mu$ come from considering that $x$ and $y$ possess uniform and symmetrical uncertainty, and that the received samples of $x(0)$ and $y(0)$ represent their median (classical set representation).
 
 \begin{figure}[h!]
     \centering
@@ -212,13 +212,11 @@ These results confirm that we achieve outputs with less uncertainty only dependi
 
 Extending similarity extraction to multiple cells is a relatively trivial process. Suppose a cell has access to another's activations at the same rolling timestamp and for a historical window that intersects its knowledge base. In that case, it can use that information to refine the intrinsic temporal similarity extraction result. Using sets, this can occur with a simple interval intersection of bounds. Although simple, this process has some tricky requirements, such as not allowing a time difference between the computation of membership values of different cells to avoid joining incoherent information and being able to intersect the activations of cells with different data acquisition periods.
 
-% TODO figura sobre algoritmo de compressão
+\paragraph{Compression}
 
 When analyzing the resulting activations of the previous example, we noticed that using the timestamp of each activated row could be simultaneously more efficient and avoid synchronization issues. Firstly, representing activations by an interval of timestamps instead of the individual rows allows compressing consecutive samples into a single interval.
 This new representation may or may not improve efficiency since a knowledge base that filters into alternating activations doubles the memory requirement for this representation. However, an interval representation is suitable if inputs are uncertain and result in a large filter.
 
-
-% Capacidade de estimação de estado intrínsica + extrínsica
 
 
 \subsection{Trust}  \label{subsec:trust}
@@ -398,13 +396,13 @@ We utilize equation \ref{eq:trustvars} to calculate the trust indicator for vari
 
 Mutual similarity extraction and trust calculation cannot occur in isolation. Therefore, connections are the essence of forming the CellTAN. These links can also have indicators for describing the cells' relationships, like the trust index, which is crucial for anomaly detection.
 
-Each cell has a unique identifier, generated upon creation and independent of the name attributed by the owner. This ID serves to register cells and better manage the network. Since interconnections require an agent to keep track of these IDs and correctly redirect traffic, we introduce the \textbf{Hub} component. This central element provides global network visibility and makes connections easier to form and maintain. For a cell, a connection is no more than the identifier of the neighbor, which the hub can directly associate with a communication link.
+Each cell has a unique identifier, generated upon creation and independent of the name attributed by the owner. This ID serves to register cells and better manage the network. Since interconnections require an agent to keep track of these IDs and correctly redirect traffic, we introduce the \textbf{Hub} component. This central element provides global network visibility and makes connections easier to form and maintain. For a cell, a connection is simply the neighbors' identifier, which the hub can directly associate with a communication link.
 
-On cell deployment, the system expects the owner and the CellTAN manager to manually link cells together by assigning each connection. However, the plan is to develop a mechanism that proposes new connections based on the neighbor's neighbors through the hub. This mechanism could function based on the strength of the relationship between cells and neighbors in common, recommending a direct link if both "trust" them similarly. As the last phrase hints, an indicator called "trust" is the criterion for evaluating these links. The following subsection defines the conception of this metric.
+On cell deployment, the system expects the owner and the CellTAN manager to manually link cells together by assigning each connection. However, future work includes developing a mechanism that proposes new connections through the hub based on the neighbor's neighbors. This mechanism could function based on the strength of the relationship between cells and neighbors in common, recommending a direct link if both trust them similarly.
 
 \subsection{Unconformities and State} \label{sec:states}
 
-We introduce a state system to expose the resulting unconformities found during cells' processes. These unconformities can categorized into intrinsic and extrinsic, based on the historical check of trust in the variables and neighbors, respectively, and during output computation.
+We introduce a state system to expose the resulting unconformities found during cells' processes. We can categorize these unconformities into intrinsic and extrinsic, based on the historical check of trust in the variables and neighbors, respectively, and during output computation.
 
 Cells rely on aggregated trust values to assess the integrity and coherence of information. During specific time windows, these systems employ a verification process to identify unconformities in the aggregated trust values. Unconformities are flagged when the aggregated trust values fall below a certain threshold, which the owner predetermines. To establish a framework for this assessment, the owner specifies time bins upon cell creation, which define intervals evaluated from the current rolling timestamp to the past. Consequently, when inconsistencies are detected, detailed information is recorded to identify the elements that exhibit incoherence and the corresponding time bin in which the discrepancies occur. This approach allows for the characterization and analysis of "Intrinsic/Extrinsic time bin unconformities," thereby enabling the system to escalate the severity of unconformities from none to partial or total if some or all elements within a time bin exhibit incoherence.
 
@@ -417,7 +415,7 @@ Cells rely on aggregated trust values to assess the integrity and coherence of i
 
 In addition to the assessment methodology mentioned above, intrinsic filtering and the intersection of neighbor's activations play a crucial role in determining the overall unconformity state of the cell. Specifically, suppose intrinsic filtering yields a null domain. In that case, it indicates that the cell has encountered total intrinsic unconformity, suggesting a fundamental breakdown or lack of coherence with its knowledge base. Similarly, suppose the intersection of the neighbor's activations yields a null domain. In that case, it signifies total extrinsic unconformity, implying that the cell lacks trust in its external environment. These higher states of unconformity, whether intrinsic or extrinsic, serve as valuable indicators called the "Unconformity severity info." Considering this additional information, the system can escalate the severity level set by the time bin unconformities, providing a more comprehensive understanding of the cell's overall integrity and the extent of the identified unconformities.
 
-Figure \ref{fig:severity} sums up the algorithm of choosing unconformity severity. The severity level is associated with each type of unconformity since incoherence between neighbors and variables is not necessarily related. The first transition happens during output computation and the time bin unconformities is found during a historical trust assessment (processs seen in figure \ref{fig:cellprocesses}).
+Figure \ref{fig:severity} sums up the algorithm of choosing unconformity severity. The severity level is associated with each type of unconformity since incoherence between neighbors and variables is not necessarily related. The first transition happens during output computation, and it defines time bin unconformities during the historical trust assessment (process seen in figure \ref{fig:cellprocesses}).
 
 Though informative, the meaning of the unconformities and their severities is relatively broad, causing the cell to overlook specific situations related to its physical behavior. The following section addresses this, suggesting an application-oriented approach to extend observability.
 
@@ -455,11 +453,8 @@ Materializing both the cell and the hub happened by coding Python modules. It wa
     \item Big community support, with many resources publicly available online (e.g., documentation, tutorials, etc.). 
 \end{itemize}
 
-% imagem com as tecnologias em anexos talvez
 
 Docker containers \cite{docker} are the infrastructure choice for deploying these modules (Cells and Hub). They allow running software as containerized applications, with all the necessary dependencies installed in an isolated environment. It acts as a separate system built for running the application instead of relying on the host's OS (Operating System) and running bare-metal. This execution strategy adds an isolation layer between the program and the host machine, increasing safety and making the "production" environment more predictable and stable. An overview of the technology stack utilized (and proposed) for the software products created in this work is pictured in appendix \ref{ap1:techstack}.
-
-% dockerfile em anexos?
 
 
 \subsection{Communication Protocol}
