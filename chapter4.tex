@@ -1,6 +1,10 @@
 \chapter{CellTAN: Cellular Time Activation Networks} \label{chap:chap4}
 
-Distributed information systems characterized by time series data present various challenges, primarily due to their complex and dynamic nature. The sheer volume of data that must be processed and analyzed in real time is a significant challenge, leading to concerns over storage, computation, and scalability. Moreover, data quality issues such as missing or incomplete data and data heterogeneity arising from sourcing data from disparate sources with varying consistency and structure further exacerbate these challenges. Another critical challenge of these systems is handling the temporal aspects of time series data, requiring specialized pre-processing, feature extraction, and modeling techniques. The distributed nature of these systems further complexifies matters, with issues encompassing data synchronization and accuracy being a common concern. Furthermore, their implementation in real-world applications requires robust mechanisms for data security and privacy, which adds a layer of complexity to the design and implementation of these systems.
+Distributed information systems characterized by time series data present various challenges, primarily due to their complex and dynamic nature. The sheer volume of data that must be processed and analyzed in real-time is a significant challenge, leading to concerns over storage, computation, and scalability. Moreover, data quality issues such as missing or incomplete data and data heterogeneity arising from sourcing data from disparate sources with varying consistency and structure further exacerbate these challenges. Another critical challenge of these systems is handling the temporal aspects of time series data, requiring specialized pre-processing, feature extraction, and modeling techniques. The distributed nature of these systems is also problematic regarding data synchronization. Furthermore, their implementation in real-world applications requires robust data security and privacy mechanisms, which adds complexity to the design and implementation.
+
+This chapter proposes a novel tool entitled CellTAN (Cellular Time Activation Network) that undertakes those challenges. CellTAN represents sparse yet interconnected components that function independently, cooperatively, and asynchronously. Inspired by other effective mechanisms like GNNs, CXNs, and Weighted Cross-Connection Networks (WCCNs), CellTAN uses a graph-like structure to represent a network of components with nodes and connections. Following the introductory chapters, its primary purpose is to detect abnormal scenarios on PV systems. However, its generalized formulation introduces other valuable features which come naturally from fulfilling this goal. Such are state estimation, forecasting, and capturing the value in data from different PV asset owners without violating their privacy. For briefness' sake, we will unfold details about its benefits during the rest of this chapter.
+
+Instead of tackling fault detection and classification in a classical centralized manner, which is already extensively showcased throughout the literature, this tool approaches this problem with a paradigm change: a distributed and asynchronous data coherence system. By having a virtual representation closely related to the physical form of sparse systems, we can leverage the relationships between components to assess their correct (or incorrect) operation. While initially designed for photovoltaic (PV) systems, the concepts of cells, connections, neighbors, time series, and uncertainty are universal and applicable to other fields such as biology, physics, and more. Thus, the potential for generic applicability sparks the interest to not bake specifics of PV systems directly into this tool, allowing its usage for other subjects. Figure \ref{fig:celltanintro} represents a minimal scenario for a network: only two cells. It showcases some terms specific to this tool that might be difficult to grasp initially, such as trust, events, and activations. Consequently, detailed explanations throughout this chapter serve to clarify them.
 
 \begin{figure}[h!]
     \centering
@@ -9,35 +13,9 @@ Distributed information systems characterized by time series data present variou
     \label{fig:celltanintro}
 \end{figure}
 
-This chapter proposes a novel tool entitled CellTAN (Cellular Time Activation Network) that undertakes those challenges. CellTAN represents sparse yet interconnected components that function independently, cooperatively, and asynchronously. Inspired by other effective mechanisms like GNNs, CXNs, and Weighted Cross-Connection Networks (WCCNs), CellTAN uses a graph-like structure to represent a network of components with nodes and connections. Following the introductory chapters, its primary purpose is to detect abnormal scenarios on PV systems. However, its generalized formulation introduces other valuable features which come naturally from fulfilling this goal. Such are state estimation, forecasting, and capturing the value in data from different PV asset owners without violating their privacy. For briefness' sake, we will unfold details about its benefits during the rest of this chapter.
-
-Instead of tackling fault detection and classification in a classical centralized manner, which is already extensively showcased throughout the literature, this tool approaches this problem with a paradigm change: a distributed and asynchronous data coherence system. By having a virtual representation closely related to the physical form of sparse systems, we can leverage the relationships between components to assess their correct (or incorrect) operation. While initially designed for photovoltaic (PV) systems, the concepts of cells, connections, neighbors, time series, and uncertainty are universal and applicable to other fields such as biology, physics, and more. Thus, the potential for generic applicability sparks the interest to not bake specifics of PV systems directly into this tool, allowing its usage for other subjects. Figure \ref{fig:celltanintro} represents a minimal scenario for a network: only two cells. It showcases some terms specific to this tool that might be difficult to grasp initially, such as trust, events, and activations. Consequently, detailed explanations throughout this chapter serve to clarify them.
-
-Vast and scattered information across multiple agents is a common scenario faced by the industry of AI for energy systems, which cannot be aggregated due to privacy and confidentiality reasons. Nevertheless, its conjunction could have a lot of added value, given the similarity of certain assets: PV plants (as well as wind farms) from different owners in neighboring geographical regions. This information-sharing potential for AI algorithms motivates the development of a mechanism that communicates information between differently owned assets without any of the compromises above. However, as stated before, data acquisition in PV scenarios is scarcely synchronous and might only occur in equal time resolutions for some of the different components. The CellTAN addresses these issues with an instrument called \textbf{Activations}. It proposes a new way of communication that decouples from the needs of units, sampling rate, and synchronization, avoiding resampling, normalization, or even obfuscation (to protect privacy), by only transmitting time values. This mechanism is a core feature of the tool since it will be the means that will allow connecting different stakeholders' data, and section \ref{sec:thecell} develops this matter thoroughly. Likewise, succeeding sections formulate the working of the cell and its interactions within the network. Since it is the core component, understanding its behavior is crucial for a complete understanding of the tool.
-
-% \section{Glossary} \label{sec:glossary}
-
-
-% \begin{itemize}
-%     \item \textbf{Knowledge base}: Refers to registered historical knowledge (samples) of time series variables.
-
-%     \item \textbf{Inputs}: Uniform fuzzy numbers (not necessarily, but it is the current choice) that represent one sample of the group of time series variables that define the state of a cell.
-
-%     \item \textbf{Outputs}: Similar to inputs, but obtained through some computations.
-
-%     \item \textbf{Time decay}: A process associated with increased uncertainty of variables over time.
-
-%     \item \textbf{Activations}: Timestamps of past occurrences on a knowledge base with a non-zero membership value against a set of recent inputs.
-
-%     \item \textbf{Trust}: A decimal number that represents how coherent two activations are with each other.
-
-%     \item \textbf{Hub}: The central component of the cell network, which facilitates its visualization, management, and expansion. It acts as the proxy agent between the cell's communication.
-
-% \end{itemize}
+Vast and scattered information across multiple agents is a common scenario faced by the industry of AI for energy systems, which cannot be aggregated due to privacy and confidentiality reasons. Nevertheless, joining such data could have a lot of added value, given the similarity of certain assets, e.g., PV plants (and wind farms) from different owners in neighboring geographical regions. This information-sharing potential for AI algorithms motivates the development of a mechanism that communicates information between differently owned assets without any of the compromises above. However, as stated before, data acquisition in PV scenarios is scarcely synchronous and might only occur in equal time resolutions for some of the different components. The CellTAN addresses these issues with an instrument called \textbf{Activations}. It proposes a new way of communication that decouples from the needs of units, sampling rate, and synchronization, avoiding resampling, normalization, or even obfuscation (to protect privacy), by only transmitting time values. This mechanism is a core feature of the tool since it will be the means that will allow connecting different stakeholders' data, and section \ref{sec:thecell} develops this matter thoroughly. Likewise, succeeding sections formulate the working of the cell and its interactions within the network. Since it is the core component, understanding its behavior is crucial for a complete understanding of the tool.
 
 \section{The Cell} \label{sec:thecell}
-
-% TODO falta mencionar que o dono da célula é que é responsável por estabelecer conexões
 
 \subsection{Principles}
 
@@ -47,25 +25,25 @@ A cell is an independent entity composed of \textbf{data} and \textbf{processes}
 
 \paragraph*{Selfish Computations} The cell is selfish in that it will not perform any computations based on the request of others. This aspect creates a fundamental layer of protection against overloading the infrastructure in which it is deployed, which also increases availability.
 
-\paragraph*{Data accessibility} Although selfish in computations, the cell shall provide access to select data valuable to the network. However, not all internal data is shared, and public data shall not compromise the cell's privacy (more on this later).
+\paragraph*{Data accessibility} Although selfish in computations, the cell shall provide access to select data valuable to the network. However, internal data isn't shared by default, and public data shall not compromise the cell's privacy.
 
 \subsection{Processes and Data}
 
-The cell's core is a loop of processes that runs periodically. The cell starts in standby mode \textcircled{\raisebox{-0.9pt}{a}}, which is only left when new information arrives or a predetermined amount of time has passed. This mode ensures no unnecessary computational burden of repeating all processes without new data. Nonetheless, by defining a maximum sleep time, we ensure that the cell's public attributes better represent its current state. Figure \ref{fig:cellprocesses} illustrates all its processes and data in a flowchart that goes over its loop from top to bottom. The symbol on the top right of some attributes indicates which persist in the cell's database, and the circular letter tags (e.g. \textcircled{\raisebox{-0.9pt}{.}}) serve to reference specific steps in the following paragraphs,
+The cell's core is a loop of processes that run periodically. The cell starts in standby mode \textcircled{\raisebox{-0.9pt}{a}}, which is only left when new information arrives or a predetermined amount of time has passed. This mode ensures no unnecessary computational burden of repeating all processes without new data. Nonetheless, by defining a maximum sleep time, we ensure that the cell's public attributes better represent its current state. Figure \ref{fig:cellprocesses} illustrates all its processes and data in a flowchart that goes over its loop from top to bottom. The symbol on the top right of some attributes indicates which persist in the cell's database, and the circular letter tags (e.g. \textcircled{\raisebox{-0.9pt}{.}}) serve to reference specific steps in the following paragraphs.
 
-After receiving new data (inputs \textcircled{\raisebox{-0.9pt}{b}}), the cell enters the computing "activations" phase \textcircled{\raisebox{-0.9pt}{c}}. This procedure relates to temporal similarity extraction, presented in section \ref{subsec:tempsim}. It is associated with searching for similar behavior (of the inputs) in the cell's knowledge base \textcircled{\raisebox{-0.9pt}{z}}, generating "time activations" \textcircled{\raisebox{-0.9pt}{d}}, which are the timestamps of these similar occurrences.
+After receiving new data (inputs \textcircled{\raisebox{-0.9pt}{b}}), the cell enters the computing "activations" phase \textcircled{\raisebox{-0.9pt}{c}}. This procedure relates to temporal similarity extraction, presented in Section \ref{subsec:tempsim}. It is associated with searching for similar behavior (of the inputs) in the cell's knowledge base \textcircled{\raisebox{-0.9pt}{z}}, generating "time activations" \textcircled{\raisebox{-0.9pt}{d}}, which are the timestamps of these similar occurrences.
 
-Consequently, the cell starts fetching neighbors' activations \textcircled{\raisebox{-0.9pt}{e}}: an asynchronous process that uses the hub to communicate with other cells. This process only occurs after checking what neighboring cells have activations not older than an acceptable threshold (configured by the cell owner) and if their knowledge bases intersect with the cell's own. However, if a neighborhood of cells receives new inputs simultaneously, it would result in some trying to continue computations while others still do not have activations. Thus, this process checks for neighbors with updated activations up to three times, with a pause in-between, when the current amount does not reach a predefined threshold.
+Consequently, the cell starts fetching neighbors' activations \textcircled{\raisebox{-0.9pt}{e}}: an asynchronous process that uses the hub to communicate with other cells. This process only occurs after checking what neighboring cells have activations not older than an acceptable threshold (configured by the cell owner) and if their knowledge base coverage intersect with the cell's own. However, if a neighborhood of cells receives new inputs simultaneously, it would result in some trying to continue their process loop while others still do not have activations. Thus, this process checks for neighbors with updated activations up to three times, with a pause in-between, when the current amount does not reach a predefined threshold.
 
-The cell executes a trust computation neighbor-wise \textcircled{\raisebox{-0.9pt}{f}} and variable-wise \textcircled{\raisebox{-0.9pt}{g}} after gathering all neighbor's activations \textcircled{\raisebox{-0.9pt}{h}} and getting new inputs \textcircled{\raisebox{-0.9pt}{a}} (respectively). In practice, this procedure generates a decimal value between zero and one for each input variable and neighbor, which describes how much that variable is coherent with the rest \textcircled{\raisebox{-0.9pt}{i}} and how much a neighbor is coherent with the cell \textcircled{\raisebox{-0.9pt}{j}} (respectively). We nicknamed it "trust" to have a friendlier term used throughout the development and reasoning that unrolls in section \ref{subsec:trust}. This indicator is stored in the owner's database to perform an aggregated analysis related to the "checking historical trust" process \textcircled{\raisebox{-0.9pt}{k}}\textcircled{\raisebox{-0.9pt}{l}}.
+The cell executes a trust computation neighbor \textcircled{\raisebox{-0.9pt}{f}} and variable-wise \textcircled{\raisebox{-0.9pt}{g}} after gathering all neighbor's activations \textcircled{\raisebox{-0.9pt}{h}} and getting new inputs \textcircled{\raisebox{-0.9pt}{a}} (respectively). In practice, this procedure generates a decimal value between zero and one for each input variable and neighbor, which describes how much that variable is coherent with the rest (only using internal information) \textcircled{\raisebox{-0.9pt}{i}} and how much a neighbor is coherent with the cell \textcircled{\raisebox{-0.9pt}{j}} (respectively). We named it "trust" to have a friendlier term used throughout the development and reasoning that unrolls in section \ref{subsec:trust}. This indicator is stored in the owner's database to perform an aggregated analysis related to the "checking historical trust" process \textcircled{\raisebox{-0.9pt}{k}}\textcircled{\raisebox{-0.9pt}{l}}.
 
 The cell reviews past trust data and flags any inconsistencies in trust values during specific periods for variables \textcircled{\raisebox{-0.9pt}{k}}and neighbors \textcircled{\raisebox{-0.9pt}{l}}. If the mean value fall below the owner's threshold, they are flagged and recorded, along with information about the elements and time frames involved \textcircled{\raisebox{-0.9pt}{m}}\textcircled{\raisebox{-0.9pt}{n}}. It raises the severity of the inconsistency accordingly.
 
-Following the activation and trust computations, the cell calculates its output \textcircled{\raisebox{-0.9pt}{o}} \textcircled{\raisebox{-0.9pt}{p}}. It filters its knowledge base \ using intrinsic and neighbor activations and determines the domain of new variables. This process, explained in section \ref{subsec:inout}, also reveals the severity of any unconformity \textcircled{\raisebox{-0.9pt}{o}} that may arise when the activations of variables and neighbors do not intersect. More information can be found in section \ref{sec:states}.
+Following the activation and trust computations, the cell calculates its output \textcircled{\raisebox{-0.9pt}{o}} \textcircled{\raisebox{-0.9pt}{p}}. It filters its knowledge base \ using intrinsic and neighbor activations and determines the domain of new variables. This process, explained in Section \ref{subsec:inout}, also reveals the severity of any unconformity \textcircled{\raisebox{-0.9pt}{o}} that may arise when the activations of variables and neighbors do not intersect. More information can be found in Section \ref{sec:states}.
 
-After completing all internal processes, the cell checks if its internal state has changed since the previous loop and updates it \textcircled{\raisebox{-0.9pt}{r}}. This state's information \textcircled{\raisebox{-0.9pt}{s}} concerns the unconformities that it experienced (\ref{sec:states}).
+After completing all internal processes, the cell checks if its internal state has changed since the previous loop and updates it \textcircled{\raisebox{-0.9pt}{r}}. This state's information \textcircled{\raisebox{-0.9pt}{s}} concerns the unconformities that it experienced (Section \ref{sec:states}).
 
-Additionally, the cell may run application-specific plugins \textcircled{\raisebox{-0.9pt}{t}}. These are external additions that the owner might include for uncovering specific situations \textcircled{\raisebox{-0.9pt}{u}} related to the cell's inputs. Further detailed in section \ref{subsec:plugins}, this mechanism binds system logic to the cell and takes advantage of its known physical properties and behavior.
+Additionally, the cell may run application-specific plugins \textcircled{\raisebox{-0.9pt}{t}}. These are external additions that the owner might include for uncovering specific situations \textcircled{\raisebox{-0.9pt}{u}} related to the cell's inputs. Further detailed in Section \ref{subsec:plugins}, this mechanism binds system logic to the cell and takes advantage of its known physical properties and behavior.
 
 \begin{figure}[h!]
     \centering
@@ -74,7 +52,7 @@ Additionally, the cell may run application-specific plugins \textcircled{\raiseb
     \label{fig:cellprocesses}
 \end{figure}
 
-Regarding the color coding in figure \ref{fig:cellprocesses}, we can see that most of the cell's attributes are private. The network can access its activations, knowledge base coverage, neighbors' trust, and state. Conversely, the cell extracts neighbors' activations from the network and gives its owner exclusive access to inputs, outputs, knowledge base, and others. The relationship between the owner and private cell data is bidirectional since it is also his responsibility to update the inputs (optimally with an autonomous process). The cell's knowledge base may only represent an interface with a private database (thus a bidirectional connection), not the data itself, since the owner might prefer a centralized storage server instead of storing it within the hardware of the cell.
+Regarding the color coding in Figure \ref{fig:cellprocesses}, we can see that most of the cell's attributes are private. The network can access its activations, knowledge base coverage, neighbors' trust, and state. Conversely, the cell extracts neighbors' activations from the network and gives its owner exclusive access to inputs, outputs, knowledge base, and others. The relationship between the owner and private cell data is bidirectional since it is also his responsibility to update the inputs (optimally with an autonomous process). The cell's knowledge base may be an interface with a private database (thus a bidirectional connection), not the data itself, since the owner might prefer a centralized storage server instead of storing it within the cell's hardware, but both options are viable.
 
 \subsection{Inputs and Outputs} \label{subsec:inout}
 
@@ -122,14 +100,14 @@ $$x = 5 \pm 1 \rightarrow [5-1, 5+1] = [4, 6]$$
 To simulate the increase in uncertainty over time, we suggest the following equations (\ref{eq:uncertain_down} and \ref{eq:uncertain_up}), applied to each bound:
 
 \begin{equation} \label{eq:uncertain_down}
-lower = lower - (lower - minimum) \times \frac{age}{decay}
+lower_{i} = lower_{i-1} - (lower_{i-1} - minimum) \times \frac{age}{decay}
 \end{equation}
 
 \begin{equation} \label{eq:uncertain_up}
-upper = upper + (maximum - upper) \times \frac{age}{decay}
+upper_{i} = upper_{i-1} + (maximum - upper_{i-1}) \times \frac{age}{decay}
 \end{equation}
 
-The $age$ variable refers to the time difference between the present time and the instant of data acquisition. For implementation, the time unit considered is the 'second'. The $decay$ is a parametrized constant (same unit as $age$) that defines the time it takes for the set to expand into its limits when starting from the median. It is chosen based on the characteristics of the variable, i.e., knowledge of its uncertainty over time. However, a good starting point is defining close to the data acquisition period so that the set expands entirely until a new value is acquired.
+The $age$ variable refers to the time difference between the present time and the instant of data acquisition. For implementation, the time unit considered is the 'second'. The $decay$ is a parametrized constant (same unit as $age$) that defines the time it takes for the set to expand into its limits when starting from the median. It is chosen based on the characteristics of the variable, i.e., knowledge of its uncertainty over time. However, a good starting point is defining it close to the data acquisition period so that the set expands entirely until a new value is acquired.
 
 \begin{figure}[h!]
     \centering
@@ -138,17 +116,18 @@ The $age$ variable refers to the time difference between the present time and th
     \label{fig:timedecay}
 \end{figure}
 
-Figure \ref{fig:timedecay} represents the expansion of the set throughout a period equal to the decay parameter (ten seconds). When the $x$ variable reaches the age of ten seconds, its set representation transmits complete uncertainty: the bounds become similar to the variable limits ($x_{min}$ and $x_{max}$). We can see that the decreasing difference between the bounds and maximum/minimum values causes attenuation in the decay curve, as it displays a non-linear behavior. This behavior seems appropriate according to the reality of systems: as a variable becomes more uncertain with time, there is less potential for its uncertainty to increase.
+Figure \ref{fig:timedecay} represents the expansion of the set throughout a period equal to the decay parameter (ten seconds). When the $x$ variable reaches the age of ten seconds, its set representation transmits complete uncertainty: the bounds become similar to the variable limits ($minimum$ and $maximum$). We can see that the decreasing difference between the bounds and maximum/minimum values causes attenuation in the decay curve, as it displays a non-linear behavior. This behavior seems appropriate according to the reality of systems: as a variable becomes more uncertain with time, there is less potential for its uncertainty to increase.
 
 
 % \subsection{Temporal similarity extraction} \label{subsec:tempsim}
 \subsection{Computing Activations} \label{subsec:tempsim}
 
-Earlier, we brought up the concept of temporal similarity extraction concerning computing activations without fully explaining it. This procedure involves identifying recurring patterns in a statistical base,i.e., finding past instances where we observe the current state to extract useful information about the system's behavior over time. By identifying historical periods with similar conditions, temporal similarity extraction can help assess the current state or predict future trends. This technique of historical search is not exclusive to this application, with demonstrations of use in other fields and for other purposes.
+Earlier, we brought up the concept of temporal similarity extraction concerning computing activations without fully explaining it. This procedure involves identifying recurring patterns in a statistical base, i.e., finding past instances where we observe the current state to extract useful information about the system's behavior over time. By identifying historical periods with similar conditions, temporal similarity extraction can help assess the current state or predict future trends. This technique of historical search is not exclusive to this application, with demonstrations of use in other fields and for other purposes.
 
 Using sets or probability distributions to filter historical data is one approach to simplify the process of temporal similarity extraction in multivariate time series data while also making it more robust against noisy or incomplete data. This approach assigns membership values to each data point in the time series based on the corresponding set (or distribution) generated from the current cell inputs. We form a group of similar past instances by eliminating samples past a certain threshold. This technique is one of the reasons for deciding to represent the inputs and outputs of the cell in a fuzzy manner.
 
-The proposal for similarity extraction in the cell consists of taking the newly received values (inputs) of the cell's variables (coming from sensors or other data acquisition equipment, calculations, forecasting, etc.), generating a classical set, fuzzy number, or probability distribution from them, and then applying the bounds/membership function or probability density function to the knowledge base (see figure \ref{fig:solo_state_estimation}). If historical samples are associated with membership values, there may be a process for determining outputs by combining data and membership values.
+The proposal for similarity extraction in the cell consists of taking the newly received values (inputs) of the cell's variables (coming from sensors or other data acquisition equipment, calculations, forecasting, etc.), generating a classical set, fuzzy number, or probability distribution from them, and then applying the bounds/membership function or probability density function to the knowledge base (see Figure \ref{fig:solo_state_estimation}). We can determine outputs using historical regions of non-null membership values by considering their distribution. However, we could also obtain crisp values through aggregation (e.g. using weighted average).
+
 
 \begin{figure}[h!]
     \centering
@@ -163,7 +142,7 @@ The initial choice is to use classical sets since filtering history becomes triv
 
 This process also enables simple forecasting. Considering an offset (arbitrary number of rows/time forward) in the activations, the temporal similarity extraction and computation of outputs results in future values. So, cells may compute outputs related to the present or future. Nonetheless, this temporal shift might be difficult to achieve if data samples arrive at randomly spaced intervals of time, thus would only be straightforward for systems with time-consistent data acquisition.
 
-Up next are practical examples of the temporal similarity extraction methodology. We consider that $t=0$ is associated with the present, and $\mu$ represents membership functions.
+Next, we provide practical examples of the temporal similarity extraction methodology. We consider that $t=0$ is associated with the present, and $\mu$ represents membership functions.
 
 \paragraph{Self-similarity}
 
@@ -196,7 +175,7 @@ The membership functions $\mu$ come from considering that $x$ and $y$ possess un
 \end{figure}
 
 
-With the knowledge base represented in figure \ref{fig:solo_state_estimation}, the resulting activations will be 2023-01-01 00:02:00 and 2023-01-01 00:03:00. These are the timestamps of past instances where the cell's variables have values belonging to the set generated from new inputs. Now we can also infer that the actual values of $x$ and $y$ should reside in a set constrained by the filtered historical data ($x(t)$ and $y(t)$). Therefore, the outputs based on self-similarity extraction are:
+With the knowledge base represented in Figure \ref{fig:solo_state_estimation}, the resulting activations will be 2023-01-01 00:02:00 and 2023-01-01 00:03:00. These are the timestamps of past instances where the cell's variables have values belonging to the set generated from new inputs. Now we can also infer that the actual values of $x$ and $y$ should reside in a set constrained by the filtered historical data ($x(t)$ and $y(t)$). Therefore, the outputs based on self-similarity extraction are:
 
 \begin{equation}
     x'(0) \in [0.90, 0.95]
@@ -245,7 +224,7 @@ A 2x2 contingency table represents the intersection of activations of two cells.
     }
 \end{table}
 
-Each element of the matrix represented in Table \ref{tab:cellactivationsintersection} ($a$,$b$,$c$, and $d$) corresponds to a specific combination of activations, such as "Activated-Activated," "Activated-Not Activated," "Not Activated-Activated," and "Not Activated-Not Activated". They represent the frequency or count of observations falling into that specific combination. The main diagonal relates to the cells' agreeableness, while the secondary diagonal is the opposite. For this work, we decided to use the 'second' as the terms' unit, meaning that, for example, $a$ is the total amount of seconds both cells are active.
+Each element of the matrix represented in Table \ref{tab:cellactivationsintersection} ($a$,$b$,$c$, and $d$) corresponds to a specific combination of activations, such as "Activated-Activated," "Activated-Not Activated," "Not Activated-Activated," and "Not Activated-Not Activated". They represent the frequency or count of observations falling into that specific combination. The main diagonal relates to the cells' agreeableness, while the secondary diagonal is the opposite. For this work, we decided to use the second as the terms' unit, meaning that, for example, $a$ is the total amount of seconds both cells are active.
 
 The matrix representation of the activation intersection metrics resembles the statistical results of sampling a population with two binary categories. Therefore, a statistical test could be appropriate to calculate the association between these categories. The following section develops this topic.
 
@@ -262,7 +241,7 @@ Finally, another relevant test is Theil's U . It accounts for the variables' mut
 
 \subsubsection{Proposed trust measurement method for cells}
 
-All the mentioned tests may offer different perspectives on the association between the activations of two cells. However, none are considered adequate for our application, so we propose a new method, defined by \ref{eq:cdmchi}.
+All the mentioned tests may offer different perspectives on the association between the activations of two cells. However, none are considered adequate for our application, so we propose a new method, defined by Equation \ref{eq:cdmchi}.
 
 \begin{equation} \label{eq:cdmchi}
     \chi_a^{2'} = \frac{(p_a - E(p_a))^2}{E(p_a)}
@@ -309,7 +288,7 @@ $$
 \FloatBarrier
 
 
-In figure \ref{fig:trust_test_1_a}, we can observe that all measurements increase with $d$. Phi and Contingency coefficients' minimums are relatively high, and the expectation for a lower $d$ (few deactivated intersecting periods) is closer to zero (as the other methods demonstrate). This scenario means either both cells have no history similar to current inputs or their inputs' values have significant uncertainty (remember the time extraction process from \ref{subsec:tempsim}). Therefore, their "trust" should be minimal. While all tend to an attenuated exponential, the new method showcases linear behavior in this window.
+In Figure \ref{fig:trust_test_1_a}, we can observe that all measurements increase with $d$. Phi and Contingency coefficients' minimums are relatively high, and the expectation for a lower $d$ (few deactivated intersecting periods) is closer to zero (as the other methods demonstrate). This scenario means either both cells have no history similar to current inputs or their inputs' values have significant uncertainty (remember the time extraction process from \ref{subsec:tempsim}). Therefore, their "trust" should be minimal. While all tend to an attenuated exponential, the new method showcases linear behavior in this window.
 
 \begin{figure}[h!]
 \centering
@@ -384,13 +363,13 @@ With the three experiments presented, we confirm that the proposed approach for 
 
 \subsubsection{Trust between variables}
 
-Variables defined in the inputs/outputs of the cell can also be subject to activation comparison. Accordingly, we suggest simplifying this process compared to the inter-cell trust \ref{eq:trustvars}. Given that a cell may possess many variables, we restrict this computation to one per each, comparing the activations of a single variable with the intersection of all others.
+Variables defined in the inputs/outputs of the cell can also be subject to activation comparison. Accordingly, we suggest simplifying this process compared to the inter-cell trust (Equation \ref{eq:trustvars}). Given that a cell may possess many variables, we restrict this computation to one per each, comparing the activations of a single variable with the intersection of all others.
 
 \begin{equation} \label{eq:trustvars}
     Trust = 1 - \frac{TA_{others, exclusive}}{TA_{self,others} + TA_{self, exclusive} + TA_{others, exclusive}}
 \end{equation}
 
-We utilize equation \ref{eq:trustvars} to calculate the trust indicator for variables. The resulting value will be normalized and transparent, reflecting how much a variable was inactive while others were active.
+We utilize Equation \ref{eq:trustvars} to calculate the trust indicator for variables. The resulting value will be normalized and transparent, reflecting how much a variable was inactive while others were active. It is an attribute for internal use only that persists on the cell owner's database. It is not available to the network to maintain data privacy.
 
 \subsection{Cell Linking}
 
@@ -398,13 +377,13 @@ Mutual similarity extraction and trust calculation cannot occur in isolation. Th
 
 Each cell has a unique identifier, generated upon creation and independent of the name attributed by the owner. This ID serves to register cells and better manage the network. Since interconnections require an agent to keep track of these IDs and correctly redirect traffic, we introduce the \textbf{Hub} component. This central element provides global network visibility and makes connections easier to form and maintain. For a cell, a connection is simply the neighbors' identifier, which the hub can directly associate with a communication link.
 
-On cell deployment, the system expects the owner and the CellTAN manager to manually link cells together by assigning each connection. However, future work includes developing a mechanism that proposes new connections through the hub based on the neighbor's neighbors. This mechanism could function based on the strength of the relationship between cells and neighbors in common, recommending a direct link if both trust them similarly.
+On cell deployment, the system expects the owner and the CellTAN manager to manually link cells together by assigning each connection. However, future work includes developing a mechanism that proposes new connections through the hub based on a cell's neighbor's neighbors. This mechanism could function based on the strength of the relationship between cells and neighbors in common, recommending a direct link if both trust them similarly.
 
 \subsection{Unconformities and State} \label{sec:states}
 
 We introduce a state system to expose the resulting unconformities found during cells' processes. We can categorize these unconformities into intrinsic and extrinsic, based on the historical check of trust in the variables and neighbors, respectively, and during output computation.
 
-Cells rely on aggregated trust values to assess the integrity and coherence of information. During specific time windows, these systems employ a verification process to identify unconformities in the aggregated trust values. Unconformities are flagged when the aggregated trust values fall below a certain threshold, which the owner predetermines. To establish a framework for this assessment, the owner specifies time bins upon cell creation, which define intervals evaluated from the current rolling timestamp to the past. Consequently, when inconsistencies are detected, detailed information is recorded to identify the elements that exhibit incoherence and the corresponding time bin in which the discrepancies occur. This approach allows for the characterization and analysis of "Intrinsic/Extrinsic time bin unconformities," thereby enabling the system to escalate the severity of unconformities from none to partial or total if some or all elements within a time bin exhibit incoherence.
+Cells rely on aggregated trust values to assess the integrity and coherence of information. During specific time windows, these systems employ a verification process to identify unconformities in the aggregated trust values. Unconformities are flagged when the aggregated trust values fall below a certain threshold, which the owner predetermines. To establish a framework for this assessment, the owner specifies time bins upon cell creation, which define intervals evaluated from the current rolling timestamp to the past. Consequently, when inconsistencies are detected, detailed information is recorded to identify the elements that exhibit incoherence and the corresponding time bin in which the discrepancies occur. This approach allows for the characterization and analysis of "Intrinsic/Extrinsic time bin unconformities", thereby enabling the system to escalate the severity of unconformities from none to partial or total if some or all elements within a time bin exhibit incoherence.
 
 \begin{figure}[h!]
 \centering
@@ -413,9 +392,9 @@ Cells rely on aggregated trust values to assess the integrity and coherence of i
     \label{fig:severity}
 \end{figure}
 
-In addition to the assessment methodology mentioned above, intrinsic filtering and the intersection of neighbor's activations play a crucial role in determining the overall unconformity state of the cell. Specifically, suppose intrinsic filtering yields a null domain. In that case, it indicates that the cell has encountered total intrinsic unconformity, suggesting a fundamental breakdown or lack of coherence with its knowledge base. Similarly, suppose the intersection of the neighbor's activations yields a null domain. In that case, it signifies total extrinsic unconformity, implying that the cell lacks trust in its external environment. These higher states of unconformity, whether intrinsic or extrinsic, serve as valuable indicators called the "Unconformity severity info." Considering this additional information, the system can escalate the severity level set by the time bin unconformities, providing a more comprehensive understanding of the cell's overall integrity and the extent of the identified unconformities.
+In addition to the assessment methodology mentioned above, intrinsic filtering and the intersection of neighbor's activations play a crucial role in determining the overall unconformity state of the cell. Specifically, suppose intrinsic filtering yields a null domain. In that case, it indicates that the cell has encountered total intrinsic unconformity, suggesting a fundamental breakdown or lack of coherence with its knowledge base. Similarly, suppose the intersection of the neighbor's activations yields a null domain. In that case, it signifies total extrinsic unconformity, implying that the cell lacks trust in its external environment. These higher states of unconformity, whether intrinsic or extrinsic, serve as valuable indicators called the "Unconformity severity info". Considering this additional information, the system can escalate the severity level set by the time bin unconformities, providing a more comprehensive understanding of the cell's overall integrity and the extent of the identified unconformities.
 
-Figure \ref{fig:severity} sums up the algorithm of choosing unconformity severity. The severity level is associated with each type of unconformity since incoherence between neighbors and variables is not necessarily related. The first transition happens during output computation, and it defines time bin unconformities during the historical trust assessment (process seen in figure \ref{fig:cellprocesses}).
+Figure \ref{fig:severity} sums up the algorithm of choosing unconformity severity. The severity level is associated with each type of unconformity since incoherence between neighbors and variables is not necessarily related. The first transition happens during output computation, and it defines time bin unconformities during the historical trust assessment (process seen in Figure \ref{fig:cellprocesses}).
 
 Though informative, the meaning of the unconformities and their severities is relatively broad, causing the cell to overlook specific situations related to its physical behavior. The following section addresses this, suggesting an application-oriented approach to extend observability.
 
