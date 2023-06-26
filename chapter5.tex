@@ -47,7 +47,7 @@ We examine all variables related to satellite data to determine which ones could
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=\textwidth]{figures/chapter5/analysis/00_power_kb.pdf}
+    \includegraphics[width=\textwidth]{figures/chapter5/analysis/00_power_kb-1.png}
     \caption{Inverter AC side power from 2020 to 2022, used for the knowledge base.}
     \label{fig:eda_power_kb}
 \end{figure}
@@ -56,7 +56,7 @@ Figure \ref{fig:eda_power_kb} shows the power profile of the two studied inverte
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=\textwidth]{figures/chapter5/analysis/01_power_test.pdf}
+    \includegraphics[width=\textwidth]{figures/chapter5/analysis/01_power_test-1.png}
     \caption{Inverter AC side power from 2023-01-01 to 2023-01-05, used for testing.}
     \label{fig:eda_power_test}
 \end{figure}
@@ -65,7 +65,7 @@ Figure \ref{fig:eda_power_test} represents the power profile on the portion of d
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=\textwidth,trim={0 5.5cm 0cm 5.5cm},clip]{figures/chapter5/analysis/02_power_pairplots_kb_annotated.pdf}
+    \includegraphics[width=\textwidth,trim={0 5.5cm 0cm 5.5cm},clip]{figures/chapter5/analysis/02_power_pairplots_kb_annotated-1.png}
     \caption{Pair plot of AC power from both inverters (2020 to 2022), using scatter (left) and KDE (Kernel Density Estimation) (right).}
     \label{fig:eda_power_kb_pair}
 \end{figure}
@@ -74,7 +74,7 @@ Figure \ref{fig:eda_power_kb_pair} lets us better understand the relationship be
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=\textwidth]{figures/chapter5/analysis/03_power_pairplots_test.pdf}
+    \includegraphics[width=\textwidth]{figures/chapter5/analysis/03_power_pairplots_test-1.png}
     \caption{Pair plot of AC power from both inverters (2023), using scatter (left) and KDE (Kernel Density Estimation) (right).}
     \label{fig:eda_power_test_pair}
 \end{figure}
@@ -87,14 +87,14 @@ Both inverters are equipped with MPPTs to maximize the power output from their s
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=\textwidth,trim={0 5.5cm 0cm 5.5cm},clip]{figures/chapter5/analysis/04_voltage_current_pairplot_kb_1_annotated.pdf}
+    \includegraphics[width=\textwidth,trim={0 5.5cm 0cm 5.5cm},clip]{figures/chapter5/analysis/04_voltage_current_pairplot_kb_1_annotated-1.png}
     \caption{Pair plot of DC side voltage and current from inverter one (2020-2022), using scatter (left) and KDE (Kernel Density Estimation) (right).}
     \label{fig:eda_volt_curr_pair_kb_1}
 \end{figure}
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=\textwidth,trim={0 5.5cm 0cm 5.5cm},clip]{figures/chapter5/analysis/06_voltage_current_pairplot_kb_2_annotated.pdf}
+    \includegraphics[width=\textwidth,trim={0 5.5cm 0cm 5.5cm},clip]{figures/chapter5/analysis/06_voltage_current_pairplot_kb_2_annotated-1.png}
     \caption{Pair plot of DC side voltage and current from inverter two (2020-2022), using scatter (left) and KDE (Kernel Density Estimation) (right).}
     \label{fig:eda_volt_curr_pair_kb_2}
 \end{figure}
@@ -107,7 +107,7 @@ Irradiance should be the satellite variable most related to inverters' power. Th
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=0.8\textwidth]{figures/chapter5/analysis/08_power_irrad_pairplot_scatter_kb.pdf}
+    \includegraphics[width=0.8\textwidth]{figures/chapter5/analysis/08_power_irrad_pairplot_scatter_kb-1.png}
     \caption{Scatter pair plot of the AC power, tilted and horizontal global irradiance for both inverters (2020 to 2022).}
     \label{fig:eda_power_irrad_pair_kb}
 \end{figure}
@@ -118,9 +118,11 @@ Although most instances appear inside the sunrise-sunset paths, there are some o
 
 Regarding the rest of the meteorological variables (cloud coverage and temperature), we deemed them unnecessary since they do not demonstrate a direct relationship with inverter behavior (see Figure \ref{fig:eda_irrelevant_meteo}). We added KDE visualizations and plots for the test period in appendix \ref{ap2:eda}.
 
-\section{Data Cleaning}
+\subsection{Data Cleaning}
 
-Now, we take our previous analysis and start the data-cleaning process. We used the Scikit-Learn Python Library and tried out some anomaly detection algorithms for outlier identification on our dataset: Robust Covariance \cite{Rousseeuw1999}, Isolation Forest \cite{Liu2008} \cite{Liu2012}, and Local Outlier Factor \cite{Breunig2000}. The code used for our plotting derived from an example made by Alexandre Gramfort, available on the Scikit-Learn website \cite{sklearn_example}.
+To assess the best possible scenario for the CellTAN, we create a clean version of the dataset to use as a cell knowledge base. The CellTAN has the advantage of functioning with the original dataset (as seen in Section \ref{subsubsec:dirty}), but cleaning known outliers generates an ideal scenario for initial tests.
+
+We used the Scikit-Learn Python Library and tried out some anomaly detection algorithms for outlier identification on our dataset: Robust Covariance \cite{Rousseeuw1999}, Isolation Forest \cite{Liu2008} \cite{Liu2012}, and Local Outlier Factor \cite{Breunig2000}. The code used for our plotting derived from an example made by Alexandre Gramfort, available on the Scikit-Learn website \cite{sklearn_example}.
 
 \subsubsection{Power}
 
@@ -128,7 +130,7 @@ Based on the geographical proximity of the inverters, we have determined that th
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=\textwidth]{figures/chapter5/cleaning/20_cleaning_power.pdf}
+    \includegraphics[width=\textwidth]{figures/chapter5/cleaning/20_cleaning_power-1.png}
     \caption{Inliers (orange), outliers (blue), and decision boundaries (black) using three different anomaly detection algorithms on the AC Power from both inverters.}
     \label{fig:clean_power}
 \end{figure}
@@ -137,36 +139,11 @@ In Figure \ref{fig:clean_power}, we can see a visual representation of various a
 
 \subsubsection{Satellite}
 
-In section \ref{subsubsec:eda_sat}, we discovered that the inverters follow a standard production pattern based on the irradiance and hour of the day. The specific area within the paths is considered the central region of standard operation. To clean up the data, we will remove all other instances.
-
-\begin{figure}[h!]
-    \centering
-    \includegraphics[width=\textwidth]{figures/chapter5/cleaning/21_cleaning_tilted_irrad.pdf}
-    \caption{Inliers (orange), outliers (blue), and decision boundaries (black) using three different anomaly detection algorithms on the tilted irradiance and AC Power from both inverters.}
-    \label{fig:clean_tilted_irrad}
-\end{figure}
-
-\begin{figure}[h!]
-    \centering
-    \includegraphics[width=\textwidth]{figures/chapter5/cleaning/22_cleaning_horizontal_irrad.pdf}
-    \caption{Inliers (orange), outliers (blue), and decision boundaries (black) using three different anomaly detection algorithms on the horizontal irradiance and AC Power from both inverters.}
-    \label{fig:clean_horizontal_irrad}
-\end{figure}
-
-Once again, figures \ref{fig:clean_tilted_irrad} and \ref{fig:clean_horizontal_irrad} demonstrate the effectiveness of the first algorithm, now for irradiance and power data. It is, once again, the chosen one for cleaning the knowledge base.
+In section \ref{subsubsec:eda_sat}, we discovered that the inverters follow a standard production pattern based on the irradiance and hour of the day. The specific area within the paths is considered the central region of standard operation. To clean up the data, we will remove all other instances. Figures \ref{fig:clean_tilted_irrad} and \ref{fig:clean_horizontal_irrad} of the Appendix demonstrate the effectiveness of the first algorithm. It is, once again, the chosen one.
 
 \subsubsection{Voltage and Current}
 
-Cleaning voltage and current data were the most challenging thus far. The peculiar data distribution was an issue for all tested algorithms, and the isolation forest performed particularly poorly. We combined the Robust Covariance, and Local Outlier Factor results to obtain the best inlier-outlier separation. The aggregation performed was a logical "OR" considering the inliers.
-
-\begin{figure}[h!]
-    \centering
-    \includegraphics[width=\textwidth]{figures/chapter5/cleaning/23_cleaning_volt_curr.pdf}
-    \caption{Inliers (orange), outliers (blue), and decision boundaries (black) using two different anomaly detection algorithms and their combination on the DC side voltage and current from both inverters.}
-    \label{fig:clean_volt_curr}
-\end{figure}
-
-The charts in figure \ref{fig:clean_volt_curr} illustrates how the algorithms have difficulty keeping up with the data's distribution and preserving the densely populated areas. Neither algorithm effectively identifies the outliers separately, but their combination proved much more effective.
+Cleaning voltage and current data were the most challenging thus far. The peculiar data distribution was an issue for all tested algorithms, and the isolation forest performed particularly poorly. We combined the Robust Covariance and Local Outlier Factor results to obtain the best inlier-outlier separation. The aggregation performed was a logical "OR" considering the inliers. Figure \ref{fig:clean_volt_curr} represents this, illustrating how the algorithms struggle to keep up with the data's distribution and preserve the densely populated areas. Neither algorithm effectively identifies the outliers separately, but their combination proved effective.
 
 \section{Photovoltaic Plugin} \label{sec:pvplugin}
 
@@ -198,7 +175,7 @@ where:
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=\textwidth]{figures/chapter5/algorithm/30_boundary.pdf}
+    \includegraphics[width=\textwidth]{figures/chapter5/algorithm/30_boundary-1.png}
     \caption{Inverter underperformance region based on the lowest boundary of current-voltage inliers.}
     \label{fig:anomaly_decision_boundary}
 \end{figure}
@@ -238,7 +215,7 @@ We are conducting our initial validation using a scenario without any anomalies.
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=0.9\textwidth]{figures/chapter5/results/artificial/40_test_clone_01.pdf}
+    \includegraphics[width=0.9\textwidth]{figures/chapter5/results/artificial/40_test_clone_01-1.png}
     \caption{Power, current, voltage profiles, and scatter of simulation data for the artificial scenario without anomalies.}
     \label{fig:artificial_01_piv}
 \end{figure}
@@ -250,7 +227,7 @@ We don't expect the CellTAN to indicate any issues for this base scenario.
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=\linewidth]{figures/chapter5/results/artificial/42_results_test_clone_01.pdf}
+    \includegraphics[width=\linewidth]{figures/chapter5/results/artificial/42_results_test_clone_01-1.png}
     \caption{Inverter's trust and variables' trust from CellTAN for the artificial scenario without anomalies.}
     \label{fig:artificial_results_01}
 \end{figure}
@@ -268,7 +245,7 @@ To assess the CellTAN's anomaly detection capability, we simulate inverter misma
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=0.9\textwidth]{figures/chapter5/results/artificial/41_test_clone_02.pdf}
+    \includegraphics[width=0.9\textwidth]{figures/chapter5/results/artificial/41_test_clone_02-1.png}
     \caption{Power, current, voltage profiles, and scatter of simulation data for the artificial scenario with anomalies.}
     \label{fig:artificial_02_piv}
 \end{figure}
@@ -278,7 +255,7 @@ We expect CellTAN's cell trust mechanism and the PV plugin to catch this situati
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=\textwidth]{figures/chapter5/results/artificial/43_results_test_clone_02.pdf}
+    \includegraphics[width=\textwidth]{figures/chapter5/results/artificial/43_results_test_clone_02-1.png}
     \caption{Inverter's trust and variables' trust from CellTAN for the artificial scenario with anomalies.}
     \label{fig:artificial_results_02}
 \end{figure}
@@ -301,7 +278,7 @@ After gathering results, visualizing the relation between inverter trust and out
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=\textwidth]{figures/chapter5/results/real/52_scatter_with_trust.pdf}
+    \includegraphics[width=\textwidth]{figures/chapter5/results/real/52_scatter_with_trust-1.png}
     \caption{Scatter of inverter AC power (1st) and inverter variables (2nd and 3rd), colored with the trust value between inverters.}
     \label{fig:real_sim_trust_scatter}
 \end{figure}
@@ -314,7 +291,7 @@ Unfortunately, the distributions of trust between inverters and satellite indica
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=\textwidth]{figures/chapter5/results/real/50_hist_trust_cells.pdf}
+    \includegraphics[width=\textwidth]{figures/chapter5/results/real/50_hist_trust_cells-1.png}
     \caption{Cells' trust measurement histogram.}
     \label{fig:cell_trust_hist}
 \end{figure}
@@ -323,7 +300,7 @@ Analyzing the variables' trust indicators in Figure \ref{fig:var_trust_hist} let
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=\textwidth]{figures/chapter5/results/real/51_hist_trust_vars.pdf}
+    \includegraphics[width=\textwidth]{figures/chapter5/results/real/51_hist_trust_vars-1.png}
     \caption{Cell variables' trust measurement histogram.}
     \label{fig:var_trust_hist}
 \end{figure}
@@ -336,7 +313,7 @@ The PV plugin successfully identified situations of underperformance when DC sid
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=0.9\textwidth]{figures/chapter5/results/real/53_pv_plugin_detections.pdf}
+    \includegraphics[width=0.9\textwidth]{figures/chapter5/results/real/53_pv_plugin_detections-1.png}
     \caption{I-V scatter of test data (both inverters) with detected underperformance instances colored red (top) and histogram based on the hour of detection (bottom).}
     \label{fig:plugin_detections}
 \end{figure}
@@ -350,7 +327,7 @@ Reviewing the time series data of inverter AC power and trust between cells made
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=0.9\textwidth]{figures/chapter5/results/real/type_of_days.pdf}
+    \includegraphics[width=0.9\textwidth]{figures/chapter5/results/real/type_of_days-1.png}
     \caption{Example days of inverters' highly correlated power (top), power mismatches (middle), and inverter one inoperational (bottom).}
     \label{fig:interesting_days}
 \end{figure}
@@ -366,7 +343,7 @@ On nine days, we found that inverter one did not produce energy during some sun 
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=0.75\textwidth,trim={0cm 2cm 0cm 2cm},clip]{figures/chapter5/results/real/situations_freq_pie.pdf}
+    \includegraphics[width=0.75\textwidth,trim={0cm 2cm 0cm 2cm},clip]{figures/chapter5/results/real/situations_freq_pie-1.png}
     \caption{Frequency of days with identified scenarios based on trust measurement.}
     \label{fig:interesting_days_freq}
 \end{figure}
@@ -377,7 +354,7 @@ We can also verify the constant value displayed during nighttime. It is low beca
 %todo mostrar moving averages?
 
 % \FloatBarrier
-\subsubsection{Using Contaminated Knowledge Base}
+\subsubsection{Using Contaminated Knowledge Base}  \label{subsubsec:dirty}
 
 
 So far, all the results come from a CellTAN whose cells have a clean knowledge base. Undergoing the cleaning phase seemed the appropriate way to extract this tool's full potential, considering how its algorithms work. However, what if we do not clean the knowledge base? Furthermore, what if, in an actual application, that task is too time-consuming or challenging due to the volume of data or other issues?
@@ -386,7 +363,7 @@ Following this interest, we simulate the same test data with the same CellTAN co
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=0.6\textwidth,trim={0cm 7.5cm 0cm 9cm},clip]{figures/chapter5/results/real/trust_dirty_scatter_annotated.pdf}
+    \includegraphics[width=0.6\textwidth,trim={0cm 7.5cm 0cm 9cm},clip]{figures/chapter5/results/real/trust_dirty_scatter_annotated-1.png}
     \caption{Scatter of trust measurements between inverter cells, with and without a clean knowledge base.}
     \label{fig:dirty_scatter}
 \end{figure}
@@ -395,12 +372,15 @@ To our surprise, the trust indicator between the two inverter cells barely chang
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=0.8\textwidth]{figures/chapter5/results/real/trust_dirty_interesting_days.pdf}
+    \includegraphics[width=0.8\textwidth]{figures/chapter5/results/real/trust_dirty_interesting_days-1.png}
     \caption{Days when the difference between trust of inverter cells with and without knowledge base is greater than 0.2.}
     \label{fig:dirty_interesting}
 \end{figure}
 
 When filtering the clean knowledge base with zero values, the cells only find samples corresponding to nighttime since we also removed anomalies of both inverters not producing during the day. However, the original knowledge base features this scenario, although rare (both inverters inoperational occurred in 19 days), and cases of one of the inverters being off while the other is producing. Therefore, the cells filter all these niche situations alongside nighttime values, and given the discrepancy of activations corresponding to individual faults, the trust measurement is lower. This behavior shows the advantage of using untreated data in the CellTAN as long as any one type of anomaly is not particularly recurrent.
+
+\subsubsection{Final Notes}
+
 
 
 % \subsection{Scaling Up}
@@ -409,7 +389,7 @@ When filtering the clean knowledge base with zero values, the cells only find sa
 
 % \begin{figure}[h!]
 %     \centering
-%     \includegraphics[width=\linewidth]{figures/chapter4/cell/celltan.pdf}
+%     \includegraphics[width=\linewidth]{figures/chapter4/cell/celltan-1.png}
 %     \caption{Ilustrative overview of a CellTAN.}
 %     \label{fig:celltan}
 % \end{figure}

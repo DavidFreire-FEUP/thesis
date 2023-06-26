@@ -9,27 +9,56 @@
 \end{figure}
 
 \FloatBarrier
-\section{Data analysis} \label{ap2:eda}
+\section{Data Analysis} \label{ap2:eda}
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=\textwidth]{figures/appendix/b_analysis/05_voltage_current_pairplot_test_1.pdf}
+    \includegraphics[width=\textwidth]{figures/appendix/b_analysis/05_voltage_current_pairplot_test_1-1.png}
     \caption{Pair plot of DC side voltage and current from inverter one (2023), using scatter (left) and KDE (Kernel Density Estimation) (right).}
     \label{fig:eda_voltage_current_test_1}
 \end{figure}
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=\textwidth]{figures/appendix/b_analysis/07_voltage_current_pairplot_test_2.pdf}
+    \includegraphics[width=\textwidth]{figures/appendix/b_analysis/07_voltage_current_pairplot_test_2-1.png}
     \caption{Pair plot of DC side voltage and current from inverter two (2023), using scatter (left) and KDE (Kernel Density Estimation) (right).}
     \label{fig:eda_voltage_current_test_2}
 \end{figure}
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.6\textwidth]{figures/appendix/b_analysis/12_power_meteo_pairplot_kb.pdf}
+    \includegraphics[width=0.6\textwidth]{figures/appendix/b_analysis/12_power_meteo_pairplot_kb-1.png}
     \caption{Scatter pair-plot of AC power from the two inverters with cloud coverage and temperature (from satellite).}
     \label{fig:eda_irrelevant_meteo}
+\end{figure}
+
+\FloatBarrier
+
+\section{Data Cleaning}
+
+\subsection{Satellite}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\textwidth]{figures/appendix/b_analysis/21_cleaning_tilted_irrad-1.png}
+    \caption{Inliers (orange), outliers (blue), and decision boundaries (black) using three different anomaly detection algorithms on the tilted irradiance and AC Power from both inverters.}
+    \label{fig:clean_tilted_irrad}
+\end{figure}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\textwidth]{figures/appendix/b_analysis/22_cleaning_horizontal_irrad-1.png}
+    \caption{Inliers (orange), outliers (blue), and decision boundaries (black) using three different anomaly detection algorithms on the horizontal irradiance and AC Power from both inverters.}
+    \label{fig:clean_horizontal_irrad}
+\end{figure}
+
+\subsection{Voltage and Current}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\textwidth]{figures/appendix/b_analysis/23_cleaning_volt_curr-1.png}
+    \caption{Inliers (orange), outliers (blue), and decision boundaries (black) using two different anomaly detection algorithms and their combination on the DC side voltage and current from both inverters.}
+    \label{fig:clean_volt_curr}
 \end{figure}
 
 \FloatBarrier
@@ -38,7 +67,7 @@
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=0.8\textwidth]{figures/chapter5/algorithm/plugin_steps.pdf}
+    \includegraphics[width=0.8\textwidth]{figures/appendix/b_analysis/plugin_steps-1.png}
     \caption{Proposed steps for obtaining inverter underperformance region.}
     \label{fig:pluginsteps}
 \end{figure}
