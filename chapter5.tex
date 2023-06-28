@@ -145,7 +145,27 @@ In section \ref{subsubsec:eda_sat}, we discovered that the inverters follow a st
 
 Cleaning voltage and current data were the most challenging thus far. The peculiar data distribution was an issue for all tested algorithms, and the isolation forest performed particularly poorly. We combined the Robust Covariance and Local Outlier Factor results to obtain the best inlier-outlier separation. The aggregation performed was a logical "OR" considering the inliers. Figure \ref{fig:clean_volt_curr} represents this, illustrating how the algorithms struggle to keep up with the data's distribution and preserve the densely populated areas. Neither algorithm effectively identifies the outliers separately, but their combination proved effective.
 
-\section{Photovoltaic Plugin} \label{sec:pvplugin}
+\section{Identifying Specific Anomalies} \label{sec:pvplugin}
+
+\subsection{Proposed Approach for Fault Detection Algorithms Applied on }
+
+Developing a fault detection and classification methodology should involve a combination of autonomous and human-dependent steps, as seen in Figure \ref{fig:approach_fault_detection}. Sometimes, there is an attempt to infer faults from partially labeled data or generate synthetic faults to train heavy machine (or deep) learning algorithms. Our suggestion is to not rely on this automatic or partially automatic theoretical mapping of faults since actual occurrences might diverge in ways that are undetectable by trained models.
+Experts should analyze historical data and system behavior in a human-dependent phase to identify and map fault patterns in the variables' space. This step requires domain knowledge, expertise, and history of reported faults to establish relationships between fault signatures and corresponding variables. These mappings serve as a foundation for computational algorithms that should operate autonomously.
+
+After having mappings for the studied faults, methodologies may utilize automated machine learning algorithms, statistical methods, or rule-based systems to identify them autonomously from system monitoring. By comparing observed variable values with the mapped fault signatures, an algorithm can autonomously identify and categorize faults without relying on human intervention.
+Once a fault is detected, an automated notification system can alert the system operator or administrator. This notification enables prompt action and intervention to address the identified fault.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\textwidth]{figures/chapter5/algorithm/approach_fault_detection.png}
+    Image source and copyright of the scatter plot shown: \cite{Kumpulainen2007}.
+    \caption{Proposed approach to develop operational fault detection procedures.}
+    \label{fig:approach_fault_detection}
+\end{figure}
+
+Combining autonomous fault detection with human-dependent mapping should achieve a more accurate and robust procedure. It is important to note that the development of such a methodology requires ongoing research and refinement, accompanying the technological advancements of PV systems and computational algorithms.
+
+\subsection{Photovoltaic Plugin}
 
 According to the CellTAN formulation, cells cannot share their variables' data directly to maintain privacy. As a result, this limits plugins to work with only the information available in the cell they are running in. Therefore, inverter underperformance is the only situation considered for the PV plugin, based on the analysis from section \ref{subsubsec:eda_volt_curr}. Access to both the inverter's data and satellite data allows the owner to employ other algorithms that leverage this knowledge for better situational and fault discernment, but this falls back to the "classical" centralized algorithms, which is not the scope of this work.
 
