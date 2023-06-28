@@ -2,7 +2,7 @@
 
 Distributed information systems characterized by time series data present various challenges, primarily due to their complex and dynamic nature. The sheer volume of data that must be processed and analyzed in real-time is a significant challenge, leading to concerns over storage, computation, and scalability. Moreover, data quality issues such as missing or incomplete data and data heterogeneity arising from sourcing data from disparate sources with varying consistency and structure further exacerbate these challenges. Another critical challenge of these systems is handling the temporal aspects of time series data, requiring specialized pre-processing, feature extraction, and modeling techniques. The distributed nature of these systems is also problematic regarding data synchronization. Furthermore, their implementation in real-world applications requires robust data security and privacy mechanisms, which adds complexity to the design and implementation.
 
-This chapter proposes a novel tool entitled CellTAN (Cellular Time Activation Network) that undertakes those challenges. CellTAN represents sparse yet interconnected components that function independently, cooperatively, and asynchronously. Inspired by other effective mechanisms like GNNs, CXNs, and Weighted Coupled Cell Networks (WCCNs), CellTAN uses a graph-like structure to represent a network of components with nodes and connections. Following the introductory chapters, its primary purpose is to detect abnormal scenarios on PV systems. However, its generalized formulation introduces other valuable features which come naturally from fulfilling this goal. Such are state estimation, forecasting, and capturing the value in data from different PV asset owners without violating their privacy. For briefness' sake, we will unfold details about its benefits during the rest of this chapter.
+This chapter proposes a novel tool entitled CellTAN (Cellular Time Activation Network) that undertakes those challenges. CellTAN represents sparse yet interconnected components that function independently, cooperatively, and asynchronously. Inspired by other effective mechanisms like GNNs, CXNs, and WCCNs, CellTAN uses a graph-like structure to represent a network of components with nodes and connections. Following the introductory chapters, its primary purpose is to detect abnormal scenarios on PV systems. However, its generalized formulation introduces other valuable features which come naturally from fulfilling this goal. Such are state estimation, forecasting, and capturing the value in data from different PV asset owners without violating their privacy. For briefness' sake, we will unfold details about its benefits during the rest of this chapter.
 
 Instead of tackling fault detection and classification in a classical centralized manner, which is already extensively showcased throughout the literature, this tool approaches this problem with a paradigm change: a distributed and asynchronous data coherence system. By having a virtual representation closely related to the physical form of sparse systems, we can leverage the relationships between components to assess their correct (or incorrect) operation. While initially designed for photovoltaic (PV) systems, the concepts of cells, connections, neighbors, time series, and uncertainty are universal and applicable to other fields such as biology, physics, and more. Thus, the potential for generic applicability sparks the interest to not bake specifics of PV systems directly into this tool, allowing its usage for other subjects. Figure \ref{fig:celltanintro} represents a minimal scenario for a network: only two cells. It showcases some terms specific to this tool that might be difficult to grasp initially, such as trust, events, and activations. Consequently, detailed explanations throughout this chapter serve to clarify them.
 
@@ -266,9 +266,30 @@ Based on Pearson's chi-squared test, this new approach focuses on the "a" compon
 
 \subsubsection{Experiments and validation}
 
-\paragraph{Experiment nº1}
+\paragraph{Experiment nº1} This first experiment showcases the effect of changing term $a$. When the cells share an increasing amount of activated time, assuming their trust should increase is trivial. However, reasoning that having a disproportionally ample activated time means there is more uncertainty on their current state, then trust should lower. The expectation is that, as $a$ increases, there is also an increase in trust until a specific peak. It should decrease after reaching a global maximum and have an asymptote at zero.
 
-The first trial simulates the variation of the $d$ component and its effect on some association coefficients. It's expected that, as not activated time increases, the chance of the two cells intersecting activations lowers, and so their trust should increase. The starting point and used spaces of $d$ are:
+$$
+\begin{bmatrix}
+    a & 10 \\ 10 & 500
+\end{bmatrix}
+$$
+$$
+a \in [0, 1000]
+$$
+
+\begin{figure}[h!]
+\centering
+    \includegraphics[width=0.8\textwidth]{figures/chapter4/cell/trust_tests/3.pdf}
+    \caption{Trust measurement evolution for different methods with $b=30, c=10, d=500, a \in [0, 1000]$.}
+    \label{fig:trust_test_3}
+\end{figure}
+\FloatBarrier
+
+Figure \ref{fig:trust_test_3} shows that only the new method presents the previously described "goal" behavior. Otherwise, all other coefficients approach their max when $a$ tends towards infinity.
+
+\paragraph{Experiment nº2}
+
+This experiment simulates the variation of the $d$ component and its effect on some association coefficients. It's expected that, as not activated time increases, the chance of the two cells intersecting activations lowers, and so their trust should increase. The starting point and used spaces of $d$ are:
 
 $$
 \begin{bmatrix}
@@ -300,7 +321,7 @@ In Figure \ref{fig:trust_test_1_a}, we can observe that all measurements increas
 
 Figure \ref{fig:trust_test_1_b} extends the previous analysis, showcasing that all methods have asymptotical behavior, settling in a value greater than the start. Theil's U and the new method have settling values more acceptable for our application. Since disagreement terms $b$ and $c$ are non-null and relatively close to $a$, we expect that the trust index does not reach a high value, remaining closer to a measure of "half trust".
 
-\paragraph{Experiment nº2} Now, we observe the impact of the disagreeing terms $b$ and $c$ in the same coefficients by varying one while maintaining all others fixed. The expectation is that an increase in disagreement should lead to zero trust.
+\paragraph{Experiment nº3} Lastly, we observe the impact of the disagreeing terms $b$ and $c$ in the same coefficients by varying one while maintaining all others fixed. The expectation is that an increase in disagreement should lead to zero trust.
 
 $$
 \begin{bmatrix}
@@ -337,27 +358,6 @@ $$
 \FloatBarrier
 
 Figure \ref{fig:trust_test_2_b} that only Theil's U coefficient changed since the previous test. It does not represent the trust between cell nº1 and cell nº2, but the trust of cell nº1 \textbf{in} cell nº2. The rest of the methods have symmetrical coefficients, thus presenting the same results.
-
-\paragraph{Experiment nº3} This last experiment showcases the effect of changing term $a$. When the cells share an increasing amount of activated time, assuming their trust should increase is trivial. However, reasoning that having a disproportionally ample activated time means there is more uncertainty on their current state, then trust should lower. The expectation is that, as $a$ increases, there is also an increase in trust until a specific peak. It should decrease after reaching a global maximum and have an asymptote at zero.
-
-$$
-\begin{bmatrix}
-    a & 10 \\ 10 & 500
-\end{bmatrix}
-$$
-$$
-a \in [0, 1000]
-$$
-
-\begin{figure}[h!]
-\centering
-    \includegraphics[width=0.8\textwidth]{figures/chapter4/cell/trust_tests/3.pdf}
-    \caption{Trust measurement evolution for different methods with $b=30, c=10, d=500, a \in [0, 1000]$.}
-    \label{fig:trust_test_3}
-\end{figure}
-\FloatBarrier
-
-Figure \ref{fig:trust_test_3} shows that only the new method presents the previously described "goal" behavior. Otherwise, all other coefficients approach their max when $a$ tends towards infinity.
 
 With the three experiments presented, we confirm that the proposed approach for computing the trust index between cells is better suited, considering the requirements and assumptions.
 
