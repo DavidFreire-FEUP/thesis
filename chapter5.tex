@@ -123,7 +123,7 @@ Regarding the rest of the meteorological variables (cloud coverage and temperatu
 
 \subsection{Data Cleaning}
 
-To assess the best possible scenario for the CellTAN, we create a clean version of the dataset to use as a cell knowledge base. The CellTAN has the advantage of functioning with the original dataset (as seen in Section \ref{subsubsec:dirty}), but cleaning known outliers generates an ideal scenario for initial tests.
+For preliminary CellTAN assessment, we create a clean version of the dataset to use as a cell knowledge base. The CellTAN has the advantage of functioning with the original dataset (as seen in Section \ref{subsubsec:dirty}), but cleaning known outliers provides an adequate blank slate for initial tests. We will further point out that this step is unnecessary for concrete implementation, which is an advantage of this methodology.
 
 We used the Scikit-Learn Python Library and tried out some anomaly detection algorithms for outlier identification on our dataset: Robust Covariance \cite{Rousseeuw1999}, Isolation Forest \cite{Liu2008} \cite{Liu2012}, and Local Outlier Factor \cite{Breunig2000}. The code used for our plotting derived from an example made by Alexandre Gramfort, available on the Scikit-Learn website \cite{sklearn_example}.
 
