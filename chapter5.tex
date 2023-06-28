@@ -4,7 +4,10 @@
 \section{Case Study} \label{sec:case_study}
 
 
-The experiments validating CellTAN's behavior incorporate two neighboring grid-tied string inverters from the same PV farm with common satellite data. Their only known characteristics are:
+The experiments validating CellTAN's behavior incorporate two neighboring grid-tied string inverters from the same PV farm with common satellite data.
+Their integration in CellTAN assumes that these units do not have access to each other's information, nor do they possess knowledge of the type of information involved. We highlight that the two inverters should exhibit highly correlated information with similar structures regarding variables, precision, and synchronization. However, the same cannot be said for the satellite meteorological station, which should exhibit correlated information but with high uncertainty and a completely different information structure and variables.
+
+Inverters have the following characteristics:
 
 \begin{itemize}
     \item Inverter one: 12.5kW nominal power; 14.4kW peak power; fixed tilt and azimuth; installed January 7th, 2013.
@@ -14,20 +17,20 @@ The experiments validating CellTAN's behavior incorporate two neighboring grid-t
 \begin{table}[h!]
 \caption{Available variables from two inverters and a satellite.}
 \label{tab:availablevariables}
-\resizebox{\textwidth}{!}{%
-\begin{tabular}{|l|l|l|l|}
+\resizebox{0.6\textwidth}{!}{%
+\begin{tabular}{|l|l|l|}
 \hline
-\multicolumn{1}{|c|}{\textbf{Variable}} & \multicolumn{1}{c|}{\textbf{Source}} & \multicolumn{1}{c|}{\textbf{Unit}} & \multicolumn{1}{c|}{\textbf{Label}} \\ \hline
-AC side power                           & Inverter (1 \& 2)                    & W                                  & ac\_power                           \\ \hline
-AC side current                         & Inverter (1 \& 2)                    & A                                  & ac\_current                         \\ \hline
-AC side voltage                         & Inverter (1 \& 2)                    & V                                  & ac\_voltage                         \\ \hline
-DC side power                           & Inverter (1 \& 2)                    & W                                  & dc\_power                           \\ \hline
-DC side current                         & Inverter (1 \& 2)                    & A                                  & dc\_current                         \\ \hline
-DC side voltage                         & Inverter (1 \& 2)                    & V                                  & dc\_voltage                         \\ \hline
-Global tilted irradiance                & Satellite                            & W/m\textsuperscript{2}             & global\_tilted\_irradiance          \\ \hline
-Global horizontal irradiance            & Satellite                            & W/m\textsuperscript{2}             & global\_horizontal\_irradiance      \\ \hline
-Cloud coverage                          & Satellite                            & \%                                 & cloud\_coverage                     \\ \hline
-Air temperature                         & Satellite                            & ºC                                 & temperature                         \\ \hline
+\multicolumn{1}{|c|}{\textbf{Variable}} & \multicolumn{1}{c|}{\textbf{Source}} & \multicolumn{1}{c|}{\textbf{Unit}} \\ \hline
+AC side power                           & Inverter 1 and 2                    & W                           \\ \hline
+AC side current                         & Inverter 1 and 2                    & A                           \\ \hline
+AC side voltage                         & Inverter 1 and 2                    & V                           \\ \hline
+DC side power                           & Inverter 1 and 2                    & W                           \\ \hline
+DC side current                         & Inverter 1 and 2                    & A                           \\ \hline
+DC side voltage                         & Inverter 1 and 2                    & V                           \\ \hline
+Global tilted irradiance    & Satellite   & W/m\textsuperscript{2}  \\ \hline
+Global horizontal irradiance     & Satellite   & W/m\textsuperscript{2} \\ \hline
+Cloud coverage & Satellite  & \%  \\ \hline
+Air temperature & Satellite  & ºC  \\ \hline
 \end{tabular}%
 }
 \end{table}
