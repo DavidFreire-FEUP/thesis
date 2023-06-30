@@ -150,7 +150,7 @@ Cleaning voltage and current data were the most challenging thus far. The peculi
 
 \section{Identifying Specific Anomalies} \label{sec:pvplugin}
 
-\subsection{Proposed Approach for Fault Detection Algorithms Applied on }
+\subsection{Proposed Approach for Fault Detection Algorithms}
 
 Developing a fault detection and classification methodology should involve a combination of autonomous and human-dependent steps, as seen in Figure \ref{fig:approach_fault_detection}. Sometimes, there is an attempt to infer faults from partially labeled data or generate synthetic faults to train heavy machine (or deep) learning algorithms. Our suggestion is to not rely on this automatic or partially automatic theoretical mapping of faults since actual occurrences might diverge in ways that are undetectable by trained models.
 Experts should analyze historical data and system behavior in a human-dependent phase to identify and map fault patterns in the variables' space. This step requires domain knowledge, expertise, and history of reported faults to establish relationships between fault signatures and corresponding variables. These mappings serve as a foundation for computational algorithms that should operate autonomously.
