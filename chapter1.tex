@@ -3,21 +3,21 @@
 % \section{Context and Motive}
 
 % Contextualization (goal: 1/2 page)
-The XIX century marked a significant shift in the world's perception of energy resources as the desire to invest in renewable energy sources to power modern societies grew. The need to reduce dependency on fossil fuels, mitigate the effects of global warming, and slow climate change drove this transition. Renewable energy sources offer a range of benefits, including reduced greenhouse gas emissions, better air quality and energy security. Solar photovoltaic energy is a desirable renewable source due to its abundance, accessibility, and environmental benefits. While solar photovoltaic energy has proven to be both cost-efficient and environmentally friendly, it also comes with unprecedented challenges, such as its intermittent nature, low electrical inertia, complex forecasting, and geographic-dependent operating conditions. Despite these challenges, recent reports \cite{cap} show that the economic benefits of investing in renewable energy outweigh the complications, as there is an increasing global investment trend in these sources.
+The XIX century marked a significant shift in the world's perception of energy resources as the desire to invest in renewable energy sources to power modern societies grew. The need to reduce dependency on fossil fuels, mitigate the effects of global warming, and slow climate change drove this transition. Renewable energy sources offer a range of benefits, including reduced greenhouse gas emissions, better air quality and energy security. Solar photovoltaic (PV) energy is a desirable renewable source due to its abundance, accessibility, and environmental benefits. While solar PV energy has proven to be both cost-efficient and environmentally friendly, it also comes with unprecedented challenges, such as its intermittent nature, low electrical inertia, complex forecasting, and geographic-dependent operating conditions. Despite these challenges, recent reports \cite{cap} show that the economic benefits of investing in renewable energy outweigh the complications, as there is an increasing global investment trend in these sources.
 
 % Motivation (goal: 2 paragraphs)
-The general construction of PV farms, particularly on the utility scale, has led to a need for effective maintenance and monitoring to ensure maximum efficiency and operational reliability. Towards this, operatures use various algorithms and routines to monitor PV farms' state and identify any potential issues that may arise. Fault detection is crucial to this process, allowing PV farm operators to identify and address problems quickly. Detecting faults and identifying the necessary steps can prevent or minimize downtime and ensure optimal performance. Given the importance of maintaining high levels of operation, knowing if action is needed to restore or fix components from an anomalous scenario is desirable for reducing investment risk and maximizing profits.
+The general construction of PV farms, particularly on the utility scale, has led to a need for effective maintenance and monitoring to ensure maximum efficiency and operational reliability. Towards this, operators use various algorithms and routines to monitor PV farms' state and identify any potential issues that may arise. Fault detection is crucial to this process, allowing PV farm operators to identify and address problems quickly. Detecting faults and identifying the necessary steps can prevent or minimize downtime and ensure optimal performance. Given the importance of maintaining high levels of operation, knowing if action is needed to restore or fix components from an anomalous scenario is desirable for reducing investment risk and maximizing profits.
 
-Integrating intermittent energy resources into modern electric grids has led to stricter requirements for connecting such power systems to ensure safe grid operating conditions. As a result, companies that own or plan to build photovoltaic farms must comply with these requirements and have adequate power electronics and monitoring/control capabilities. Failure to meet these requirements can result in sanctions or fines for the responsible party and potential impacts on system availability, asset value, and disturbance propagation to the grid. Companies may implement fault detection and state estimation tools to minimize these risks and maximize their assets' value. These tools allow for the early detection and resolution of potential issues and can prevent or reduce downtime. The need to create or improve existing fault detection and state estimation tools, and the search for the most effective methodologies for addressing these issues, drive research in this field.
+Integrating intermittent energy resources into modern electric grids has led to stricter connection requirements to ensure safe grid operating conditions. As a result, companies that own or plan to build PV farms must comply with these requirements and have adequate power electronics and monitoring/control capabilities. Failure to meet these prerequisites can result in sanctions or fines for the responsible party and potential impacts on system availability, asset value, and disturbance propagation to the grid. Companies may implement fault detection and state estimation tools to minimize these risks and maximize their assets' value. These tools allow for the early detection and resolution of potential issues and can prevent or reduce downtime. The need to create or improve existing fault detection and state estimation tools, and the search for the most effective methodologies for addressing these issues, drive research in this field.
 
 \section{Investigation Questions}
 
 Having laid the basis for why there must be system behavior assessment in utility-scale PV plants, it is necessary to understand what business concepts are crucial to this field. In the course of this work, the presented topics will go over the following questions:
 
 \begin{itemize}
-    \item What components mostly fail in photovoltaic power systems?
+    \item What components mostly fail in PV power systems?
     \item What is the average frequency of faults?
-    \item What fault detection/state estimation tools exist for photovoltaic
+    \item What fault detection/state estimation tools exist for PV
     power systems?
     \item What are the most successful ones?
     \item What is their structure? Are they mostly centralized or decentralized?
@@ -29,24 +29,23 @@ Having laid the basis for why there must be system behavior assessment in utilit
 
 \section{Objectives}
 
-With these questions uncovered, the main objective is to adapt or design a novel algorithm/approach to fault detection based on modern artificial intelligence solutions. However, we split these into finer goals:
+With these questions uncovered, the main objective is to adapt or design a novel algorithm/approach to fault detection. However, we split these into finer goals:
 
 \begin{itemize}
-    \item  Identify and study existing fault detection tools for photovoltaic
+    \item  Identify and study existing fault detection tools for PV
     power systems.
     \item  Develop a novel approach.
     \item Apply and test the new tool in real case study PV assets.
     \item Validate the developed methodology.
 \end{itemize}
 
+Before reviewing state-of-the-art fault detection tools, we need to understand the types of failures in PV systems: find which components usually fail, which ones fail more often, and how often. For this, it is necessary to understand such components' physical and electrical properties and the modeling techniques used to characterize them. There will be an assessment of utility-scale power plant architecture through literature, alongside the detection objective of state-of-the-art fault detection tools applied in this field. Then, an extensive analysis and review of what tools have been designed and used in this field. In this step, the literature study is necessary to understand the tool's scope, ease of implementation, and if the data sets available for this work are compatible with the proposed algorithms.
+
+There is a desire that, in the end, the developed work helps achieve an improved method for fault detection in PV power systems, resulting in a production-ready software application agile enough to deploy for multiple PV assets. The algorithm's intended to specialize in data cohesion as a means of anomaly inference, allowing asynchronous and self-healing data transfers between the considered components. It should result in an approach capable of generalization and application to other systems.
+
 \section{Document Structure}
 
-% Methodology
-Following this, Chapter \ref{chap:chap2} develops the theoretical basis for this work, regarding photovoltaic technology and the literature. 
-Before reviewing state-of-the-art fault detection tools, we need to understand the types of failures in photovoltaic systems: find which components usually fail, which ones fail more often, and how often. For this, it is necessary to understand such components' physical and electrical properties and the modeling techniques used to characterize them. There will be an assessment of utility-scale power plant architecture through literature, alongside the detection objective of state-of-the-art fault detection tools applied in this field. Then, an extensive analysis and review of what tools have been designed and used in this field. In this step, the literature study is necessary to understand the tool's scope, ease of implementation, and if the data sets available for this work are compatible with the proposed algorithms.
-
-% Impact and expected results
-There is a desire that, in the end, the developed work helps achieve an improved method for fault detection and state estimation in photovoltaic power systems, resulting in a production-ready software application agile enough to deploy for multiple PV assets. The algorithm's intended to specialize in data cohesion as a means of anomaly inference, allowing asynchronous and self-healing data transfers between the considered components. It should result in an approach capable of generalization and application to other engineering systems, benefiting more than just PV systems. No matter the chosen methodology, fault detection will, in most cases, result in an economic benefit, catastrophe prevention, and safety increase.
+In this work, we explore PV technology and the literature on fault detection algorithms in Chapter \ref{chap:chap2}, laying the theoretical foundation. Our innovative approach, Cellular Time Activation Networks, is thoroughly explained in Chapter \ref{chap:chap4}, covering its fundamentals, algorithms, and implementation. We then present a case study in Chapter \ref{chap:chap5}, showcasing data analysis and results that validate our methodology. Finally, Chapter \ref{chap:chap5} provides conclusions on our approach, a review of research questions and objectives met, and references to future work.
 
 
 \section{Academic and Industrial Setting}

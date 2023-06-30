@@ -142,7 +142,7 @@ In Figure \ref{fig:clean_power}, we can see a visual representation of various a
 
 \subsubsection{Satellite}
 
-In section \ref{subsubsec:eda_sat}, we discovered that the inverters follow a standard production pattern based on the irradiance and hour of the day. The specific area within the paths is considered the central region of standard operation. To clean up the data, we will remove all other instances. Figures \ref{fig:clean_tilted_irrad} and \ref{fig:clean_horizontal_irrad} of the Appendix demonstrate the effectiveness of the first algorithm. It is, once again, the chosen one.
+In Section \ref{subsubsec:eda_sat}, we discovered that the inverters follow a standard production pattern based on the irradiance and hour of the day. The specific area within the paths is considered the central region of standard operation. To clean up the data, we will remove all other instances. Figures \ref{fig:clean_tilted_irrad} and \ref{fig:clean_horizontal_irrad} of the Appendix demonstrate the effectiveness of the first algorithm. It is, once again, the chosen one.
 
 \subsubsection{Voltage and Current}
 
@@ -170,7 +170,7 @@ Combining autonomous fault detection with human-dependent mapping should achieve
 
 \subsection{Photovoltaic Plugin}
 
-According to the CellTAN formulation, cells cannot share their variables' data directly to maintain privacy. As a result, this limits plugins to work with only the information available in the cell they are running in. Therefore, inverter underperformance is the only situation considered for the PV plugin, based on the analysis from section \ref{subsubsec:eda_volt_curr}. Access to both the inverter's data and satellite data allows the owner to employ other algorithms that leverage this knowledge for better situational and fault discernment, but this falls back to the "classical" centralized algorithms, which is not the scope of this work.
+According to the CellTAN formulation, cells cannot share their variables' data directly to maintain privacy. As a result, this limits plugins to work with only the information available in the cell they are running in. Therefore, inverter underperformance is the only situation considered for the PV plugin, based on the analysis from Section \ref{subsubsec:eda_volt_curr}. Access to both the inverter's data and satellite data allows the owner to employ other algorithms that leverage this knowledge for better situational and fault discernment, but this falls back to the "classical" centralized algorithms, which is not the scope of this work.
 
 We use the current and voltage samples resulting from the cleaning process to define the minimum operational boundary. Figure \ref{fig:pluginsteps} shows the proposed algorithm, which consists of the following steps:
 
@@ -255,7 +255,7 @@ We don't expect the CellTAN to indicate any issues for this base scenario.
     \label{fig:artificial_results_01}
 \end{figure}
 
-Figure \ref{fig:artificial_results_01} shows the expectable high trust measure between inverter cells, with an average rating of 0.94. However, the variation in this rating and the fact that it falls just below 1 is due to the uncertainty involved in the trust calculation process, as highlighted in Figure \ref{fig:trust_test_3}. Based on the observed behavior, the cells have encountered numerous similar past instances. Therefore, we infer that reduced variable uncertainties (parametrized) would lead to an improved trust indicator in this context (topic developed in section \ref{subsec:trust}).
+Figure \ref{fig:artificial_results_01} shows the expectable high trust measure between inverter cells, with an average rating of 0.94. However, the variation in this rating and the fact that it falls just below 1 is due to the uncertainty involved in the trust calculation process, as highlighted in Figure \ref{fig:trust_test_3}. Based on the observed behavior, the cells have encountered numerous similar past instances. Therefore, we infer that reduced variable uncertainties (parametrized) would lead to an improved trust indicator in this context (topic developed in Section \ref{subsec:trust}).
 
 
 Variables' trust is relatively stable from hours 9 to 17. However, there are issues with this indicator for DC voltage during sunrise and sunset. These momentary drops occur due to the inconsistency of samples in these extremes, given that the original dataset did not store values beyond a certain threshold (considered nighttime). Voltage measurements in these zones are erratic, so a moving average is more appropriate to smooth out these trust oscillations and better assess the possibility of anomaly. We take this occurrence into account for the subsequent experiments.
@@ -273,7 +273,7 @@ To assess the CellTAN's anomaly detection capability, we simulate inverter misma
     \label{fig:artificial_02_piv}
 \end{figure}
 
-Figure \ref{fig:artificial_02_piv} shows the artificial anomaly introduced in the AC power and DC side voltage measurements, representing the underperformance of inverter two. Regarding the AC power scatter, it resembles region \textcircled{\raisebox{-0.9pt}{2}} of Figure \ref{fig:eda_power_kb_pair}. Observing the I-V scatter in the bottom right, we can also notice that the introduced anomaly translates some instances into the underperforming region, mapped in the previous section (\ref{sec:pvplugin}).
+Figure \ref{fig:artificial_02_piv} shows the artificial anomaly introduced in the AC power and DC side voltage measurements, representing the underperformance of inverter two. Regarding the AC power scatter, it resembles region \textcircled{\raisebox{-0.9pt}{2}} of Figure \ref{fig:eda_power_kb_pair}. Observing the I-V scatter in the bottom right, we can also notice that the introduced anomaly translates some instances into the underperforming region, mapped in the previous Section (\ref{sec:pvplugin}).
 We expect CellTAN's cell trust mechanism and the PV plugin to catch this situation.
 
 \begin{figure}[h!]
@@ -297,7 +297,7 @@ The CellTAN contains a lot of valuable attributes for assessing the cell's state
 
 \subsubsection{Trust Indicators Overview}
 
-After gathering results, visualizing the relation between inverter trust and outlier regions defined in section \ref{subsec:eda} gives a direct view of CellTAN's anomaly detection capabilities.
+After gathering results, visualizing the relation between inverter trust and outlier regions defined in Section \ref{subsec:eda} gives a direct view of CellTAN's anomaly detection capabilities.
 
 \begin{figure}[h!]
     \centering
@@ -319,7 +319,7 @@ Unfortunately, the distributions of trust between inverters and satellite indica
     \label{fig:cell_trust_hist}
 \end{figure}
 
-Analyzing the variables' trust indicators in Figure \ref{fig:var_trust_hist} lets us confirm the strong relationship between AC power and DC side current. The DC side voltage trust presents a region of lower values apart from the highest frequency bin. These instances relate to the DC voltage behavior during sunrise and sunset, which was already flagged in section \ref{subsubsec:simnoanom}.
+Analyzing the variables' trust indicators in Figure \ref{fig:var_trust_hist} lets us confirm the strong relationship between AC power and DC side current. The DC side voltage trust presents a region of lower values apart from the highest frequency bin. These instances relate to the DC voltage behavior during sunrise and sunset, which was already flagged in Section \ref{subsubsec:simnoanom}.
 
 \begin{figure}[h!]
     \centering
