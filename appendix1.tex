@@ -106,7 +106,7 @@ H(x|y) = -\sum_{i=1}^{n} \sum_{j=1}^{m} p(x_i, y_j) \log\left(\frac{p(x_i, y_j)}
 
 \section{Cell configuration} \label{ap1:config}
  
-The idea for configuring cells before deployment is to have a text file with every necessary parameter. As mentioned in \ref{subsec:cellconfig}, we chose the YAML format for laying out our cell information, coupled with a Pydantic \cite{pydantic} model that mirrors the file entries with attributes of the correct types in Python.
+The idea for configuring cells before deployment is to have a text file with every necessary parameter. As mentioned in \ref{subsec:cellconfig}, I chose the YAML format for laying out cell information, coupled with a Pydantic \cite{pydantic} model that mirrors the file entries with attributes of the correct types in Python.
 
 The following fields define input variables:
 \begin{itemize}
